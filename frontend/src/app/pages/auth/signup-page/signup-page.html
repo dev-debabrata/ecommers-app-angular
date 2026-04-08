@@ -4,46 +4,113 @@
     <p>Signup to create your account</p>
 
     <form (ngSubmit)="onSignup()">
-      <label>Name</label>
-      <div class="input-box">
-        <span>👤</span>
-        <input type="text" [(ngModel)]="name" name="name" placeholder="Enter your name" required />
+      <div class="name">
+        <div>
+          <label>First Name</label>
+          <div class="input-box">
+            <span>👤</span>
+            <input
+              id="text"
+              type="text"
+              [(ngModel)]="name"
+              name="name"
+              placeholder="Enter your name"
+              required
+            />
+          </div>
+        </div>
+        <div>
+          <label>Last Name</label>
+          <div class="input-box">
+            <span>👤</span>
+            <input
+              id="text"
+              type="text"
+              [(ngModel)]="name"
+              name="name"
+              placeholder="Enter your name"
+              required
+            />
+          </div>
+        </div>
       </div>
 
-      <label>Email</label>
-      <div class="input-box">
-        <span>✉️</span>
-        <input
-          type="email"
-          [(ngModel)]="email"
-          name="email"
-          placeholder="Enter your email"
-          required
-        />
+      <div class="email">
+        <label>Email</label>
+        <div class="input-box">
+          <span>✉️</span>
+          <input
+            id="email"
+            type="email"
+            [(ngModel)]="email"
+            name="email"
+            placeholder="Enter your email"
+            required
+          />
+        </div>
       </div>
 
-      <label>Password</label>
-      <div class="input-box">
-        <span>🔒</span>
-        <input
-          type="password"
-          [(ngModel)]="password"
-          name="password"
-          placeholder="Enter your password"
-          required
-        />
+      <!-- <div>
+          <label>Phone Number</label>
+          <div class="input-box">
+            <span>📞</span>
+            <input
+              id="tel"
+              type="tel"
+              [(ngModel)]="phone"
+              name="phone"
+              placeholder="Enter phone number"
+              required
+            />
+          </div>
+        </div> -->
+
+      <div class="password">
+        <div>
+          <label>Password</label>
+          <div class="input-box">
+            <span>🔒</span>
+            <input
+              id="password"
+              type="password"
+              [(ngModel)]="password"
+              name="password"
+              placeholder="Enter your password"
+              required
+            />
+          </div>
+        </div>
+
+        <div>
+          <label>Confirm Password</label>
+          <div class="input-box">
+            <span>🔒</span>
+            <input
+              id="confirm-password"
+              type="password"
+              [(ngModel)]="password"
+              name="confirm-password"
+              placeholder="Enter your password"
+              required
+            />
+          </div>
+        </div>
       </div>
 
-      <label>Confirm Password</label>
-      <div class="input-box">
-        <span>🔒</span>
-        <input
-          type="password"
-          [(ngModel)]="password"
-          name="password"
-          placeholder="Enter your password"
-          required
-        />
+      <div formArrayName="phones">
+        <label>Phone Number</label>
+        <div class="phone">
+          <!-- @for (phone of phones.controls; track $index; let i = $index) { -->
+          <div class="input-box">
+            <input placeholder="Phone number" />
+          </div>
+          <!-- } -->
+          <div class="phone-btn">
+            <button type="button" class="remove">Remove</button>
+
+            <button type="button" class="add">Add Phone</button>
+          </div>
+        </div>
       </div>
 
       <button type="submit">Sign Up</button>

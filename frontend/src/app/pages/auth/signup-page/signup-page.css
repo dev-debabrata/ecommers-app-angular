@@ -12,7 +12,7 @@ body {
 }
 
 .signup-card {
-  width: 420px;
+  width: 80vh;
   background: #002241;
   color: white;
   padding: 40px;
@@ -27,12 +27,75 @@ body {
 
 h1 {
   margin-bottom: 10px;
+  margin-top: 0;
   font-size: 38px;
 }
 
 p {
   color: #e7f5ff;
-  margin-bottom: 30px;
+  margin-bottom: 25px;
+}
+
+.name {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.email .input-box {
+  max-width: 40vh;
+}
+
+.password {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.phone {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* gap: 1rem; */
+}
+
+.phone-btn {
+  display: flex;
+  /* justify-content: space-between; */
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.phone input {
+  width: 40vh;
+}
+
+.remove {
+  background: #e03131;
+}
+
+.remove:hover {
+  background: #c92a2a;
+}
+
+.add {
+  background: #2f9e44;
+}
+
+.add:hover {
+  background: #2b8a3e;
+}
+
+.phone button {
+  margin: 0;
+  width: 14vh;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  /* background: #09447b; */
+  color: white;
+  font-size: 12px;
+  cursor: pointer;
 }
 
 label {
@@ -82,20 +145,20 @@ button:hover {
 
 .login-link {
   margin-top: 25px;
-  background: #0e406f79;
+  /* background: #0e406f79; */
   padding: 12px;
   border-radius: 8px;
   color: #e7f5ff;
 }
 
 .login-link a {
-  color: white;
+  color: #6ec0ff;
   text-decoration: none;
   font-weight: bold;
 }
 
 .login-link a:hover {
-  color: #a5d8ff;
+  color: #49a6ed;
 }
 
 /* .auth-container {

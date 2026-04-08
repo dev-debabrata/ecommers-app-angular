@@ -87,20 +87,20 @@ button:hover {
 
 .signup-link {
   margin-top: 25px;
-  background: #0e406f79;
+  /* background: #0e406f79; */
   padding: 12px;
   border-radius: 8px;
   color: #e7f5ff;
 }
 
 .signup-link a {
-  color: white;
+  color: #6ec0ff;
   text-decoration: none;
   font-weight: bold;
 }
 
 .signup-link a:hover {
-  color: #a5d8ff;
+  color: #49a6ed;
 }
 
 button[disabled] {
@@ -120,7 +120,7 @@ button[disabled] {
 }
 
 .input-box.invalid-input {
-  border: 1px solid #ff0000 !important;
+  border: 2px solid #ff0000 !important;
   background-color: #f1f3f5;
 }
 

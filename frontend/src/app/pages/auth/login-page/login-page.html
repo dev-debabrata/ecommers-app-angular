@@ -15,6 +15,12 @@
         />
       </div>
 
+      <div class="error">
+        @if (emailIsInvalid) {
+          <p class="error-line">{{ emailError }}</p>
+        }
+      </div>
+
       <label for="password">Password</label>
       <div class="input-box" [ngClass]="{ 'invalid-input': passwordIsInvalid }">
         <span>🔒</span>
@@ -27,12 +33,18 @@
       </div>
 
       <div class="error">
+        @if (passwordIsInvalid) {
+          <p class="error-line">{{ passwordError }}</p>
+        }
+      </div>
+
+      <!-- <div class="error">
         @if (emailIsInvalid || passwordIsInvalid) {
           <p class="error-line">
             {{ combinedErrors }}
           </p>
         }
-      </div>
+      </div> -->
       <button type="submit">Login</button>
     </form>
 

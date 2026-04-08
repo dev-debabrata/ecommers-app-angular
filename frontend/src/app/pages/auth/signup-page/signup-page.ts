@@ -13,6 +13,7 @@ export class SignupPage {
   name = '';
   email = '';
   password = '';
+  phone = '';
 
   constructor(private router: Router) {}
 

@@ -39,31 +39,75 @@ export class LoginPage {
   }
 
   get emailIsInvalid() {
-    const email = this.form.controls.email;
-    return email.invalid && email.touched;
+    return this.email?.invalid && this.email?.touched;
   }
 
   get passwordIsInvalid() {
-    const password = this.form.controls.password;
-    return password.invalid && password.touched;
+    return this.password?.invalid && this.password?.touched;
   }
 
-  get combinedErrors(): string {
-    const errors: string[] = [];
+  get emailError(): string {
+    if (!this.emailIsInvalid) return '';
 
-    if (this.emailIsInvalid) {
-      if (this.form.controls.email.errors?.['required']) errors.push('Email is required.');
-      if (this.form.controls.email.errors?.['email']) errors.push('Enter a valid email.');
+    if (this.email?.errors?.['required']) {
+      return 'Email is required.';
     }
 
-    if (this.passwordIsInvalid) {
-      if (this.form.controls.password.errors?.['required']) errors.push('Password is required.');
-      if (this.form.controls.password.errors?.['minlength'])
-        errors.push('Password must be at least 6 characters.');
+    if (this.email?.errors?.['email']) {
+      return 'Enter a valid email.';
     }
 
-    return errors.join(' ');
+    return '';
   }
+
+  get passwordError(): string {
+    if (!this.passwordIsInvalid) return '';
+
+    if (this.password?.errors?.['required']) {
+      return 'Password is required.';
+    }
+
+    if (this.password?.errors?.['minlength']) {
+      return 'Password must be at least 6 characters.';
+    }
+
+    return '';
+  }
+
+  // get email() {
+  //   return this.form.get('email');
+  // }
+
+  // get password() {
+  //   return this.form.get('password');
+  // }
+
+  // get emailIsInvalid() {
+  //   const email = this.form.controls.email;
+  //   return email.invalid && email.touched;
+  // }
+
+  // get passwordIsInvalid() {
+  //   const password = this.form.controls.password;
+  //   return password.invalid && password.touched;
+  // }
+
+  // get combinedErrors(): string {
+  //   const errors: string[] = [];
+
+  //   if (this.emailIsInvalid) {
+  //     if (this.form.controls.email.errors?.['required']) errors.push('Email is required.');
+  //     if (this.form.controls.email.errors?.['email']) errors.push('Enter a valid email.');
+  //   }
+
+  //   if (this.passwordIsInvalid) {
+  //     if (this.form.controls.password.errors?.['required']) errors.push('Password is required.');
+  //     if (this.form.controls.password.errors?.['minlength'])
+  //       errors.push('Password must be at least 6 characters.');
+  //   }
+
+  //   return errors.join(' ');
+  // }
 
   onSubmit() {
     if (this.form.invalid) {
