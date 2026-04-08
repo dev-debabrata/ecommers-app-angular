@@ -1,0 +1,15 @@
+.app-wrapper {
+  display: flex;
+  flex-direction: column;
+  /* min-height: 200vh; */
+}
+
+.page-container {
+  background: #dee2e6;
+  flex: 1;
+}
+
+.breadcrumb {
+  max-width: 80%;
+  margin: auto;
+}
