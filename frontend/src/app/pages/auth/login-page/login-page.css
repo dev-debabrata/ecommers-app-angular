@@ -51,9 +51,9 @@ label {
   padding: 12px;
 }
 
-.input-box span {
+.input-box mat-icon {
   margin-right: 10px;
-  color: #e7f5ff;
+  color: #a4c9e3;
 }
 .input-box input::placeholder {
   color: #5f85a3;

@@ -7,12 +7,13 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login-page',
   standalone: true,
-  imports: [FormsModule, RouterLink, ReactiveFormsModule, CommonModule],
+  imports: [FormsModule, RouterLink, ReactiveFormsModule, CommonModule, MatIconModule],
   templateUrl: './login-page.html',
   styleUrl: './login-page.css',
 })

@@ -6,7 +6,8 @@
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <label for="email">Email</label>
       <div class="input-box" [ngClass]="{ 'invalid-input': emailIsInvalid }">
-        <span>✉️</span>
+        <!-- <span>✉️</span> -->
+        <mat-icon class="material-icons-outlined">email</mat-icon>
         <input
           id="email"
           type="email"
@@ -23,7 +24,8 @@
 
       <label for="password">Password</label>
       <div class="input-box" [ngClass]="{ 'invalid-input': passwordIsInvalid }">
-        <span>🔒</span>
+        <!-- <span>🔒</span> -->
+        <mat-icon>lock</mat-icon>
         <input
           id="password"
           type="password"
