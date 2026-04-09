@@ -4,7 +4,7 @@ body {
 }
 
 .signup-wrapper {
-  height: 100vh;
+  min-height: 110vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -12,7 +12,8 @@ body {
 }
 
 .signup-card {
-  width: 80vh;
+  width: 90%;
+  max-width: 500px;
   background: #002241;
   color: white;
   padding: 40px;
@@ -27,48 +28,75 @@ body {
 
 h1 {
   margin-bottom: 10px;
-  margin-top: 0;
   font-size: 38px;
 }
 
 p {
   color: #e7f5ff;
-  margin-bottom: 25px;
+  margin-bottom: 30px;
 }
 
-.name {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.email .input-box {
-  max-width: 40vh;
-}
-
+.name,
 .password {
   display: flex;
+  gap: 1rem;
+  width: 100%;
+}
+
+.name > div,
+.password > div {
+  flex: 1;
+  min-width: 0;
+}
+
+/* .name {
+  display: flex;
   justify-content: space-between;
   align-items: center;
+} */
+
+/* .email .input-box {
+  max-width: 40vh;
+} */
+
+/* .password {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+} */
+
+.email .input-box {
+  width: 100%;
 }
 
 .phone {
   display: flex;
+  gap: 1rem;
+  /* width: 70%; */
+}
+
+.phone input {
+  flex: 1;
+  min-width: 0;
+}
+
+/* .phone {
+  display: flex;
   justify-content: space-between;
   align-items: center;
-  /* gap: 1rem; */
-}
+
+} */
 
 .phone-btn {
   display: flex;
   /* justify-content: space-between; */
   align-items: center;
-  gap: 0.75rem;
+  gap: 1rem;
 }
 
-.phone input {
-  width: 40vh;
-}
+/* .phone input {
+  width: 50vh;
+} */
 
 .remove {
   background: #e03131;
@@ -87,9 +115,12 @@ p {
 }
 
 .phone button {
+  width: auto;
+  padding: 12px 16px;
+  /* font-size: 14px; */
   margin: 0;
   width: 14vh;
-  padding: 14px;
+  /* padding: 14px; */
   border: none;
   border-radius: 8px;
   /* background: #09447b; */
@@ -102,23 +133,28 @@ label {
   display: block;
   text-align: left;
   margin: 15px 0 8px;
-  font-weight: bold;
 }
 
 .input-box {
+  /* width: 25vh; */
   display: flex;
   align-items: center;
   background: #0e406f79;
   border: 1px solid #1e6ab2;
   border-radius: 8px;
   padding: 12px;
+
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.input-box span {
+.input-box mat-icon {
   margin-right: 10px;
+  color: #a4c9e3;
 }
 
 .input-box input {
+  width: 100%;
   flex: 1;
   background: transparent;
   border: none;
@@ -158,7 +194,6 @@ button:hover {
 .login-link a {
   color: #6ec0ff;
   text-decoration: none;
-  font-weight: bold;
 }
 
 .login-link a:hover {
@@ -179,3 +214,27 @@ button {
   padding: 10px;
   margin: 10px 0;
 } */
+
+.error {
+  display: flex;
+  padding-left: 1px;
+}
+.error-line {
+  color: #ff0000;
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+  font-size: 0.9rem;
+}
+
+.input-box.invalid-input {
+  border: 2px solid #ff0000 !important;
+  background-color: #f1f3f5;
+}
+
+.input-box.invalid-input input {
+  border: none;
+  outline: none;
+  color: #000;
+  background-color: transparent;
+  flex: 1;
+}

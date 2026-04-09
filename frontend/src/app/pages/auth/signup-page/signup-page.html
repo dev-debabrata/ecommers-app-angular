@@ -3,33 +3,32 @@
     <h1>Create Account</h1>
     <p>Signup to create your account</p>
 
-    <form (ngSubmit)="onSignup()">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <div class="name">
         <div>
           <label>First Name</label>
           <div class="input-box">
-            <span>👤</span>
+            <!-- <span>👤</span> -->
+            <mat-icon class="material-icons-outlined">person</mat-icon>
             <input
               id="text"
               type="text"
-              [(ngModel)]="name"
               name="name"
               placeholder="Enter your name"
-              required
+              formControlName="firstName"
             />
           </div>
         </div>
         <div>
           <label>Last Name</label>
           <div class="input-box">
-            <span>👤</span>
+            <mat-icon class="material-icons-outlined">person</mat-icon>
             <input
               id="text"
               type="text"
-              [(ngModel)]="name"
               name="name"
               placeholder="Enter your name"
-              required
+              formControlName="lastName"
             />
           </div>
         </div>
@@ -38,14 +37,13 @@
       <div class="email">
         <label>Email</label>
         <div class="input-box">
-          <span>✉️</span>
+          <mat-icon class="material-icons-outlined">email</mat-icon>
           <input
             id="email"
             type="email"
-            [(ngModel)]="email"
             name="email"
             placeholder="Enter your email"
-            required
+            formControlName="email"
           />
         </div>
       </div>
@@ -65,18 +63,17 @@
           </div>
         </div> -->
 
-      <div class="password">
+      <div formGroupName="passwords" class="password">
         <div>
           <label>Password</label>
           <div class="input-box">
-            <span>🔒</span>
+            <mat-icon>lock</mat-icon>
             <input
               id="password"
               type="password"
-              [(ngModel)]="password"
               name="password"
               placeholder="Enter your password"
-              required
+              formControlName="password"
             />
           </div>
         </div>
@@ -84,14 +81,13 @@
         <div>
           <label>Confirm Password</label>
           <div class="input-box">
-            <span>🔒</span>
+            <mat-icon>lock</mat-icon>
             <input
               id="confirm-password"
               type="password"
-              [(ngModel)]="password"
               name="confirm-password"
               placeholder="Enter your password"
-              required
+              formControlName="confirmPassword"
             />
           </div>
         </div>
@@ -102,13 +98,19 @@
         <div class="phone">
           <!-- @for (phone of phones.controls; track $index; let i = $index) { -->
           <div class="input-box">
-            <input placeholder="Phone number" />
+            <input type="tel" placeholder="Phone number" />
           </div>
           <!-- } -->
           <div class="phone-btn">
-            <button type="button" class="remove">Remove</button>
+            <button type="button" class="remove">
+              Remove
+              <!-- <mat-icon>delete</mat-icon> -->
+            </button>
 
-            <button type="button" class="add">Add Phone</button>
+            <button type="button" class="add">
+              Add Phone
+              <!-- <mat-icon>add</mat-icon> -->
+            </button>
           </div>
         </div>
       </div>

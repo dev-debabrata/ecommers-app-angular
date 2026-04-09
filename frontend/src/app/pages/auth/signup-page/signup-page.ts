@@ -1,23 +1,64 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import {
+  FormArray,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-signup-page',
   standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, CommonModule, ReactiveFormsModule, MatIconModule],
   templateUrl: './signup-page.html',
   styleUrl: './signup-page.css',
 })
 export class SignupPage {
-  name = '';
-  email = '';
-  password = '';
-  phone = '';
-
   constructor(private router: Router) {}
 
-  onSignup() {
+  form = new FormGroup({
+    firstName: new FormControl<string>('', {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
+
+    lastName: new FormControl<string>('', {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
+
+    email: new FormControl<string>('', {
+      nonNullable: true,
+      validators: [Validators.email, Validators.required],
+    }),
+
+    passwords: new FormGroup({
+      password: new FormControl<string>('', {
+        nonNullable: true,
+        validators: [Validators.required, Validators.minLength(6)],
+      }),
+
+      confirmPassword: new FormControl<string>('', {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
+    }),
+
+    phones: new FormArray<FormControl<string>>([new FormControl('', { nonNullable: true })]),
+  });
+
+  onSubmit() {
+    if (this.form.invalid) {
+      console.log('INVALID FORM!');
+
+      return;
+    }
+
     localStorage.setItem('isLoggedIn', 'true');
     this.router.navigate(['/']);
   }
