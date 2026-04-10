@@ -9,7 +9,7 @@
           <label>First Name</label>
           <div class="input-box">
             <!-- <span>👤</span> -->
-            <mat-icon class="material-icons-outlined">person</mat-icon>
+            <mat-icon class="material-icons-outlined icon">person</mat-icon>
             <input
               id="text"
               type="text"
@@ -21,14 +21,14 @@
 
           <div class="error">
             @if (firstName.invalid && firstName.touched) {
-              <p>First name is required</p>
+              <p class="error-line">First name is required</p>
             }
           </div>
         </div>
         <div>
           <label>Last Name</label>
           <div class="input-box">
-            <mat-icon class="material-icons-outlined">person</mat-icon>
+            <mat-icon class="material-icons-outlined icon">person</mat-icon>
             <input
               id="text"
               type="text"
@@ -39,7 +39,7 @@
           </div>
           <div class="error">
             @if (lastName.invalid && lastName.touched) {
-              <p>Last name is required</p>
+              <p class="error-line">Last name is required</p>
             }
           </div>
         </div>
@@ -48,7 +48,7 @@
       <div class="email">
         <label>Email</label>
         <div class="input-box">
-          <mat-icon class="material-icons-outlined">email</mat-icon>
+          <mat-icon class="material-icons-outlined icon">email</mat-icon>
           <input
             id="email"
             type="email"
@@ -60,37 +60,22 @@
 
         <div class="error">
           @if (email.errors?.['required'] && email.touched) {
-            <p>Email is required</p>
+            <p class="error-line">Email is required</p>
           }
           @if (email.errors?.['email']) {
-            <p>Enter valid email</p>
+            <p class="error-line">Enter valid email</p>
           }
           @if (email.errors?.['emailTaken']) {
-            <p>Email already taken</p>
+            <p class="error-line">Email already taken</p>
           }
         </div>
       </div>
-
-      <!-- <div>
-          <label>Phone Number</label>
-          <div class="input-box">
-            <span>📞</span>
-            <input
-              id="tel"
-              type="tel"
-              [(ngModel)]="phone"
-              name="phone"
-              placeholder="Enter phone number"
-              required
-            />
-          </div>
-        </div> -->
 
       <div class="password">
         <div>
           <label>Password</label>
           <div class="input-box">
-            <mat-icon>lock</mat-icon>
+            <mat-icon class="icon">lock</mat-icon>
             <input
               id="password"
               type="password"
@@ -100,11 +85,12 @@
             />
           </div>
           <div class="error">
-            @if (password.errors?.['required']) {
-              <p>Password required</p>
+            @if (password.errors?.['required'] && password.touched) {
+              <p class="error-line">Password required</p>
             }
-            @if (password.errors?.['minlength']) {
-              <p>Minimum 6 characters</p>
+
+            @if (password.errors?.['minlength'] && password.touched) {
+              <p class="error-line">Minimum 6 characters</p>
             }
           </div>
         </div>
@@ -112,7 +98,7 @@
         <div>
           <label>Confirm Password</label>
           <div class="input-box">
-            <mat-icon>lock</mat-icon>
+            <mat-icon class="icon">lock</mat-icon>
             <input
               id="confirm-password"
               type="password"
@@ -122,9 +108,15 @@
             />
           </div>
           <div class="error">
-            @if (form.errors?.['passwordMismatch']) {
-              <p>Passwords do not match</p>
-            }
+            <div class="error">
+              @if (confirmPassword.errors?.['required'] && confirmPassword.touched) {
+                <p class="error-line">Confirm password required</p>
+              }
+
+              @if (form.errors?.['passwordMismatch'] && confirmPassword.touched) {
+                <p class="error-line">Passwords do not match</p>
+              }
+            </div>
           </div>
         </div>
       </div>
@@ -137,11 +129,11 @@
               <div class="phone-row">
                 <div class="input-box">
                   <input [formControlName]="i" type="tel" placeholder="Phone number" />
+                  <mat-icon (click)="removePhone(i)" class="remove">delete</mat-icon>
                 </div>
-                <button (click)="removePhone(i)" type="button" class="remove">
-                  <!-- Remove -->
-                  <mat-icon>delete</mat-icon>
-                </button>
+                <!-- <button (click)="removePhone(i)" type="button" class="remove">
+                
+                </button> -->
               </div>
             }
           </div>
@@ -163,76 +155,3 @@
     </div>
   </div>
 </div>
-
-<!-- <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
-
-
-  <div>
-    <label>First Name</label>
-    <input formControlName="firstName" type="text">
-    <div *ngIf="getError(registrationForm.get('firstName'), 'required')">
-      First Name is required
-    </div>
-  </div>
-
-
-  <div>
-    <label>Last Name</label>
-    <input formControlName="lastName" type="text">
-    <div *ngIf="getError(registrationForm.get('lastName'), 'required')">
-      Last Name is required
-    </div>
-  </div>
-
-  <div>
-    <label>Email</label>
-    <input formControlName="email" type="email">
-    <div *ngIf="getError(registrationForm.get('email'), 'required')">
-      Email is required
-    </div>
-    <div *ngIf="getError(registrationForm.get('email'), 'email')">
-      Enter a valid email
-    </div>
-    <div *ngIf="getError(registrationForm.get('email'), 'emailTaken')">
-      Email is already taken
-    </div>
-  </div>
-
-
-  <div>
-    <label>Password</label>
-    <input formControlName="password" type="password">
-    <div *ngIf="getError(registrationForm.get('password'), 'required')">
-      Password is required
-    </div>
-    <div *ngIf="getError(registrationForm.get('password'), 'minlength')">
-      Password must be at least 6 characters
-    </div>
-  </div>
-
-
-  <div>
-    <label>Confirm Password</label>
-    <input formControlName="confirmPassword" type="password">
-    <div *ngIf="getError(registrationForm.get('confirmPassword'), 'required')">
-      Confirm Password is required
-    </div>
-    <div *ngIf="registrationForm.hasError('passwordMismatch') && (registrationForm.dirty || registrationForm.touched)">
-      Passwords do not match
-    </div>
-  </div>
-
-
-  <div formArrayName="phones">
-    <label>Phone Numbers</label>
-    <div *ngFor="let phone of phones.controls; let i = index">
-      <input [formControlName]="i" type="text">
-      <button type="button" (click)="removePhone(i)" *ngIf="phones.length > 1">Remove</button>
-      <div *ngIf="getError(phone, 'required')">Phone is required</div>
-    </div>
-    <button type="button" (click)="addPhone()">Add Phone</button>
-  </div>
-
-
-  <button type="submit" [disabled]="registrationForm.invalid">Register</button>
-</form> -->

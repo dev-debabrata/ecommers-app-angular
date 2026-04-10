@@ -44,6 +44,8 @@ export class SignupPage {
       email: new FormControl<string>('', {
         nonNullable: true,
         validators: [Validators.email, Validators.required],
+        asyncValidators: [this.checkEmailAvailability()],
+        updateOn: 'blur',
       }),
 
       password: new FormControl<string>('', {
@@ -131,63 +133,6 @@ export class SignupPage {
     return this.form.get('phoneNumber') as FormArray;
   }
 
-  // // VALIDATION STATES
-  // get emailIsInvalid() {
-  //   return this.email?.invalid && this.email?.touched;
-  // }
-
-  // get passwordIsInvalid() {
-  //   return this.password?.invalid && this.password?.touched;
-  // }
-
-  // get confirmPasswordIsInvalid() {
-  //   return this.confirmPassword?.invalid && this.confirmPassword?.touched;
-  // }
-
-  // ERROR MESSAGES
-  // get emailError(): string {
-  //   if (!this.emailIsInvalid) return '';
-
-  //   if (this.email?.errors?.['required']) {
-  //     return 'Email is required.';
-  //   }
-  //   if (this.email?.errors?.['email']) {
-  //     return 'Enter a valid email.';
-  //   }
-  //   if (this.email?.errors?.['emailTaken']) {
-  //     return 'This email is already registered!';
-  //   }
-
-  //   return '';
-  // }
-
-  // get passwordError(): string {
-  //   if (!this.passwordIsInvalid) return '';
-
-  //   if (this.password?.errors?.['required']) {
-  //     return 'Password is required.';
-  //   }
-  //   if (this.password?.errors?.['minlength']) {
-  //     return 'Password must be at least 6 characters.';
-  //   }
-
-  //   return '';
-  // }
-
-  // get confirmPasswordError(): string {
-  //   if (!this.confirmPassword?.touched) return '';
-
-  //   if (this.confirmPassword?.errors?.['required']) {
-  //     return 'Confirm password is required';
-  //   }
-
-  //   if (this.form?.errors?.['passwordNotEqual']) {
-  //     return 'Passwords do not match';
-  //   }
-
-  //   return '';
-  // }
-
   addPhone() {
     this.phoneNumber.push(new FormControl('', { nonNullable: true }));
   }
@@ -254,6 +199,63 @@ export class SignupPage {
     });
   }
 }
+
+// // VALIDATION STATES
+// get emailIsInvalid() {
+//   return this.email?.invalid && this.email?.touched;
+// }
+
+// get passwordIsInvalid() {
+//   return this.password?.invalid && this.password?.touched;
+// }
+
+// get confirmPasswordIsInvalid() {
+//   return this.confirmPassword?.invalid && this.confirmPassword?.touched;
+// }
+
+// ERROR MESSAGES
+// get emailError(): string {
+//   if (!this.emailIsInvalid) return '';
+
+//   if (this.email?.errors?.['required']) {
+//     return 'Email is required.';
+//   }
+//   if (this.email?.errors?.['email']) {
+//     return 'Enter a valid email.';
+//   }
+//   if (this.email?.errors?.['emailTaken']) {
+//     return 'This email is already registered!';
+//   }
+
+//   return '';
+// }
+
+// get passwordError(): string {
+//   if (!this.passwordIsInvalid) return '';
+
+//   if (this.password?.errors?.['required']) {
+//     return 'Password is required.';
+//   }
+//   if (this.password?.errors?.['minlength']) {
+//     return 'Password must be at least 6 characters.';
+//   }
+
+//   return '';
+// }
+
+// get confirmPasswordError(): string {
+//   if (!this.confirmPassword?.touched) return '';
+
+//   if (this.confirmPassword?.errors?.['required']) {
+//     return 'Confirm password is required';
+//   }
+
+//   if (this.form?.errors?.['passwordNotEqual']) {
+//     return 'Passwords do not match';
+//   }
+
+//   return '';
+// }
 
 // import { Component } from '@angular/core';
 // import { FormBuilder, FormControl, FormGroup, Validators, FormArray, AbstractControl, AsyncValidatorFn } from '@angular/forms';

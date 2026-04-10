@@ -32,12 +32,20 @@ export class LoginPage {
   });
 
   get email() {
-    return this.form.get('email');
+    return this.form.controls.email;
   }
 
   get password() {
-    return this.form.get('password');
+    return this.form.controls.password;
   }
+
+  // get email() {
+  //   return this.form.get('email');
+  // }
+
+  // get password() {
+  //   return this.form.get('password');
+  // }
 
   onSubmit() {
     if (this.form.invalid) {

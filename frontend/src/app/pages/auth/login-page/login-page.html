@@ -16,11 +16,11 @@
       </div>
 
       <div class="error">
-        @if (email?.errors?.['required'] && email?.touched) {
+        @if (email.errors?.['required'] && email.touched) {
           <p class="error-line">Email is required.</p>
         }
 
-        @if (email?.errors?.['email'] && email?.touched) {
+        @if (email.errors?.['email'] && email.touched) {
           <p class="error-line">Enter a valid email.</p>
         }
       </div>
@@ -37,11 +37,11 @@
       </div>
 
       <div class="error">
-        @if (password?.errors?.['required'] && password?.touched) {
+        @if (password.errors?.['required'] && password.touched) {
           <p class="error-line">Password required</p>
         }
 
-        @if (password?.errors?.['minlength'] && password?.touched) {
+        @if (password.errors?.['minlength'] && password.touched) {
           <p class="error-line">Minimum 6 characters</p>
         }
       </div>
