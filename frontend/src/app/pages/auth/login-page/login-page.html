@@ -5,8 +5,7 @@
 
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <label for="email">Email</label>
-      <div class="input-box" [ngClass]="{ 'invalid-input': emailIsInvalid }">
-        <!-- <span>✉️</span> -->
+      <div class="input-box">
         <mat-icon class="material-icons-outlined">email</mat-icon>
         <input
           id="email"
@@ -17,14 +16,17 @@
       </div>
 
       <div class="error">
-        @if (emailIsInvalid) {
-          <p class="error-line">{{ emailError }}</p>
+        @if (email?.errors?.['required'] && email?.touched) {
+          <p class="error-line">Email is required.</p>
+        }
+
+        @if (email?.errors?.['email'] && email?.touched) {
+          <p class="error-line">Enter a valid email.</p>
         }
       </div>
 
       <label for="password">Password</label>
-      <div class="input-box" [ngClass]="{ 'invalid-input': passwordIsInvalid }">
-        <!-- <span>🔒</span> -->
+      <div class="input-box">
         <mat-icon>lock</mat-icon>
         <input
           id="password"
@@ -35,18 +37,15 @@
       </div>
 
       <div class="error">
-        @if (passwordIsInvalid) {
-          <p class="error-line">{{ passwordError }}</p>
+        @if (password?.errors?.['required'] && password?.touched) {
+          <p class="error-line">Password required</p>
+        }
+
+        @if (password?.errors?.['minlength'] && password?.touched) {
+          <p class="error-line">Minimum 6 characters</p>
         }
       </div>
 
-      <!-- <div class="error">
-        @if (emailIsInvalid || passwordIsInvalid) {
-          <p class="error-line">
-            {{ combinedErrors }}
-          </p>
-        }
-      </div> -->
       <button type="submit">Login</button>
     </form>
 
