@@ -20,6 +20,7 @@ body {
 .input-box:has(input.ng-invalid.ng-touched) {
   background-color: #fff6f5;
   border-color: #e62525;
+  color: #000;
 }
 
 /* [formgroupname].ng-invalid.ng-touched.ng-dirty label,
