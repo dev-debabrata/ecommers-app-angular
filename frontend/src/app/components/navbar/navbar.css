@@ -7,6 +7,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 15px 0;
+  padding-bottom: 0;
   border-top: 1px solid #eee;
 }
 
@@ -17,13 +18,39 @@
 .navbar ul {
   display: flex;
   list-style: none;
-  gap: 28px;
+  /* gap: 28px; */
   padding: 0;
   margin: 0;
 }
 
+.icon a {
+  font-size: 14px;
+  padding: 10px;
+  height: 40px;
+  border: 1px solid transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.fav-icon {
+  color: red;
+}
+
+.navbar li:hover {
+  border: 1px solid black;
+}
+
 .navbar li {
   cursor: pointer;
+  font-size: 14px;
+  padding: 8px;
+  height: 40px;
+  border: 1px solid transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
 }
 
 .delivery {
