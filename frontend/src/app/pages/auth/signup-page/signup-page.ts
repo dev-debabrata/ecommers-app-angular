@@ -144,11 +144,25 @@ export class SignupPage {
       return;
     }
 
-    this.authService.signupUser(this.form.value).subscribe({
+    // const data = this.form.value;
+    // delete data.confirmPassword;
+
+    const value = this.form.getRawValue();
+
+    const user = {
+      firstName: value.firstName,
+      lastName: value.lastName,
+      email: value.email,
+      password: value.password,
+      phoneNumber: value.phoneNumber,
+    };
+
+    this.authService.signupUser(user).subscribe({
       next: () => {
         this.authService.setToken('fake-token');
         this.showSnackbar('Signup successful', 'success');
         this.router.navigate(['/']);
+        // window.location.reload();
 
         // setTimeout(() => this.router.navigate(['/']), 500);
       },

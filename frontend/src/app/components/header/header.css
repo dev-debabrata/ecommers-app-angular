@@ -89,7 +89,7 @@
 } */
 
 .search-box:focus-within {
-  box-shadow: 0 0 0 1px #bdbcbb;
+  box-shadow: 0 0 0 1px #f3a847;
 }
 
 .header-icons {

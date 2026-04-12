@@ -1,47 +1,45 @@
-import { Component } from '@angular/core';
-import { Navbar } from '../navbar/navbar';
+import { Component, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+
+import { Navbar } from '../navbar/navbar';
+import { AuthService } from '../../services/auth-service';
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink, CommonModule, Navbar, MatIconModule],
+  imports: [RouterLink, CommonModule, Navbar, MatIconModule, MatSnackBarModule],
   templateUrl: './header.html',
   styleUrl: './header.css',
 })
 export class Header {
-  isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-  showMenu = false;
+  private router = inject(Router);
+  private authService = inject(AuthService);
+  private snackBar = inject(MatSnackBar);
 
-  constructor(private router: Router) {}
+  showMenu = false;
+  openDropdownIndex: number | null = null;
+
+  get isLoggedIn() {
+    return this.authService.isLoggedIn();
+  }
 
   toggleMenu() {
     this.showMenu = !this.showMenu;
   }
 
   logout() {
-    localStorage.removeItem('isLoggedIn');
-    this.isLoggedIn = false;
+    this.authService.removeToken();
     this.showMenu = false;
+
+    this.snackBar.open('Logged out successfully', 'Close', {
+      duration: 3000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+      panelClass: ['snackbar-success'],
+    });
+
     this.router.navigate(['/']);
-  }
-  links = [
-    { name: 'Home', dropdown: false },
-    { name: 'Products', dropdown: true },
-    { name: 'About', dropdown: false },
-    { name: 'Contact', dropdown: false },
-  ];
-
-  openDropdownIndex: number | null = null;
-
-  openDropdown(index: number) {
-    if (this.links[index].dropdown) {
-      this.openDropdownIndex = index;
-    }
-  }
-
-  closeDropdown() {
-    this.openDropdownIndex = null;
   }
 }

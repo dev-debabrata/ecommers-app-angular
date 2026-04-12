@@ -117,12 +117,13 @@ export class LoginPage {
         //   return;
         // }
 
-        this.email.setErrors(null);
-        this.password.setErrors(null);
+        // this.email.setErrors(null);
+        // this.password.setErrors(null);
 
         this.authService.setToken('fake-token');
         this.showSnackbar('Login successful', 'success');
         this.router.navigate(['/']);
+        // window.location.reload();
       },
 
       error: () => {
