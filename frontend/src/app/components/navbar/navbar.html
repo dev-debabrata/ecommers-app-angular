@@ -1,14 +1,28 @@
 <nav class="navbar">
-  <div class="logo">
-    <a routerLink="/">SnapCart</a>
-  </div>
+  <div class="category-btn">☰ SHOP BY CATEGORIES</div>
 
-  <ul class="nav-links">
+  <ul>
+    @for (item of categories; track item) {
+      <li>{{ item }}</li>
+    }
+  </ul>
+
+  <div class="delivery">🚀 Free International Delivery</div>
+</nav>
+
+<!-- <nav class="navbar"> -->
+<!-- <div class="logo">
+    <a routerLink="/">SnapCart</a>
+  </div> -->
+
+<!-- <div class="search-box">
+    <input type="text" placeholder="Search for products..." />
+    <button>🔍</button>
+  </div> -->
+<!-- <ul class="nav-links">
     @for (link of links; track link; let i = $index) {
       <li (mouseenter)="openDropdown(i)" (mouseleave)="closeDropdown()">
         <a [routerLink]="link.name === 'Home' ? '/' : '#'">{{ link.name }}</a>
-
-        <!-- Dropdown only for links with dropdown = true -->
         @if (link.dropdown && openDropdownIndex === i) {
           <ul class="dropdown">
             <li><a href="#">Subcategory 1</a></li>
@@ -17,38 +31,13 @@
         }
       </li>
     }
-  </ul>
+  </ul> -->
 
-  <div class="search-bar">
-    <input type="text" placeholder="Search products..." />
-    <!-- <button>🔍</button> -->
-  </div>
-
-  <div class="user-cart">
-    <div class="login-section">
-      @if (!isLoggedIn) {
-        <a
-          [routerLink]="isLoggedIn ? '/' : '/login'"
-          routerLinkActive="active"
-          class="btn secondary"
-          >Login</a
-        >
-      } @else {
-        <div class="avatar-container">
-          <img (click)="toggleMenu()" src="/avatar.png" alt="" class="avatar-img" />
-
-          @if (showMenu) {
-            <div class="dropdown">
-              <button (click)="logout()">Logout</button>
-            </div>
-          }
-        </div>
-      }
-    </div>
+<!-- <div class="user-cart">
     <a routerLink="/wishlist">❤️</a>
     <a routerLink="/cart">🛒 (0)</a>
-  </div>
-</nav>
+  </div> -->
+<!-- </nav> -->
 
 <!-- <nav class="navbar">
   <div class="logo">ShopNest</div>
