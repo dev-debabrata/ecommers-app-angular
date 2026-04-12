@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
+  AbstractControl,
   FormControl,
   FormGroup,
   FormsModule,
@@ -9,6 +10,9 @@ import {
 } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../../services/auth-service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { delay, map, Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-login-page',
@@ -18,18 +22,45 @@ import { Router, RouterLink } from '@angular/router';
   styleUrl: './login-page.css',
 })
 export class LoginPage {
-  constructor(private router: Router) {}
+  private router = inject(Router);
+  private authService = inject(AuthService);
+  private snackBar = inject(MatSnackBar);
 
   form = new FormGroup({
-    email: new FormControl('', {
+    email: new FormControl<string>('', {
       nonNullable: true,
       validators: [Validators.email, Validators.required],
+      asyncValidators: [this.checkEmailExists()],
+      updateOn: 'blur',
     }),
-    password: new FormControl('', {
+    password: new FormControl<string>('', {
       nonNullable: true,
       validators: [Validators.required, Validators.minLength(6)],
     }),
   });
+
+  checkEmailExists() {
+    return (control: AbstractControl) => {
+      if (!control.value) return of(null);
+
+      return this.authService.login(control.value).pipe(
+        delay(500),
+        map((users: any[]) => (users.length === 0 ? { emailNotRegistered: true } : null)),
+      );
+    };
+  }
+  // checkEmailExists(): AsyncValidatorFn {
+  //   return (control: AbstractControl): Observable<ValidationErrors | null> => {
+  //     if (!control.value) return of(null);
+
+  //     return this.authService.checkEmail(control.value).pipe(
+  //       delay(500),
+  //       map((users: any[]) => {
+  //         return users.length === 0 ? { emailNotRegistered: true } : null;
+  //       }),
+  //     );
+  //   };
+  // }
 
   get email() {
     return this.form.controls.email;
@@ -39,119 +70,64 @@ export class LoginPage {
     return this.form.controls.password;
   }
 
-  // get email() {
-  //   return this.form.get('email');
-  // }
-
-  // get password() {
-  //   return this.form.get('password');
-  // }
-
+  showSnackbar(message: string, type: 'success' | 'error') {
+    this.snackBar.open(message, 'Close', {
+      duration: 3000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+      panelClass: [`snackbar-${type}`],
+    });
+  }
   onSubmit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.showSnackbar('Please enter valid email and password', 'error');
       return;
     }
 
-    const enteredEmail = this.form.value.email;
-    const enteredPassword = this.form.value.password;
-    console.log(enteredEmail, enteredPassword);
+    // const data = this.form.getRawValue();
 
-    localStorage.setItem('isLoggedIn', 'true');
-    this.router.navigate(['/']);
+    // this.authService.checkEmail(data.email).subscribe({
+    const data = this.form.value;
+
+    this.authService.login(data.email!).subscribe({
+      next: (users) => {
+        if (users.length === 0) {
+          this.email.setErrors({ emailNotRegistered: true });
+          this.showSnackbar('Email not registered', 'error');
+          return;
+        }
+
+        if (users[0].password !== data.password) {
+          this.password.setErrors({ invalidPassword: true });
+          this.showSnackbar('Invalid password', 'error');
+          return;
+        }
+        // if (!users || users.length === 0) {
+        //   this.email.setErrors({ emailNotRegistered: true });
+        //   this.showSnackbar('Email not registered', 'error');
+        //   return;
+        // }
+
+        // const user = users[0];
+
+        // if (user.password !== data.password) {
+        //   this.password.setErrors({ invalidPassword: true });
+        //   this.showSnackbar('Invalid password', 'error');
+        //   return;
+        // }
+
+        this.email.setErrors(null);
+        this.password.setErrors(null);
+
+        this.authService.setToken('fake-token');
+        this.showSnackbar('Login successful', 'success');
+        this.router.navigate(['/']);
+      },
+
+      error: () => {
+        this.showSnackbar('Something went wrong', 'error');
+      },
+    });
   }
 }
-
-// get emailIsInvalid() {
-//   return this.email?.invalid && this.email?.touched;
-// }
-
-// get passwordIsInvalid() {
-//   return this.password?.invalid && this.password?.touched;
-// }
-
-// get emailError(): string {
-//   if (!this.emailIsInvalid) return '';
-
-//   if (this.email?.errors?.['required']) {
-//     return 'Email is required.';
-//   }
-
-//   if (this.email?.errors?.['email']) {
-//     return 'Enter a valid email.';
-//   }
-
-//   return '';
-// }
-
-// get passwordError(): string {
-//   if (!this.passwordIsInvalid) return '';
-
-//   if (this.password?.errors?.['required']) {
-//     return 'Password is required.';
-//   }
-
-//   if (this.password?.errors?.['minlength']) {
-//     return 'Password must be at least 6 characters.';
-//   }
-
-//   return '';
-// }
-
-///////////////////////////////////////////////////////////////////////
-
-//   get emailIsInvalid() {
-//   const control = this.form.controls.email;
-//   return control.invalid && (control.touched || control.dirty);
-// }
-
-// get passwordIsInvalid() {
-//   const control = this.form.controls.password;
-//   return control.invalid && (control.touched || control.dirty);
-// }
-
-// email = '';
-// password = '';
-
-// constructor(private router: Router) {}
-
-// onLogin() {
-//   localStorage.setItem('isLoggedIn', 'true');
-//   this.router.navigate(['/']);
-// }
-
-// import { Component } from '@angular/core';
-// import { FormControl, FormGroup, Validators } from '@angular/forms';
-
-// @Component({
-//   selector: 'app-login',
-//   templateUrl: './login.component.html',
-//   styleUrls: ['./login.component.css']
-// })
-// export class LoginComponent {
-
-//   loginForm = new FormGroup({
-//     email: new FormControl<string>('', {
-//       nonNullable: true,
-//       validators: [Validators.required, Validators.email]
-//     }),
-//     password: new FormControl<string>('', {
-//       nonNullable: true,
-//       validators: [Validators.required, Validators.minLength(6)]
-//     })
-//   });
-
-//   /** Helper for error display */
-//   getError(controlName: 'email' | 'password', errorName: string) {
-//     const control = this.loginForm.get(controlName);
-//     return control?.hasError(errorName) && (control.dirty || control.touched);
-//   }
-
-//   /** Submit */
-//   onSubmit() {
-//     if (this.loginForm.valid) {
-//       console.log('Login Data:', this.loginForm.value);
-//       // Call API here
-//     }
-//   }
-// }

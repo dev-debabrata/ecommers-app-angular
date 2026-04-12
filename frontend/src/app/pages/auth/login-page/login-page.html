@@ -23,6 +23,10 @@
         @if (email.errors?.['email'] && email.touched) {
           <p class="error-line">Enter a valid email.</p>
         }
+
+        @if (email.errors?.['emailNotRegistered'] && email.touched) {
+          <p class="error-line">Email is not registered</p>
+        }
       </div>
 
       <label for="password">Password</label>
@@ -44,6 +48,9 @@
         @if (password.errors?.['minlength'] && password.touched) {
           <p class="error-line">Minimum 6 characters</p>
         }
+        @if (password.errors?.['invalidPassword'] && password.touched) {
+          <p class="error-line">Invalid password</p>
+        }
       </div>
 
       <button type="submit">Login</button>
@@ -55,71 +62,3 @@
     </div>
   </div>
 </div>
-
-<!-- @if (emailIsInvalid) {
-        <p>
-          @if (email?.errors?.['required']) {
-            <span>Email is required.</span>
-          }
-          @if (email?.errors?.['email']) {
-            <span>Enter a valid email.</span>
-          }
-        </p>
-      } -->
-
-<!-- @if (emailIsInvalid) {
-        <p>Please enter a valid email address</p>
-      }
-
-      @if (passwordIsInvalid) {
-        <p>Please enter a valid password (at least 6 characters long).</p>
-      } -->
-
-<!-- @if (passwordIsInvalid) {
-        <p>
-          @if (password?.errors?.['required']) {
-            <span>Password is required.</span>
-          }
-          @if (password?.errors?.['minlength']) {
-            <span> Password must be at least 6 characters. </span>
-          }
-        </p>
-      } -->
-<!-- Combined error block -->
-
-<!-- <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-
-
-  <div>
-    <label>Email</label>
-    <input type="email" formControlName="email">
-
-    <div *ngIf="getError('email', 'required')">
-      Email is required
-    </div>
-
-    <div *ngIf="getError('email', 'email')">
-      Enter a valid email
-    </div>
-  </div>
-
-
-  <div>
-    <label>Password</label>
-    <input type="password" formControlName="password">
-
-    <div *ngIf="getError('password', 'required')">
-      Password is required
-    </div>
-
-    <div *ngIf="getError('password', 'minlength')">
-      Minimum 6 characters required
-    </div>
-  </div>
-
-
-  <button type="submit" [disabled]="loginForm.invalid">
-    Login
-  </button>
-
-</form> -->

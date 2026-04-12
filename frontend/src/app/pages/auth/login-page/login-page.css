@@ -20,11 +20,6 @@ body {
   text-align: center;
 }
 
-.logo {
-  font-size: 42px;
-  margin-bottom: 20px;
-}
-
 h1 {
   margin-bottom: 10px;
   font-size: 38px;
@@ -39,7 +34,6 @@ label {
   display: block;
   text-align: left;
   margin: 15px 0 8px;
-  font-weight: bold;
 }
 
 .input-box {
@@ -87,7 +81,6 @@ button:hover {
 
 .signup-link {
   margin-top: 25px;
-  /* background: #0e406f79; */
   padding: 12px;
   border-radius: 8px;
   color: #e7f5ff;
@@ -96,7 +89,6 @@ button:hover {
 .signup-link a {
   color: #6ec0ff;
   text-decoration: none;
-  font-weight: bold;
 }
 
 .signup-link a:hover {
@@ -127,27 +119,3 @@ button[disabled] {
 .input-box:has(input.ng-invalid.ng-touched) input {
   color: #000;
 }
-
-/* [formgroupname].ng-invalid.ng-touched.ng-dirty label,
-.control:has(.ng-invalid.ng-touched.ng-dirty) label {
-  color: #f98b75;
-}
-
-[formgroupname].ng-invalid.ng-touched.ng-dirty input,
-input.ng-invalid.ng-touched.ng-dirty {
-  background-color: #fbdcd6;
-  border-color: #f84e2c;
-} */
-
-/* .input-box.invalid-input {
-  border: 2px solid #ff0000 !important;
-  background-color: #f1f3f5;
-}
-
-.input-box.invalid-input input {
-  border: none;
-  outline: none;
-  color: #000;
-  background-color: transparent;
-  flex: 1;
-} */
