@@ -1,10 +1,28 @@
 <div class="app-wrapper">
+  @if (!hideLayout) {
+    <app-header />
+
+    <!-- <div class="breadcrumb">
+      <app-breadcrumb />
+    </div> -->
+  }
+
+  <main class="page-container" [class.auth-page]="hideLayout">
+    <router-outlet />
+  </main>
+
+  @if (!hideLayout) {
+    <app-footer />
+  }
+</div>
+
+<!-- <div class="app-wrapper">
   @if (!hideLayout && !hideBreadcrumb) {
     <header>
       <app-header />
-      <div class="breadcrumb">
-        <!-- <app-breadcrumb /> -->
-      </div>
+      <div class="breadcrumb"> -->
+<!-- <app-breadcrumb /> -->
+<!-- </div>
     </header>
   }
 
@@ -15,4 +33,4 @@
   @if (!hideLayout) {
     <app-footer />
   }
-</div>
+</div> -->

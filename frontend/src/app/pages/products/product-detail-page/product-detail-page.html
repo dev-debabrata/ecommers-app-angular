@@ -1,1 +1,122 @@
-<p>product-detail-page works!</p>
+@if (isLoading) {
+  <app-loader />
+} @else if (errorMsg) {
+  <app-error />
+} @else if (product) {
+  <div class="product-details-card">
+    <!-- Left: Product Images -->
+    <div class="img-section">
+      <img [src]="product.thumbnail" [alt]="product.title" class="product-thumbnail" />
+      <div class="product-images">
+        @for (img of product.images; track $index) {
+          <img [src]="img" [alt]="product.title + ' image ' + ($index + 1)" class="product-img" />
+        }
+      </div>
+      <div>
+        @if (product.stock > 0) {
+          <div class="button-group">
+            <button (click)="addCart(product)" class="cart-button">Add to Cart</button>
+            <button class="buy-button">Buy Now</button>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Right: Product Info -->
+    <div class="info-section">
+      <h2>{{ product.title }}</h2>
+
+      <!-- <p><strong>Rating:</strong> {{ product.rating }} / 5</p> -->
+      <div class="rating">
+        @for (star of stars; track $index) {
+          <span [ngClass]="star">&#9733;</span>
+        }
+        <span class="rating-number">({{ product.rating }})</span>
+      </div>
+
+      <div class="price-stock">
+        <p class="stock" [ngClass]="{ 'out-of-stock': product.stock === 0 }">
+          {{ product.stock > 0 ? product.stock + ' in stock' : 'Out of Stock' }}
+        </p>
+        <p class="price">
+          ₹{{ product.price | number: '1.2-2' }}
+          <span class="discount">({{ product.discountPercentage }}% OFF)</span>
+        </p>
+      </div>
+
+      <p><strong>Category:</strong> {{ product.category }}</p>
+      <p><strong>Brand:</strong> {{ product.brand }}</p>
+      <p><strong>SKU:</strong> {{ product.sku }}</p>
+      <p><strong>Tags:</strong> {{ product.tags.join(', ') }}</p>
+
+      <p><strong>Availability:</strong> {{ product.availabilityStatus }}</p>
+
+      <p><strong>Description:</strong> {{ product.description }}</p>
+
+      <div class="additional-info">
+        <p><strong>Weight:</strong> {{ product.weight }} g</p>
+        <p>
+          <strong>Dimensions:</strong> W: {{ product.dimensions.width }} × H:
+          {{ product.dimensions.height }} × D: {{ product.dimensions.depth }}
+        </p>
+        <p><strong>Warranty:</strong> {{ product.warrantyInformation }}</p>
+        <p><strong>Shipping:</strong> {{ product.shippingInformation }}</p>
+        <p><strong>Return Policy:</strong> {{ product.returnPolicy }}</p>
+        <p><strong>Minimum Order Quantity:</strong> {{ product.minimumOrderQuantity }}</p>
+      </div>
+
+      <!-- Meta -->
+      <div class="meta-info">
+        <p><strong>Created At:</strong> {{ product.meta.createdAt | timeAgo }}</p>
+        <p><strong>Updated At:</strong> {{ product.meta.updatedAt | timeAgo }}</p>
+        <!-- <p><strong>Created At:</strong> {{ product.meta.createdAt | date: 'medium' }}</p>
+        <p><strong>Updated At:</strong> {{ product.meta.updatedAt | date: 'medium' }}</p> -->
+        <p><strong>Barcode:</strong> {{ product.meta.barcode }}</p>
+        <p><strong>QR Code:</strong> <a [href]="product.meta.qrCode" target="_blank">View QR</a></p>
+      </div>
+
+      <!-- Reviews -->
+
+      @if (product.reviews.length > 0) {
+        <div class="reviews">
+          <h3>Reviews:</h3>
+
+          <!-- Show only first review inline -->
+          <div class="review-card">
+            <p>
+              <strong>{{ product.reviews[0].reviewerName }}</strong> ({{
+                product.reviews[0].rating
+              }}
+              / 5)
+            </p>
+            <p>{{ product.reviews[0].comment }}</p>
+            <p class="review-date">{{ product.reviews[0].date | date: 'medium' }}</p>
+          </div>
+
+          @if (product.reviews.length > 1) {
+            <button class="see-more-btn" (click)="openReviewsPopup()">See More</button>
+          }
+        </div>
+
+        <!-- Modal -->
+        @if (isPopupOpen) {
+          <div class="reviews-modal">
+            <div class="modal-content">
+              <span class="close-btn" (click)="closeReviewsPopup()">&times;</span>
+              <h3>All Reviews</h3>
+              <div class="review-card" *ngFor="let review of product.reviews">
+                <p>
+                  <strong>{{ review.reviewerName }}</strong> ({{ review.rating }} / 5)
+                </p>
+                <p>{{ review.comment }}</p>
+                <p class="review-date">{{ review.date | date: 'medium' }}</p>
+              </div>
+            </div>
+          </div>
+        }
+      }
+    </div>
+  </div>
+} @else {
+  <p>No Data!</p>
+}

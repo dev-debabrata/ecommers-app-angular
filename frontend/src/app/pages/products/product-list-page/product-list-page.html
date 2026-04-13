@@ -1,1 +1,57 @@
-<p>product-list-page works!</p>
+@if (isLoading) {
+  <app-loader />
+} @else if (errorMsg) {
+  <app-error />
+} @else {
+  <div class="category-list">
+    @for (cat of categories; track $index) {
+      <div
+        class="category-item"
+        [ngClass]="{ active: selectedCategory === cat }"
+        (click)="selectedCategory = cat"
+      >
+        {{ cat }}
+      </div>
+    }
+  </div>
+
+  <div class="product-list">
+    @for (product of filteredProducts; track product.id) {
+      <div
+        class="card"
+        [ngClass]="{ 'low-stock': product.stock > 0 && product.stock < 3 }"
+        appHighlight
+        (click)="viewDetails(product.id)"
+      >
+        <div class="img-container">
+          <img [src]="product.images" [alt]="product.title" class="product-img" />
+        </div>
+        <h3>{{ product.title }}</h3>
+
+        <div class="rating">
+          @for (star of ratingUtil.getStars(product.rating); track $index) {
+            <span [ngClass]="star">&#9733;</span>
+          }
+          <span class="rating-number">({{ product.rating }})</span>
+        </div>
+
+        <p class="category"><strong>Category:</strong> {{ product.category }}</p>
+
+        <p><strong>Price:</strong> {{ product.price | currency: 'INR' }}</p>
+        <p class="discount"><strong>Discount:</strong> {{ product.discountPercentage }}%</p>
+
+        <p>{{ product.description | truncate: 80 }}</p>
+
+        <div class="status-section">
+          <div class="stock-message">
+            @if (product.stock === 0) {
+              <span class="out-of-stock">Out of Stock</span>
+            } @else if (product.stock < 3) {
+              <span class="low-stock-text">⚠️ Only few left</span>
+            }
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+}
