@@ -6,7 +6,7 @@
 .page-container {
   /* background: #dee2e6; */
   flex: 1;
-  max-width: 91%;
+  max-width: 90%;
   margin: 0 5rem;
   min-height: 100vh;
 }
