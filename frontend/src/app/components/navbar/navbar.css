@@ -44,7 +44,7 @@
 .navbar li {
   cursor: pointer;
   font-size: 14px;
-  padding: 8px;
+  padding: 8px 14px;
   height: 40px;
   border: 1px solid transparent;
   display: flex;
