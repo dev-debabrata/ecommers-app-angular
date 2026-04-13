@@ -6,10 +6,26 @@
     </div>
 
     <div class="search-box">
-      <input type="text" placeholder="Search for products..." />
-      <button>
+      <input
+        type="text"
+        placeholder="Search product..."
+        [(ngModel)]="searchTerm"
+        (input)="onInputChange()"
+        (keyup.enter)="onSearch()"
+      />
+      <button (click)="onSearch()">
         <mat-icon class="material-icons-outlined">search</mat-icon>
       </button>
+
+      @if (suggestions.length > 0) {
+        <div class="search-dropdown">
+          @for (item of suggestions; track item.id) {
+            <div class="dropdown-item" (click)="selectProduct(item)">
+              {{ item.title }}
+            </div>
+          }
+        </div>
+      }
     </div>
 
     <div class="header-icons">
@@ -35,16 +51,20 @@
       </div>
 
       <div class="icon">
-        <a href="" class="fav-icon">
+        <a class="fav-icon">
           <mat-icon class="material-icons-outlined">favorite_border</mat-icon>
         </a>
 
-        <a href="" class="cart-icon">
+        <a routerLink="/cart" class="cart-icon">
           <mat-icon class="material-icons-outlined">shopping_cart</mat-icon>
+          <!-- @if (cartCount > 0) {
+            <span class="cart-badge">{{ cartCount }}</span>
+          } -->
         </a>
       </div>
     </div>
   </div>
 
   <app-navbar />
+  <app-breadcrumb />
 </header>
