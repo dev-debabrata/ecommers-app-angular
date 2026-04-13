@@ -1,17 +1,36 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router, RouterLink } from '@angular/router';
+
+interface MenuItem {
+  name: string;
+  hasArrow?: boolean;
+}
+
+interface MenuSection {
+  title: string;
+  items: MenuItem[];
+}
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [],
+  imports: [RouterLink, CommonModule, MatSnackBarModule, MatIconModule],
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
 })
 export class Navbar {
+  private router = inject(Router);
+
+  isDropdownOpen = false;
+  selectedCategory = '';
+
+  dropdownLeft = 0;
+  dropdownTop = 0;
+
   categories = [
-    'Home',
     'Fashion',
     'Electronics',
     'Bags',
@@ -21,4 +40,67 @@ export class Navbar {
     'Wellness',
     'Jewellery',
   ];
+
+  categoryProducts: any = {
+    Fashion: ['Shirts', 'Jeans', 'Shoes'],
+    Electronics: ['Mobiles', 'Laptops', 'Headphones'],
+    Bags: ['Backpacks', 'Travel Bags'],
+    Footwear: ['Sneakers', 'Sandals'],
+    Groceries: ['Rice', 'Oil', 'Snacks'],
+    Beauty: ['Makeup', 'Skincare'],
+    Wellness: ['Supplements', 'Yoga'],
+    Jewellery: ['Gold', 'Silver', 'Rings'],
+  };
+
+  openDropdown(category: string, event: MouseEvent) {
+    this.selectedCategory = category;
+    this.isDropdownOpen = true;
+
+    const target = event.target as HTMLElement;
+    const rect = target.getBoundingClientRect();
+
+    this.dropdownLeft = rect.left;
+    this.dropdownTop = rect.bottom;
+  }
+
+  getProductList() {
+    this.router.navigate(['/products']);
+  }
+
+  menu: MenuSection[] = [
+    {
+      title: 'Trending',
+      items: [{ name: 'Best Sellers' }, { name: 'New Releases' }, { name: 'Movers and Shakers' }],
+    },
+    {
+      title: 'Digital Content And Devices',
+      items: [
+        { name: 'Echo & Alexa', hasArrow: true },
+        { name: 'Fire TV', hasArrow: true },
+        { name: 'Kindle E-Readers & eBooks', hasArrow: true },
+        { name: 'Audible Audiobooks', hasArrow: true },
+        { name: 'Amazon Prime Video', hasArrow: true },
+        { name: 'Amazon Prime Music', hasArrow: true },
+      ],
+    },
+    {
+      title: 'Shop By Category',
+      items: [
+        { name: 'Mobiles, Computers', hasArrow: true },
+        { name: 'TV, Appliances, Electronics', hasArrow: true },
+        { name: "Men's Fashion", hasArrow: true },
+        { name: "Women's Fashion", hasArrow: true },
+      ],
+    },
+  ];
+
+  isSidebarOpen = false;
+
+  toggleSidebar() {
+    this.isSidebarOpen = !this.isSidebarOpen;
+  }
+
+  closeSidebar() {
+    this.isSidebarOpen = false;
+  }
 }

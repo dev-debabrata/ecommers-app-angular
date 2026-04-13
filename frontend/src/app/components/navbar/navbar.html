@@ -1,11 +1,81 @@
 <nav class="navbar">
-  <div class="category-btn">☰ SHOP BY CATEGORIES</div>
+  <div class="category-btn" (click)="toggleSidebar()">
+    <mat-icon>menu</mat-icon> SHOP BY CATEGORIES
+  </div>
 
-  <ul class="nav-item">
-    @for (item of categories; track item) {
-      <li>{{ item }}</li>
+  @if (isSidebarOpen) {
+    <div class="overlay" (click)="closeSidebar()"></div>
+  }
+
+  <div class="sidebar" [class.open]="isSidebarOpen">
+    <div class="sidebar-header">
+      <a href="" routerLink="/login"><mat-icon>person</mat-icon>Hello, sign In</a>
+
+      <button (click)="closeSidebar()">
+        <mat-icon>closeSidebar</mat-icon>
+      </button>
+    </div>
+
+    <ul class="sidebar-item">
+      @for (menus of menu; track menus) {
+        <h2>{{ menus.title }}</h2>
+
+        @for (item of menus.items; track $index) {
+          <li>
+            {{ item.name }}
+
+            @if (item.hasArrow) {
+              <mat-icon class="arrow">chevron_right</mat-icon>
+            }
+          </li>
+        }
+      }
+    </ul>
+  </div>
+
+  <div class="nav-wrapper" (mouseleave)="isDropdownOpen = false">
+    <ul class="nav-item">
+      @for (item of categories; track item) {
+        <li class="nav-link" (mouseenter)="openDropdown(item, $event)">
+          {{ item }}
+        </li>
+      }
+    </ul>
+
+    <!-- Floating Dropdown -->
+    @if (isDropdownOpen) {
+      <div class="dropdown" [ngStyle]="{ 'left.px': dropdownLeft, 'top.px': dropdownTop }">
+        <h4>{{ selectedCategory }}</h4>
+
+        <ul>
+          @for (product of categoryProducts[selectedCategory]; track product) {
+            <li (click)="getProductList()">{{ product }}</li>
+          }
+        </ul>
+      </div>
     }
-  </ul>
+  </div>
+
+  <!-- <div class="nav-wrapper" (mouseleave)="isDropdownOpen = false">
+    <ul class="nav-item">
+      @for (item of categories; track item) {
+        <li class="nav-link" (mouseenter)="openDropdown(item)">
+          {{ item }}
+        </li>
+      }
+    </ul>
+
+   
+    <div class="dropdown" *ngIf="isDropdownOpen">
+      <h4>{{ selectedCategory }}</h4>
+
+      <ul>
+        @for (p of categoryProducts[selectedCategory]; track p) {
+          <li>{{ p }}</li>
+        }
+      </ul>
+    </div>
+  </div> -->
 
   <div class="delivery">🚀 Free International Delivery</div>
 </nav>
