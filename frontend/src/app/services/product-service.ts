@@ -11,7 +11,6 @@ export class ProductService {
   private http = inject(HttpClient);
 
   private productsCache: Product[] = [];
-  private cart: any[] = [];
 
   getProducts(): Observable<Product> {
     return this.http.get<Product>(`${this.api}?limit=30`);
@@ -27,21 +26,5 @@ export class ProductService {
 
   getProductsCache(): Product[] {
     return this.productsCache;
-  }
-
-  addToCart(product: any) {
-    this.cart.push(product);
-  }
-
-  getCart() {
-    return this.cart;
-  }
-
-  removeFromCart(index: number) {
-    this.cart.splice(index, 1);
-  }
-
-  clearCart() {
-    this.cart = [];
   }
 }

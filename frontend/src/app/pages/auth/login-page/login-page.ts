@@ -49,18 +49,6 @@ export class LoginPage {
       );
     };
   }
-  // checkEmailExists(): AsyncValidatorFn {
-  //   return (control: AbstractControl): Observable<ValidationErrors | null> => {
-  //     if (!control.value) return of(null);
-
-  //     return this.authService.checkEmail(control.value).pipe(
-  //       delay(500),
-  //       map((users: any[]) => {
-  //         return users.length === 0 ? { emailNotRegistered: true } : null;
-  //       }),
-  //     );
-  //   };
-  // }
 
   get email() {
     return this.form.controls.email;
@@ -85,9 +73,6 @@ export class LoginPage {
       return;
     }
 
-    // const data = this.form.getRawValue();
-
-    // this.authService.checkEmail(data.email).subscribe({
     const data = this.form.value;
 
     this.authService.login(data.email!).subscribe({
@@ -103,27 +88,14 @@ export class LoginPage {
           this.showSnackbar('Invalid password', 'error');
           return;
         }
-        // if (!users || users.length === 0) {
-        //   this.email.setErrors({ emailNotRegistered: true });
-        //   this.showSnackbar('Email not registered', 'error');
-        //   return;
-        // }
 
-        // const user = users[0];
-
-        // if (user.password !== data.password) {
-        //   this.password.setErrors({ invalidPassword: true });
-        //   this.showSnackbar('Invalid password', 'error');
-        //   return;
-        // }
-
-        // this.email.setErrors(null);
-        // this.password.setErrors(null);
+        const user = users[0];
 
         this.authService.setToken('fake-token');
+
+        this.authService.setUser(user);
         this.showSnackbar('Login successful', 'success');
         this.router.navigate(['/']);
-        // window.location.reload();
       },
 
       error: () => {
