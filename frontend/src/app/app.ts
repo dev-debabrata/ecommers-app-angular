@@ -20,15 +20,44 @@ export class App {
   constructor() {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        let current = this.route.firstChild;
-
-        while (current?.firstChild) {
-          current = current.firstChild;
-        }
-
-        this.hideLayout = current?.snapshot.data['hideLayout'] ?? false;
-        this.hideBreadcrumb = current?.snapshot.data['hideBreadcrumb'] ?? false;
+        this.updateLayoutFlags(this.router.routerState.root);
       }
     });
   }
+
+  private updateLayoutFlags(route: ActivatedRoute) {
+    let current: ActivatedRoute | null = route;
+
+    this.hideLayout = false;
+    this.hideBreadcrumb = false;
+
+    while (current) {
+      const data = current.snapshot.data;
+
+      if (data?.['hideLayout']) {
+        this.hideLayout = true;
+      }
+
+      if (data?.['hideBreadcrumb']) {
+        this.hideBreadcrumb = true;
+      }
+
+      current = current.firstChild!;
+    }
+  }
+
+  // constructor() {
+  //   this.router.events.subscribe((event) => {
+  //     if (event instanceof NavigationEnd) {
+  //       let current = this.route.firstChild;
+
+  //       while (current?.firstChild) {
+  //         current = current.firstChild;
+  //       }
+
+  //       this.hideLayout = current?.snapshot.data['hideLayout'] ?? false;
+  //       this.hideBreadcrumb = current?.snapshot.data['hideBreadcrumb'] ?? false;
+  //     }
+  //   });
+  // }
 }

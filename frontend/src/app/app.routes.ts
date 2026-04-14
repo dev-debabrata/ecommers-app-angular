@@ -5,6 +5,8 @@ import { SignupPage } from './pages/auth/signup-page/signup-page';
 import { ProductListPage } from './pages/products/product-list-page/product-list-page';
 import { authGuard } from './guards/auth-guard';
 import { NotFound } from './components/not-found/not-found';
+import { CartPage } from './pages/cart-page/cart-page';
+import { CheckoutPage } from './pages/checkout-page/checkout-page';
 
 export const routes: Routes = [
   {
@@ -35,9 +37,19 @@ export const routes: Routes = [
 
   {
     path: 'cart',
-    loadComponent: () => import('./pages/cart-page/cart-page').then((m) => m.CartPage),
-    data: { breadcrumb: 'Cart' },
     canActivate: [authGuard],
+    data: { breadcrumb: 'Cart' },
+    children: [
+      {
+        path: '',
+        component: CartPage,
+      },
+      {
+        path: 'checkout',
+        component: CheckoutPage,
+        data: { breadcrumb: 'Checkout' },
+      },
+    ],
   },
 
   {
