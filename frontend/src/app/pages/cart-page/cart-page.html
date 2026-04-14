@@ -1,1 +1,92 @@
-<p>cart-page works!</p>
+<!-- cart-page.html -->
+<div class="cart-container">
+  <div class="cart-layout">
+    <!-- LEFT SIDE -->
+    <div class="cart-left">
+      <h2>
+        {{ cart().length > 0 ? 'Shopping Cart' : 'Your Cart is empty' }}
+      </h2>
+
+      <div class="divider"></div>
+
+      @for (item of cart(); track item.id) {
+        <div class="cart-item">
+          <!-- IMAGE -->
+          <div class="cart-image">
+            <img [src]="item.image" [alt]="item.name" />
+          </div>
+
+          <!-- DETAILS -->
+          <div class="cart-details">
+            <!-- TITLE -->
+            <p class="cart-title">
+              {{ item.name }}
+            </p>
+
+            <!-- STOCK -->
+            <span class="in-stock">
+              {{ item.stock > 0 ? 'In Stock' : 'Out of Stock' }}
+            </span>
+
+            <!-- CATEGORY -->
+            <span class="small-text"> <b>Category:</b> {{ item.category }} </span>
+
+            <!-- PRICE -->
+            <span class="small-text">
+              <b>Price:</b> ₹{{ item.price | number: '1.2-2' }}
+              <span class="discount">
+                @if (item.discountPercentage) {
+                  ({{ item.discountPercentage }}% OFF)
+                }
+              </span>
+            </span>
+
+            <!-- QUANTITY + ACTIONS -->
+            <div class="actions">
+              <select (change)="changeQty(item.id, $event)">
+                @for (i of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; track i) {
+                  <option [value]="i" [selected]="i === item.quantity">
+                    {{ i }}
+                  </option>
+                }
+              </select>
+
+              <span class="action-link" (click)="remove(item.id)"> Delete </span>
+
+              <span class="action-link"> Save for later </span>
+            </div>
+          </div>
+
+          <!-- PRICE TOTAL -->
+          <div class="price">₹ {{ item.price * item.quantity | number: '1.2-2' }}</div>
+        </div>
+      }
+
+      <div class="divider"></div>
+
+      <div class="subtotal-price">
+        <p class="subtotal">
+          Subtotal ({{ cart().length }} items):
+          <b>₹ {{ total() | number: '1.2-2' }}</b>
+        </p>
+      </div>
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="cart-right">
+      <p class="free-delivery">
+        <span class="green"> Your order is eligible for FREE Delivery. </span>
+        Select this option at checkout.
+      </p>
+
+      <p class="subtotal">
+        Subtotal ({{ cart().length }} items):
+        <b>₹ {{ total() | number: '1.2-2' }}</b>
+      </p>
+
+      <button (click)="getCheckout()" [disabled]="cart().length === 0" class="checkout-btn">
+        Proceed to Buy
+      </button>
+    </div>
+  </div>
+</div>

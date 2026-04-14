@@ -7,6 +7,7 @@ import { authGuard } from './guards/auth-guard';
 import { NotFound } from './components/not-found/not-found';
 import { CartPage } from './pages/cart-page/cart-page';
 import { CheckoutPage } from './pages/checkout-page/checkout-page';
+import { WishlistPage } from './pages/wishlist-page/wishlist-page';
 
 export const routes: Routes = [
   {
@@ -50,6 +51,13 @@ export const routes: Routes = [
         data: { breadcrumb: 'Checkout' },
       },
     ],
+  },
+
+  {
+    path: 'wishlist',
+    component: WishlistPage,
+    canActivate: [authGuard],
+    data: { breadcrumb: 'Wishlist' },
   },
 
   {

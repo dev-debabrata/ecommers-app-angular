@@ -52,8 +52,11 @@
       </div>
 
       <div class="icon">
-        <a class="fav-icon">
+        <a routerLink="/wishlist" class="fav-icon">
           <mat-icon class="material-icons-outlined">favorite_border</mat-icon>
+          <span class="fav-badge">
+            {{ isLoggedIn ? itemCount() : 0 }}
+          </span>
         </a>
 
         <a routerLink="/cart" class="cart-icon">

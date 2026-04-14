@@ -3,7 +3,20 @@
 } @else if (errorMsg) {
   <app-error />
 } @else {
-  <div class="category-list">
+  @if (showCategories) {
+    <div class="category-list">
+      @for (cat of categories; track $index) {
+        <div
+          class="category-item"
+          [ngClass]="{ active: selectedCategory === cat }"
+          (click)="selectedCategory = cat"
+        >
+          {{ cat }}
+        </div>
+      }
+    </div>
+  }
+  <!-- <div class="category-list">
     @for (cat of categories; track $index) {
       <div
         class="category-item"
@@ -13,7 +26,7 @@
         {{ cat }}
       </div>
     }
-  </div>
+  </div> -->
 
   <div class="product-list">
     @for (product of filteredProducts; track product.id) {
@@ -42,15 +55,17 @@
 
         <p>{{ product.description | truncate: 80 }}</p>
 
-        <div class="status-section">
-          <div class="stock-message">
-            @if (product.stock === 0) {
-              <span class="out-of-stock">Out of Stock</span>
-            } @else if (product.stock < 3) {
-              <span class="low-stock-text">⚠️ Only few left</span>
-            }
+        @if (product.stock == 0 || product.stock < 3) {
+          <div class="status-section">
+            <div class="stock-message">
+              @if (product.stock === 0) {
+                <span class="out-of-stock">Out of Stock</span>
+              } @else if (product.stock < 3) {
+                <span class="low-stock-text">⚠️ Only few left</span>
+              }
+            </div>
           </div>
-        </div>
+        }
       </div>
     }
   </div>
