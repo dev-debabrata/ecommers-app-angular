@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
 import { TimeAgoPipe } from '../../../pipes/time-ago-pipe';
 import { Loader } from '../../../components/loader/loader';
 import { Error } from '../../../components/error/error';
+import { CartService } from '../../../services/cart-service';
 
 @Component({
   selector: 'app-product-detail-page',
@@ -22,6 +23,8 @@ export class ProductDetailPage {
   private route = inject(ActivatedRoute);
   private authService = inject(AuthService);
   private productService = inject(ProductService);
+  private cartService = inject(CartService);
+
   // Automatic cleanup
   private destroyRef = inject(DestroyRef);
 
@@ -62,45 +65,26 @@ export class ProductDetailPage {
   addCart(product: any) {
     const isLoggedIn = this.authService.isLoggedIn();
 
-    // ❌ NOT LOGGED IN
     if (!isLoggedIn) {
       this.snackBar.open('Please login to add cart', 'Close', {
         duration: 3000,
-        horizontalPosition: 'center',
-        verticalPosition: 'top',
-        panelClass: ['snackbar-error'],
       });
 
       this.router.navigate(['/login']);
       return;
     }
 
-    this.productService.addToCart(product);
+    this.cartService.addToCart(product);
 
     this.snackBar.open('Added to cart', 'Close', {
       duration: 2000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+      panelClass: ['snackbar-success'],
     });
 
-    // OPTIONAL: redirect to cart (ONLY if you want)
     this.router.navigate(['/cart']);
   }
-
-  // addCart(product: any) {
-  //   const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-
-  //   if (!isLoggedIn) {
-  //     this.snackBar.open('Please login to add cart', 'Close', {
-  //       duration: 3000,
-  //       horizontalPosition: 'center',
-  //       verticalPosition: 'top',
-  //       panelClass: ['snackbar-error'],
-  //     });
-  //     this.router.navigate(['/login']);
-  //     return;
-  //   }
-
-  //   this.productService.addToCart(product);
-  // }
 
   // Review
   toggleReviews(): void {

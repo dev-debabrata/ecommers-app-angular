@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../services/auth-service';
 
 interface MenuItem {
   name: string;
@@ -23,6 +24,12 @@ interface MenuSection {
 })
 export class Navbar {
   private router = inject(Router);
+  private authService = inject(AuthService);
+  private snackBar = inject(MatSnackBar);
+
+  isSidebarOpen = false;
+
+  showMenu = false;
 
   isDropdownOpen = false;
   selectedCategory = '';
@@ -51,6 +58,41 @@ export class Navbar {
     Wellness: ['Supplements', 'Yoga'],
     Jewellery: ['Gold', 'Silver', 'Rings'],
   };
+
+  get isLoggedIn() {
+    return this.authService.isLoggedIn();
+  }
+
+  get userName(): string {
+    return this.authService.getUserName();
+  }
+
+  toggleMenu(event: MouseEvent) {
+    event.stopPropagation();
+    this.showMenu = !this.showMenu;
+  }
+
+  // toggleMenu() {
+  //   this.showMenu = !this.showMenu;
+  // }
+
+  closeMenu() {
+    this.showMenu = false;
+  }
+
+  logout() {
+    this.authService.removeToken();
+    this.showMenu = false;
+
+    this.snackBar.open('Logged out successfully', 'Close', {
+      duration: 3000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+      panelClass: ['snackbar-success'],
+    });
+
+    this.router.navigate(['/']);
+  }
 
   openDropdown(category: string, event: MouseEvent) {
     this.selectedCategory = category;
@@ -93,8 +135,6 @@ export class Navbar {
       ],
     },
   ];
-
-  isSidebarOpen = false;
 
   toggleSidebar() {
     this.isSidebarOpen = !this.isSidebarOpen;

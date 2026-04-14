@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -9,6 +9,7 @@ import { AuthService } from '../../services/auth-service';
 import { Breadcrumb } from '../breadcrumb/breadcrumb';
 import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../services/product-service';
+import { CartService } from '../../services/cart-service';
 
 @Component({
   selector: 'app-header',
@@ -25,10 +26,15 @@ import { ProductService } from '../../services/product-service';
   styleUrl: './header.css',
 })
 export class Header {
+  @Input() hideBreadcrumb = false;
   private router = inject(Router);
   private authService = inject(AuthService);
   private productService = inject(ProductService);
   private snackBar = inject(MatSnackBar);
+
+  private cartService = inject(CartService);
+
+  itemCount = this.cartService.itemCount;
 
   searchTerm = '';
   suggestions: any[] = [];
@@ -36,26 +42,21 @@ export class Header {
   showMenu = false;
   openDropdownIndex: number | null = null;
 
-  // constructor() {
-  //   this.router.events.subscribe((event: any) => {
-  //     if (event?.urlAfterRedirects) {
-  //       const url = event.urlAfterRedirects;
-
-  //       // ❌ clear only when NOT on product pages
-  //       if (!url.startsWith('/products')) {
-  //         this.searchTerm = '';
-  //         this.suggestions = [];
-  //       }
-  //     }
-  //   });
-  // }
-
   get isLoggedIn() {
     return this.authService.isLoggedIn();
   }
 
-  toggleMenu() {
+  toggleMenu(event: MouseEvent) {
+    event.stopPropagation();
     this.showMenu = !this.showMenu;
+  }
+
+  // toggleMenu() {
+  //   this.showMenu = !this.showMenu;
+  // }
+
+  closeMenu() {
+    this.showMenu = false;
   }
 
   logout() {
@@ -136,10 +137,6 @@ export class Header {
       });
     }
   }
-
-  //   get cartCount(): number {
-  //   return this.productService.getCartCount();
-  // }
 }
 
 // findAndNavigate(products: any[], term: string) {

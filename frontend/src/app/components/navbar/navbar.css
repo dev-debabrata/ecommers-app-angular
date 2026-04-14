@@ -7,7 +7,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 10px 0;
-  /* padding-bottom: 0; */
+  padding-bottom: 0;
   border-top: 1px solid #dee2e6;
 }
 
@@ -35,8 +35,8 @@
 .sidebar {
   position: fixed;
   top: 0;
-  left: -350px;
-  width: 350px;
+  left: -380px;
+  width: 380px;
   height: 100%;
   background: white;
   transition: 0.3s;
@@ -55,7 +55,7 @@
   justify-content: space-between;
   background: #232f3e;
   /* color: white; */
-  padding: 15px;
+  padding: 1.5rem;
 }
 .sidebar-header a {
   display: flex;
@@ -73,8 +73,8 @@
   background: #232f3e;
   color: white;
   border: 1px solid transparent;
-  padding: 8px;
-  height: 40px;
+  padding: 6px;
+  /* height: 40px;   */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -143,10 +143,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.fav-icon {
-  color: red;
 }
 
 .navbar li:hover {
@@ -239,4 +235,70 @@
 
 .dropdown li:hover {
   background: #f2f2f2;
+}
+
+avatar-container {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  z-index: 10;
+}
+
+.dropdown-login {
+  min-width: 120px;
+  position: fixed;
+  top: 70px;
+  background: white;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 6px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  z-index: 9999;
+}
+
+.dropdown-login button {
+  background: white;
+  /* border: none; */
+  cursor: pointer;
+  color: red;
+  display: block;
+  width: 100%;
+  padding: 8px 10px;
+  text-align: center;
+}
+
+.dropdown-login button:hover {
+  background: #e9ecef;
+}
+
+.dropdown-login button:hover {
+  color: rgb(198, 0, 0);
+}
+
+.name-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: white;
+  font-size: 20px;
+  font-weight: 600;
 }

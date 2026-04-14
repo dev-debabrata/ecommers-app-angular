@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, DestroyRef, inject } from '@angular/core';
+import { Component, DestroyRef, inject, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TruncatePipe } from '../../../pipes/truncate-pipe';
 import { Loader } from '../../../components/loader/loader';
@@ -25,6 +25,9 @@ export class ProductListPage {
   // Automatic cleanup
   private destroyRef = inject(DestroyRef);
 
+  @Input() showCategories: boolean = true;
+  @Input() limit: number | null = null;
+
   // Component State
   products: Product[] = [];
   isLoading = true;
@@ -40,13 +43,28 @@ export class ProductListPage {
     const productSub = this.productService.getProducts().subscribe({
       next: (res: any) => {
         this.isLoading = false;
-        this.products = res.products;
+        // this.products = res.products;
+
+        let products = res.products;
+
+        // ✅ LIMIT FOR HOME PAGE
+        if (this.limit) {
+          products = products.slice(0, this.limit);
+        }
+
+        this.products = products;
 
         // Category
-        const categories = Array.from(new Set(this.products.map((p) => p.category)));
-        // this.categories = ['All', ...new Set(this.products.map((p) => p.category))];
-        const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
-        this.categories = ['All', ...categories.map(capitalize)];
+
+        if (this.showCategories) {
+          const categories = Array.from(new Set(this.products.map((p) => p.category)));
+          const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
+          this.categories = ['All', ...categories.map(capitalize)];
+        }
+        // const categories = Array.from(new Set(this.products.map((p) => p.category)));
+        // // this.categories = ['All', ...new Set(this.products.map((p) => p.category))];
+        // const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
+        // this.categories = ['All', ...categories.map(capitalize)];
 
         console.log(res);
         // console.log('isLoading:', this.isLoading);

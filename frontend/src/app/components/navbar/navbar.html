@@ -9,7 +9,30 @@
 
   <div class="sidebar" [class.open]="isSidebarOpen">
     <div class="sidebar-header">
-      <a href="" routerLink="/login"><mat-icon>person</mat-icon>Hello, sign In</a>
+      <!-- <a href="" routerLink="/login"><mat-icon>person</mat-icon>Hello, sign In</a> -->
+      @if (!isLoggedIn) {
+        <a
+          [routerLink]="isLoggedIn ? '/' : '/login'"
+          routerLinkActive="active"
+          class="btn secondary"
+          ><mat-icon>person</mat-icon>Hello, sign In</a
+        >
+      } @else {
+        <div class="avatar-container">
+          <div class="name-box">
+            <img (click)="toggleMenu($event)" src="/avatar.png" alt="" class="avatar-img" />
+
+            <span>Hello, {{ userName }}</span>
+          </div>
+
+          @if (showMenu) {
+            <div class="overlay" (click)="closeMenu()"></div>
+            <div class="dropdown-login">
+              <button (click)="logout()">Logout</button>
+            </div>
+          }
+        </div>
+      }
 
       <button (click)="closeSidebar()">
         <mat-icon>closeSidebar</mat-icon>

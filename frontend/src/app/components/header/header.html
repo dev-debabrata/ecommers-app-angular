@@ -39,9 +39,10 @@
           >
         } @else {
           <div class="avatar-container">
-            <img (click)="toggleMenu()" src="/avatar.png" alt="" class="avatar-img" />
+            <img (click)="toggleMenu($event)" src="/avatar.png" alt="" class="avatar-img" />
 
             @if (showMenu) {
+              <div class="overlay" (click)="closeMenu()"></div>
               <div class="dropdown">
                 <button (click)="logout()">Logout</button>
               </div>
@@ -57,14 +58,16 @@
 
         <a routerLink="/cart" class="cart-icon">
           <mat-icon class="material-icons-outlined">shopping_cart</mat-icon>
-          <!-- @if (cartCount > 0) {
-            <span class="cart-badge">{{ cartCount }}</span>
-          } -->
+          <span class="cart-badge">
+            {{ isLoggedIn ? itemCount() : 0 }}
+          </span>
         </a>
       </div>
     </div>
   </div>
 
   <app-navbar />
-  <app-breadcrumb />
+  @if (!hideBreadcrumb) {
+    <app-breadcrumb />
+  }
 </header>

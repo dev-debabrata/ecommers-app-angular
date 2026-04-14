@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
+import { User } from '../models/user';
 
 @Injectable({
   providedIn: 'root',
@@ -9,16 +10,16 @@ export class AuthService {
   private apiUrl = 'http://localhost:3000/users';
   private http = inject(HttpClient);
 
-  signupUser(data: any): Observable<any> {
-    return this.http.post(this.apiUrl, data);
+  signupUser(data: User): Observable<User> {
+    return this.http.post<User>(this.apiUrl, data);
   }
 
-  login(email: string): Observable<any> {
-    return this.http.get<any[]>(`${this.apiUrl}?email=${email}`);
+  login(email: string): Observable<User[]> {
+    return this.http.get<User[]>(`${this.apiUrl}?email=${email}`);
   }
 
-  checkEmail(email: string): Observable<any> {
-    return this.http.get<any[]>(`${this.apiUrl}?email=${email}`);
+  checkEmail(email: string): Observable<User[]> {
+    return this.http.get<User[]>(`${this.apiUrl}?email=${email}`);
   }
 
   setToken(token: string) {
@@ -27,11 +28,48 @@ export class AuthService {
 
   removeToken() {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
   }
 
   isLoggedIn(): boolean {
     return !!localStorage.getItem('token');
   }
+
+  setUser(user: User) {
+    localStorage.setItem('user', JSON.stringify(user));
+  }
+
+  getUserName(): string {
+    const user = localStorage.getItem('user');
+    if (!user) return '';
+
+    const parsed = JSON.parse(user);
+
+    return `${parsed.firstName} ${parsed.lastName}`;
+  }
+
+  // getUserName(): string {
+  //   const user = this.getUser();
+  //   if (!user) return '';
+
+  //   return `${user.firstName || ''} ${user.lastName || ''}`.trim();
+  // }
+
+  getUser(): User | null {
+    const user = localStorage.getItem('user');
+    return user ? JSON.parse(user) : null;
+  }
+
+  //   getUser(): User | null {
+  //   const user = localStorage.getItem('user');
+  //   if (!user) return null;
+
+  //   try {
+  //     return JSON.parse(user);
+  //   } catch {
+  //     return null;
+  //   }
+  // }
 }
 
 //////////////////////////////////////////////

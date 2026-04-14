@@ -311,24 +311,14 @@
       "id": 31
     },
     {
-      "firstName": "Debabrata Das",
-      "lastName": "Debabrata Das",
-      "email": "debabratadas711@gmail.comasdsad",
-      "password": "123456",
-      "phoneNumber": [
-        "09734990919"
-      ],
-      "id": 32
-    },
-    {
-      "firstName": "Debabrata Das",
-      "lastName": "Debabrata Das",
+      "firstName": "Debabrata",
+      "lastName": "Das",
       "email": "debabratadas711@gmail.com",
       "password": "123456",
       "phoneNumber": [
         "09734990919"
       ],
-      "id": 33
+      "id": 32
     }
   ]
 }
