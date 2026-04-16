@@ -1,4 +1,5 @@
 import { computed, effect, Injectable, signal } from '@angular/core';
+
 import { Product } from '../models/products';
 import { CartItem } from '../models/cart-item';
 
@@ -30,11 +31,6 @@ export class CartService {
         }))
       : [];
   }
-
-  // private loadCart(): CartItem[] {
-  //   const data = localStorage.getItem('cart');
-  //   return data ? JSON.parse(data) : [];
-  // }
 
   addToCart(product: Product) {
     this.cart.update((items) => {
@@ -74,6 +70,15 @@ export class CartService {
 
   clearCart() {
     this.cart.set([]);
-    localStorage.removeItem('cart');
+    // localStorage.removeItem('cart');
   }
 }
+
+// itemCount = computed(() => this.cart().reduce((acc, item) => acc + (item.quantity || 0), 0));
+
+// itemCount = computed(() => this.cart().reduce((acc, item) => acc + item.quantity, 0));
+
+// private loadCart(): CartItem[] {
+//   const data = localStorage.getItem('cart');
+//   return data ? JSON.parse(data) : [];
+// }

@@ -1,11 +1,12 @@
 import { Component, DestroyRef, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
+
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../../../services/auth-service';
 import { ProductService } from '../../../services/product-service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Product } from '../../../models/products';
 import { Rating } from '../../../utils/rating.util';
-import { CommonModule } from '@angular/common';
 import { TimeAgoPipe } from '../../../pipes/time-ago-pipe';
 import { Loader } from '../../../components/loader/loader';
 import { Error } from '../../../components/error/error';

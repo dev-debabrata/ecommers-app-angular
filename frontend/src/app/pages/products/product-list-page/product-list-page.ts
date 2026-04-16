@@ -1,13 +1,14 @@
-import { CommonModule } from '@angular/common';
 import { Component, DestroyRef, inject, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { TruncatePipe } from '../../../pipes/truncate-pipe';
-import { Loader } from '../../../components/loader/loader';
 import { Router } from '@angular/router';
+
 import { ProductService } from '../../../services/product-service';
 import { Product } from '../../../models/products';
 import { Rating } from '../../../utils/rating.util';
 import { Error } from '../../../components/error/error';
+import { TruncatePipe } from '../../../pipes/truncate-pipe';
+import { Loader } from '../../../components/loader/loader';
 import { Highlight } from '../../../directives/highlight';
 
 @Component({
@@ -18,93 +19,140 @@ import { Highlight } from '../../../directives/highlight';
   styleUrl: './product-list-page.css',
 })
 export class ProductListPage {
-  // Get Router & ProductService
   private router = inject(Router);
   private productService = inject(ProductService);
-
-  // Automatic cleanup
   private destroyRef = inject(DestroyRef);
 
   @Input() showCategories: boolean = true;
   @Input() limit: number | null = null;
 
-  // Component State
   products: Product[] = [];
   isLoading = true;
   errorMsg = false;
 
-  // Search and Filter
   searchTerm = '';
-  selectedCategory: string = 'All';
+  selectedCategory = 'All';
   categories: string[] = [];
 
-  // ProductService to Fatch Products
   ngOnInit(): void {
     const productSub = this.productService.getProducts().subscribe({
       next: (res: any) => {
         this.isLoading = false;
-        // this.products = res.products;
 
         let products = res.products;
 
-        // ✅ LIMIT FOR HOME PAGE
         if (this.limit) {
           products = products.slice(0, this.limit);
         }
 
         this.products = products;
 
-        // Category
-
         if (this.showCategories) {
-          const categories = Array.from(new Set(this.products.map((p) => p.category)));
-          const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
-          this.categories = ['All', ...categories.map(capitalize)];
-        }
-        // const categories = Array.from(new Set(this.products.map((p) => p.category)));
-        // // this.categories = ['All', ...new Set(this.products.map((p) => p.category))];
-        // const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
-        // this.categories = ['All', ...categories.map(capitalize)];
+          const cats = this.products.map((p) => p.category);
 
+          const uniqueCats = Array.from(new Set(cats));
+
+          this.categories = ['All', ...uniqueCats];
+        }
         console.log(res);
-        // console.log('isLoading:', this.isLoading);
       },
 
-      error: (err) => {
-        this.errorMsg = true;
+      error: () => {
         this.isLoading = false;
-        console.log(err);
+        this.errorMsg = true;
       },
     });
-    // Automatically Component Destroyed
     this.destroyRef.onDestroy(() => {
       productSub.unsubscribe();
     });
   }
 
-  // Products search and selected category
-  get filteredProducts() {
+  getFilteredProducts(): Product[] {
     const search = this.searchTerm.toLowerCase();
+
     return this.products.filter((product) => {
       const matchesSearch = product.title.toLowerCase().includes(search);
 
       const matchesCategory =
-        this.selectedCategory === 'All' ||
-        product.category.toLowerCase() === this.selectedCategory.toLowerCase();
+        this.selectedCategory === 'All' || product.category === this.selectedCategory;
+
       return matchesSearch && matchesCategory;
-      // const matchesCategory =
-      //   this.selectedCategory === 'All' || product.category === this.selectedCategory;
-      // return matchesSearch && matchesCategory;
     });
   }
 
-  // Navigate to product details page
-  viewDetails(id: number): void {
+  viewDetails(id: number) {
     this.router.navigate(['/products', id]);
   }
 
-  // Rating
-  get ratingUtil() {
+  getRating() {
     return Rating;
   }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////
+// @Input() showCategories: boolean = true;
+// @Input() limit: number | null = null;
+
+// products: Product[] = [];
+// isLoading = true;
+// errorMsg = false;
+
+// searchTerm = '';
+// selectedCategory: string = 'All';
+// categories: string[] = [];
+
+// ngOnInit(): void {
+//   const productSub = this.productService.getProducts().subscribe({
+//     next: (res: any) => {
+//       this.isLoading = false;
+//       // this.products = res.products;
+
+//       let products = res.products;
+
+//       if (this.limit) {
+//         products = products.slice(0, this.limit);
+//       }
+
+//       this.products = products;
+
+//       // Category
+
+//       if (this.showCategories) {
+//         const categories = Array.from(new Set(this.products.map((p) => p.category)));
+//         const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
+//         this.categories = ['All', ...categories.map(capitalize)];
+//       }
+
+//       console.log(res);
+//     },
+
+//     error: (err) => {
+//       this.errorMsg = true;
+//       this.isLoading = false;
+//       console.log(err);
+//     },
+//   });
+//   this.destroyRef.onDestroy(() => {
+//     productSub.unsubscribe();
+//   });
+// }
+
+// get filteredProducts() {
+//   const search = this.searchTerm.toLowerCase();
+//   return this.products.filter((product) => {
+//     const matchesSearch = product.title.toLowerCase().includes(search);
+
+//     const matchesCategory =
+//       this.selectedCategory === 'All' ||
+//       product.category.toLowerCase() === this.selectedCategory.toLowerCase();
+//     return matchesSearch && matchesCategory;
+//   });
+// }
+
+// viewDetails(id: number): void {
+//   this.router.navigate(['/products', id]);
+// }
+
+// get ratingUtil() {
+//   return Rating;
+// }

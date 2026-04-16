@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import {
-  AbstractControl,
   FormControl,
   FormGroup,
   FormsModule,
@@ -9,10 +9,9 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../../services/auth-service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { delay, map, Observable, of } from 'rxjs';
+
+import { AuthService } from '../../../services/auth-service';
 
 @Component({
   selector: 'app-login-page',

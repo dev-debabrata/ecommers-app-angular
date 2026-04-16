@@ -29,7 +29,7 @@
   </div> -->
 
   <div class="product-list">
-    @for (product of filteredProducts; track product.id) {
+    @for (product of getFilteredProducts(); track product.id) {
       <div
         class="card"
         [ngClass]="{ 'low-stock': product.stock > 0 && product.stock < 3 }"
@@ -42,7 +42,7 @@
         <h3>{{ product.title }}</h3>
 
         <div class="rating">
-          @for (star of ratingUtil.getStars(product.rating); track $index) {
+          @for (star of getRating().getStars(product.rating); track $index) {
             <span [ngClass]="star">&#9733;</span>
           }
           <span class="rating-number">({{ product.rating }})</span>
