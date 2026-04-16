@@ -25,12 +25,10 @@ export class ProductDetailPage {
   private productService = inject(ProductService);
   private cartService = inject(CartService);
 
-  // Automatic cleanup
   private destroyRef = inject(DestroyRef);
 
   private snackBar = inject(MatSnackBar);
 
-  // Component State
   product: Product | null = null;
   isLoading = true;
   errorMsg = false;
@@ -38,31 +36,34 @@ export class ProductDetailPage {
   showAllReviews = false;
   isPopupOpen = false;
 
-  // ProductService to Fatch eatch Products
   ngOnInit(): void {
-    const productId = Number(this.route.snapshot.paramMap.get('id'));
+    const productSub = this.route.paramMap.subscribe((params) => {
+      const productId = Number(params.get('id'));
 
-    const productSub = this.productService.getProductById(productId).subscribe({
-      next: (res) => {
-        this.isLoading = false;
-        this.product = res;
-        console.log(res);
-        this.stars = Rating.getStars(this.product.rating);
-      },
-      error: (err) => {
-        this.errorMsg = true;
-        this.isLoading = false;
-        console.error(err);
-      },
+      this.isLoading = true;
+      this.errorMsg = false;
+      this.product = null;
+      this.productService.getProductById(productId).subscribe({
+        next: (res) => {
+          this.isLoading = false;
+          this.product = res;
+          console.log(res);
+          this.stars = Rating.getStars(this.product.rating);
+        },
+        error: (err) => {
+          this.errorMsg = true;
+          this.isLoading = false;
+          console.error(err);
+        },
+      });
     });
 
-    // Automatically Component Destroyed
     this.destroyRef.onDestroy(() => {
       productSub.unsubscribe();
     });
   }
 
-  addCart(product: any) {
+  addToCart(product: Product) {
     const isLoggedIn = this.authService.isLoggedIn();
 
     if (!isLoggedIn) {
@@ -86,7 +87,6 @@ export class ProductDetailPage {
     this.router.navigate(['/cart']);
   }
 
-  // Review
   toggleReviews(): void {
     this.showAllReviews = !this.showAllReviews;
   }
@@ -96,7 +96,6 @@ export class ProductDetailPage {
     return this.showAllReviews ? this.product.reviews : [this.product.reviews[0]];
   }
 
-  // Popup Model view open & close
   openReviewsPopup(): void {
     this.isPopupOpen = true;
   }

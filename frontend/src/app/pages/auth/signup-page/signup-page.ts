@@ -11,9 +11,11 @@ import {
 } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../../services/auth-service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { delay, map, of } from 'rxjs';
+
+import { AuthService } from '../../../services/auth-service';
+import { User } from '../../../models/user';
 
 @Component({
   selector: 'app-signup-page',
@@ -70,27 +72,8 @@ export class SignupPage {
     if (password === confirm) {
       return null;
     }
-
     return { passwordMismatch: true };
   }
-
-  // passwordMatch(group: AbstractControl): ValidationErrors | null {
-  //   const password = group.get('password')?.value;
-  //   const confirm = group.get('confirmPassword')?.value;
-
-  //   if (!password || !confirm) {
-  //     return null;
-  //   }
-
-  //   return password === confirm ? null : { passwordMismatch: true };
-  // }
-
-  // passwordMatch(group: AbstractControl): ValidationErrors | null {
-  //   const password = group.get('password')?.value;
-  //   const confirm = group.get('confirmPassword')?.value;
-
-  //   return password === confirm ? null : { passwordMismatch: true };
-  // }
 
   checkEmailAvailability() {
     return (control: AbstractControl) => {
@@ -102,19 +85,6 @@ export class SignupPage {
       );
     };
   }
-
-  // checkEmailAvailability(): AsyncValidatorFn {
-  //   return (control: AbstractControl): Observable<ValidationErrors | null> => {
-  //     if (!control.value) return of(null);
-
-  //     return this.authService.checkEmail(control.value).pipe(
-  //       delay(500),
-  //       map((users: any[]) => {
-  //         return users.length > 0 ? { emailTaken: true } : null;
-  //       }),
-  //     );
-  //   };
-  // }
 
   get phoneNumber() {
     return this.form.get('phoneNumber') as FormArray;
@@ -144,12 +114,9 @@ export class SignupPage {
       return;
     }
 
-    // const data = this.form.value;
-    // delete data.confirmPassword;
-
     const value = this.form.getRawValue();
 
-    const user = {
+    const user: User = {
       firstName: value.firstName,
       lastName: value.lastName,
       email: value.email,
@@ -158,23 +125,19 @@ export class SignupPage {
     };
 
     this.authService.signupUser(user).subscribe({
-      next: () => {
+      next: (res) => {
         this.authService.setToken('fake-token');
+        this.authService.setUser(res);
         this.showSnackbar('Signup successful', 'success');
         this.router.navigate(['/']);
-        // window.location.reload();
+        console.log(res);
 
         // setTimeout(() => this.router.navigate(['/']), 500);
       },
 
       error: (err) => {
         this.showSnackbar('Signup failed', 'error');
-
-        // const message = err?.error?.message || 'Signup failed';
-        // if (message.toLowerCase().includes('email')) {
-        //   this.email.setErrors({ emailTaken: true });
-        // }
-        // this.showSnackbar(message, 'error');
+        console.log(err);
       },
     });
   }

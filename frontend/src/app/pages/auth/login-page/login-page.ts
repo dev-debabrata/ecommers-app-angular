@@ -30,25 +30,12 @@ export class LoginPage {
     email: new FormControl<string>('', {
       nonNullable: true,
       validators: [Validators.email, Validators.required],
-      asyncValidators: [this.checkEmailExists()],
-      updateOn: 'blur',
     }),
     password: new FormControl<string>('', {
       nonNullable: true,
       validators: [Validators.required, Validators.minLength(6)],
     }),
   });
-
-  checkEmailExists() {
-    return (control: AbstractControl) => {
-      if (!control.value) return of(null);
-
-      return this.authService.login(control.value).pipe(
-        delay(500),
-        map((users: any[]) => (users.length === 0 ? { emailNotRegistered: true } : null)),
-      );
-    };
-  }
 
   get email() {
     return this.form.controls.email;
@@ -73,29 +60,31 @@ export class LoginPage {
       return;
     }
 
-    const data = this.form.value;
+    const { email, password } = this.form.value;
 
-    this.authService.login(data.email!).subscribe({
-      next: (users) => {
+    this.authService.checkEmail(email!).subscribe({
+      next: (users: any[]) => {
         if (users.length === 0) {
           this.email.setErrors({ emailNotRegistered: true });
           this.showSnackbar('Email not registered', 'error');
           return;
         }
 
-        if (users[0].password !== data.password) {
+        const user = users[0];
+
+        if (user.password !== password) {
           this.password.setErrors({ invalidPassword: true });
           this.showSnackbar('Invalid password', 'error');
           return;
         }
 
-        const user = users[0];
-
         this.authService.setToken('fake-token');
-
         this.authService.setUser(user);
+
         this.showSnackbar('Login successful', 'success');
         this.router.navigate(['/']);
+
+        console.log(JSON.stringify(user));
       },
 
       error: () => {
@@ -104,3 +93,65 @@ export class LoginPage {
     });
   }
 }
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+// if (users.length === 0) {
+//   this.email.setErrors({ emailNotRegistered: true });
+//   this.showSnackbar('Email not registered', 'error');
+//   return;
+// }
+
+// if (users[0].password !== data.password) {
+//   this.password.setErrors({ invalidPassword: true });
+//   this.showSnackbar('Invalid password', 'error');
+//   return;
+// }
+
+// const user = users[0];
+
+// onSubmit() {
+//   if (this.form.invalid) {
+//     this.form.markAllAsTouched();
+//     this.showSnackbar('Please enter valid email and password', 'error');
+//     return;
+//   }
+
+//   const data = this.form.value;
+
+//   this.authService.login(data.email!).subscribe({
+//     next: (users) => {
+//       if (users.length === 0) {
+//         this.email.setErrors({ emailNotRegistered: true });
+//         this.showSnackbar('Email not registered', 'error');
+//         return;
+//       }
+
+//       if (users[0].password !== data.password) {
+//         this.password.setErrors({ invalidPassword: true });
+//         this.showSnackbar('Invalid password', 'error');
+//         return;
+//       }
+
+//       const user = users[0];
+
+//       this.authService.setToken('fake-token');
+//       this.authService.setUser(user);
+
+//       this.showSnackbar('Login successful', 'success');
+
+//       const redirectUrl = localStorage.getItem('redirectUrl');
+
+//       if (redirectUrl) {
+//         localStorage.removeItem('redirectUrl');
+//         this.router.navigate([redirectUrl]);
+//       } else {
+//         this.router.navigate(['/']);
+//       }
+//     },
+
+//     error: () => {
+//       this.showSnackbar('Something went wrong', 'error');
+//     },
+//   });
+// }
