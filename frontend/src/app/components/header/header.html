@@ -11,16 +11,20 @@
         placeholder="Search product..."
         [(ngModel)]="searchTerm"
         (input)="onInputChange()"
-        (keyup.enter)="onSearch()"
+        (keydown)="onKeyDown($event)"
       />
-      <button (click)="onSearch()">
+      <button (click)="searchProduct()">
         <mat-icon class="material-icons-outlined">search</mat-icon>
       </button>
 
       @if (suggestions.length > 0) {
         <div class="search-dropdown">
-          @for (item of suggestions; track item.id) {
-            <div class="dropdown-item" (click)="selectProduct(item)">
+          @for (item of suggestions; track item.id; let i = $index) {
+            <div
+              class="dropdown-item"
+              (click)="selectProduct(item)"
+              [class.active]="i === activeIndex"
+            >
               {{ item.title }}
             </div>
           }
@@ -54,9 +58,6 @@
       <div class="icon">
         <a routerLink="/wishlist" class="fav-icon">
           <mat-icon class="material-icons-outlined">favorite_border</mat-icon>
-          <span class="fav-badge">
-            {{ isLoggedIn ? itemCount() : 0 }}
-          </span>
         </a>
 
         <a routerLink="/cart" class="cart-icon">

@@ -24,7 +24,7 @@
             <span>Hello, {{ userName }}</span>
           </div>
 
-          @if (showMenu) {
+          @if (isMenuOpen) {
             <div class="overlay" (click)="closeMenu()"></div>
             <div class="dropdown-login">
               <button (click)="logout()">Logout</button>
@@ -77,27 +77,6 @@
       </div>
     }
   </div>
-
-  <!-- <div class="nav-wrapper" (mouseleave)="isDropdownOpen = false">
-    <ul class="nav-item">
-      @for (item of categories; track item) {
-        <li class="nav-link" (mouseenter)="openDropdown(item)">
-          {{ item }}
-        </li>
-      }
-    </ul>
-
-   
-    <div class="dropdown" *ngIf="isDropdownOpen">
-      <h4>{{ selectedCategory }}</h4>
-
-      <ul>
-        @for (p of categoryProducts[selectedCategory]; track p) {
-          <li>{{ p }}</li>
-        }
-      </ul>
-    </div>
-  </div> -->
 
   <div class="delivery">🚀 Free International Delivery</div>
 </nav>

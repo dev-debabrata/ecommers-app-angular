@@ -28,16 +28,15 @@ export class Navbar {
   private snackBar = inject(MatSnackBar);
 
   isSidebarOpen = false;
-
-  showMenu = false;
-
+  isMenuOpen = false;
   isDropdownOpen = false;
+
   selectedCategory = '';
 
   dropdownLeft = 0;
   dropdownTop = 0;
 
-  categories = [
+  categories: string[] = [
     'Fashion',
     'Electronics',
     'Bags',
@@ -67,22 +66,9 @@ export class Navbar {
     return this.authService.getUserName();
   }
 
-  toggleMenu(event: MouseEvent) {
-    event.stopPropagation();
-    this.showMenu = !this.showMenu;
-  }
-
-  // toggleMenu() {
-  //   this.showMenu = !this.showMenu;
-  // }
-
-  closeMenu() {
-    this.showMenu = false;
-  }
-
   logout() {
     this.authService.removeToken();
-    this.showMenu = false;
+    this.isMenuOpen = false;
 
     this.snackBar.open('Logged out successfully', 'Close', {
       duration: 3000,
@@ -92,6 +78,23 @@ export class Navbar {
     });
 
     this.router.navigate(['/']);
+  }
+
+  toggleMenu(event: MouseEvent) {
+    event.stopPropagation();
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  closeMenu() {
+    this.isMenuOpen = false;
+  }
+
+  toggleSidebar() {
+    this.isSidebarOpen = !this.isSidebarOpen;
+  }
+
+  closeSidebar() {
+    this.isSidebarOpen = false;
   }
 
   openDropdown(category: string, event: MouseEvent) {
@@ -104,6 +107,10 @@ export class Navbar {
     this.dropdownLeft = rect.left;
     this.dropdownTop = rect.bottom;
   }
+
+  // closeDropdown() {
+  //   this.isDropdownOpen = false;
+  // }
 
   getProductList() {
     this.router.navigate(['/products']);
@@ -135,12 +142,4 @@ export class Navbar {
       ],
     },
   ];
-
-  toggleSidebar() {
-    this.isSidebarOpen = !this.isSidebarOpen;
-  }
-
-  closeSidebar() {
-    this.isSidebarOpen = false;
-  }
 }
