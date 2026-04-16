@@ -70,6 +70,9 @@ export class ProductDetailPage {
     if (!isLoggedIn) {
       this.snackBar.open('Please login to add cart', 'Close', {
         duration: 3000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+        panelClass: ['snackbar-error'],
       });
 
       this.router.navigate(['/login']);
