@@ -16,17 +16,6 @@
       }
     </div>
   }
-  <!-- <div class="category-list">
-    @for (cat of categories; track $index) {
-      <div
-        class="category-item"
-        [ngClass]="{ active: selectedCategory === cat }"
-        (click)="selectedCategory = cat"
-      >
-        {{ cat }}
-      </div>
-    }
-  </div> -->
 
   <div class="product-list">
     @for (product of getFilteredProducts(); track product.id) {
@@ -36,9 +25,18 @@
         appHighlight
         (click)="viewDetails(product.id)"
       >
+        <div class="fav-icon">
+          <button (click)="toggleWishlist(product); $event.stopPropagation()">
+            <mat-icon [ngClass]="{ 'active-wish': wishlistService.isInWishlist(product.id) }">
+              {{ wishlistService.isInWishlist(product.id) ? 'favorite' : 'favorite_border' }}
+            </mat-icon>
+          </button>
+        </div>
+
         <div class="img-container">
           <img [src]="product.images" [alt]="product.title" class="product-img" />
         </div>
+
         <h3>{{ product.title }}</h3>
 
         <div class="rating">

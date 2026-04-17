@@ -9,8 +9,9 @@
 
 /* Section Title */
 .section-title {
-  /* margin: 20px 0 10px; */
+  padding: 2rem;
   font-size: 20px;
+  margin: 0;
 }
 
 /* Product Grid */
@@ -89,14 +90,12 @@
   /* padding: 40px 0; */
 }
 
-.home-posts h2 {
-  margin: 0;
+/* .home-posts h2 {
   padding-top: 2rem;
-  padding-left: 1rem;
   font-size: 20px;
   text-align: start;
-  /* margin-bottom: 1rem; */
-}
+  margin-bottom: 30px;
+} */
 
 .view-all-posts {
   padding: 2rem;

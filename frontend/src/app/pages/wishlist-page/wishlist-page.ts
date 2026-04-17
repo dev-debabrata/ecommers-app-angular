@@ -1,9 +1,10 @@
 import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
 import { WishlistService } from '../../services/wishlist-service';
 import { CartService } from '../../services/cart-service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Rating } from '../../utils/rating.util';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-wishlist-page',

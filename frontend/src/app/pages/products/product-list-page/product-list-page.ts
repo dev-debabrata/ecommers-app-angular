@@ -2,6 +2,7 @@ import { Component, DestroyRef, inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { MatIcon } from '@angular/material/icon';
 
 import { ProductService } from '../../../services/product-service';
 import { Product } from '../../../models/products';
@@ -10,17 +11,21 @@ import { Error } from '../../../components/error/error';
 import { TruncatePipe } from '../../../pipes/truncate-pipe';
 import { Loader } from '../../../components/loader/loader';
 import { Highlight } from '../../../directives/highlight';
+import { WishlistService } from '../../../services/wishlist-service';
 
 @Component({
   selector: 'app-product-list-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, TruncatePipe, Highlight, Loader, Error],
+  imports: [CommonModule, FormsModule, TruncatePipe, Highlight, Loader, Error, MatIcon],
   templateUrl: './product-list-page.html',
   styleUrl: './product-list-page.css',
 })
 export class ProductListPage {
+  public wishlistService = inject(WishlistService);
+
   private router = inject(Router);
   private productService = inject(ProductService);
+
   private destroyRef = inject(DestroyRef);
 
   @Input() showCategories: boolean = true;
@@ -78,6 +83,14 @@ export class ProductListPage {
 
       return matchesSearch && matchesCategory;
     });
+  }
+
+  toggleWishlist(product: any) {
+    if (this.wishlistService.isInWishlist(product.id)) {
+      this.wishlistService.removeFromWishlist(product.id);
+    } else {
+      this.wishlistService.addToWishlist(product);
+    }
   }
 
   viewDetails(id: number) {

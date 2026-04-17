@@ -24,7 +24,7 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: 2rem;
-  padding: 2rem 0;
+  padding: 3rem 0 3rem 0;
   background: #f8f9fa;
 }
 
@@ -37,6 +37,27 @@
   width: 300px;
   display: flex;
   flex-direction: column;
+}
+
+.fav-icon {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  margin-right: 10px;
+  margin-top: 10px;
+}
+
+.fav-icon button {
+  margin: 0;
+  border: 0;
+  text-align: right;
+  padding: 0;
+  background: #fff;
+  cursor: pointer;
+}
+
+.active-wish {
+  color: red;
 }
 
 .low-stock {
@@ -81,7 +102,7 @@ p {
   border-radius: 4px;
 }
 
-.button-group {
+/* .button-group {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -121,7 +142,7 @@ p {
 
 button:hover {
   opacity: 0.5;
-}
+} */
 
 .status-section {
   margin-top: auto;
@@ -172,7 +193,6 @@ button:hover {
   margin-bottom: 5px;
 }
 
-/* Container styling */
 .category-list {
   display: flex;
   gap: 8px;
@@ -180,7 +200,6 @@ button:hover {
   margin: 15px 0;
 }
 
-/* Each category item */
 .category-item {
   padding: 6px 12px;
   background-color: #f8f9fa;
@@ -191,21 +210,18 @@ button:hover {
   transition: all 0.2s ease-in-out;
 }
 
-/* Hover effect */
 .category-item:hover {
   /* background-color: #007bff; */
-  background-color: #495057; /* blue on hover */
+  background-color: #495057;
   color: #fff;
 }
 
-/* Active category */
 .category-item.active {
   /* background-color: #0056b3;  */
-  background-color: #212529; /* darker blue */
+  background-color: #212529;
   color: #fff;
 }
 
-/* Container for the filter dropdown */
 .filters {
   margin: 15px 0;
   display: flex;
@@ -213,7 +229,6 @@ button:hover {
   gap: 10px;
 }
 
-/* Style the dropdown */
 .filters select {
   padding: 6px 12px;
   font-size: 14px;
@@ -225,12 +240,10 @@ button:hover {
   transition: all 0.2s ease-in-out;
 }
 
-/* Hover effect */
 .filters select:hover {
   border-color: #888;
 }
 
-/* Focus effect */
 .filters select:focus {
   outline: none;
   border-color: #007bff;
