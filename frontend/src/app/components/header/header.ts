@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../services/product-service';
 import { CartService } from '../../services/cart-service';
 import { Product } from '../../models/products';
+import { WishlistService } from '../../services/wishlist-service';
 
 @Component({
   selector: 'app-header',
@@ -31,11 +32,13 @@ export class Header {
   private router = inject(Router);
   private authService = inject(AuthService);
   private productService = inject(ProductService);
+  private cartService = inject(CartService);
+  private wishlistService = inject(WishlistService);
+
   private snackBar = inject(MatSnackBar);
 
-  private cartService = inject(CartService);
-
   itemCount = this.cartService.itemCount;
+  wishlistCount = this.wishlistService.itemCount;
 
   searchTerm = '';
   suggestions: Product[] = [];
