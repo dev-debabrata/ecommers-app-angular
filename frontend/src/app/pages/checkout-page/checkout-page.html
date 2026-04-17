@@ -1,1 +1,53 @@
-<p>checkout-page works!</p>
+<div class="checkout-container">
+  <!-- LEFT: ADDRESS -->
+  <div class="checkout-left">
+    <h2>Delivery Address</h2>
+
+    <form [formGroup]="addressForm" class="address-form">
+      <input type="text" formControlName="name" placeholder="Full Name" />
+
+      @if (addressForm.get('name')?.invalid && addressForm.get('name')?.touched) {
+        <small> Name is required </small>
+      }
+
+      <input type="text" formControlName="phone" placeholder="Phone Number" />
+
+      @if (addressForm.get('phone')?.invalid && addressForm.get('phone')?.touched) {
+        <small> Enter valid 10-digit number </small>
+      }
+
+      <input type="text" formControlName="pincode" placeholder="Pincode" />
+
+      <textarea formControlName="address" placeholder="Full Address"></textarea>
+
+      <input type="text" formControlName="city" placeholder="City" />
+      <input type="text" formControlName="state" placeholder="State" />
+    </form>
+  </div>
+
+  <!-- RIGHT: CART REVIEW -->
+  <div class="checkout-right">
+    <h2>Order Summary</h2>
+
+    @for (item of cartService.cart(); track item.id) {
+      <div class="item">
+        <img [src]="item.image" />
+        <div>
+          <p>{{ item.name }}</p>
+          <small>Qty: {{ item.quantity }}</small>
+          <p>₹ {{ item.price * item.quantity }}</p>
+        </div>
+      </div>
+    }
+
+    <div class="price-box">
+      <p>Subtotal: ₹ {{ cartService.totalPrice() }}</p>
+      <p>GST (18%): ₹ {{ gst() }}</p>
+      <p>
+        <b>Total: ₹ {{ grandTotal() }}</b>
+      </p>
+    </div>
+
+    <button (click)="placeOrder()">Pay & Place Order</button>
+  </div>
+</div>

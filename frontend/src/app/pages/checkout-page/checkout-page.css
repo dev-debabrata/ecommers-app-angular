@@ -1,0 +1,60 @@
+.checkout-container {
+  display: flex;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.checkout-left,
+.checkout-right {
+  flex: 1;
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 10px;
+}
+
+.address-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.address-form input,
+.address-form textarea {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.item img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+
+.price-box {
+  margin-top: 20px;
+  border-top: 1px solid #ddd;
+  padding-top: 10px;
+}
+
+button {
+  width: 100%;
+  margin-top: 15px;
+  padding: 12px;
+  background: #f7ca00;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #e6b800;
+}
