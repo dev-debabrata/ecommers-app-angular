@@ -74,6 +74,11 @@ export class Header {
     this.router.navigate(['/']);
   }
 
+  viewProfile() {
+    this.showMenu = false;
+    this.router.navigate(['/account']);
+  }
+
   onInputChange() {
     this.activeIndex = 0;
 

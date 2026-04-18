@@ -1,0 +1,30 @@
+.profile {
+  gap: 2rem;
+  padding: 2rem;
+  margin: 1rem 0;
+  background: #f8f9fa;
+}
+
+/* .profile-container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+} */
+
+.profile-card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.profile-card p {
+  margin-bottom: 10px;
+  font-size: 1rem;
+}
+
+.not-logged {
+  text-align: center;
+  margin-top: 50px;
+  color: #777;
+}

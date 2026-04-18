@@ -1,0 +1,18 @@
+<div class="profile">
+  @if (user) {
+    <div class="profile-container">
+      <h1>My Account</h1>
+
+      <div class="profile-card">
+        <p><strong>Name:</strong> {{ user.firstName }} {{ user.lastName }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+      </div>
+    </div>
+  }
+</div>
+
+<!-- <ng-template #notLoggedIn>
+  <div class="not-logged">
+    <p>Please login to view your profile.</p>
+  </div>
+</ng-template> -->

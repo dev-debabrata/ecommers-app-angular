@@ -11,11 +11,19 @@ import { CheckoutPage } from './pages/cart-page/checkout-page/checkout-page';
 import { WishlistPage } from './pages/wishlist-page/wishlist-page';
 import { AboutPage } from './pages/about-page/about-page';
 import { ContactPage } from './pages/contact-page/contact-page';
+import { ProfilePage } from './pages/account/profile-page/profile-page';
 
 export const routes: Routes = [
   {
     path: '',
     component: HomePage,
+  },
+
+  {
+    path: 'account',
+    component: ProfilePage,
+    canActivate: [authGuard],
+    data: { breadcrumb: 'Profile' },
   },
 
   {
