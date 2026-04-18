@@ -9,11 +9,17 @@ import { NotFound } from './components/not-found/not-found';
 import { CartPage } from './pages/cart-page/cart-page';
 import { CheckoutPage } from './pages/checkout-page/checkout-page';
 import { WishlistPage } from './pages/wishlist-page/wishlist-page';
+import { AboutPage } from './pages/about-page/about-page';
 
 export const routes: Routes = [
   {
     path: '',
     component: HomePage,
+  },
+
+  {
+    path: 'about',
+    component: AboutPage,
   },
 
   { path: 'login', component: LoginPage, data: { hideLayout: true } },

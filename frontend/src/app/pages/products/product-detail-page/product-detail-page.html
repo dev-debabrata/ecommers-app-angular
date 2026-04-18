@@ -34,7 +34,6 @@
       <div class="info-section">
         <h2>{{ product.title }}</h2>
 
-        <!-- <p><strong>Rating:</strong> {{ product.rating }} / 5</p> -->
         <div class="rating">
           @for (star of stars; track $index) {
             <span [ngClass]="star">&#9733;</span>
