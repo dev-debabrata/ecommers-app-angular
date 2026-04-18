@@ -30,6 +30,7 @@ export class ProductListPage {
 
   @Input() showCategories: boolean = true;
   @Input() limit: number | null = null;
+  @Input() showWishlistIcon: boolean = true;
 
   products: Product[] = [];
   isLoading = true;

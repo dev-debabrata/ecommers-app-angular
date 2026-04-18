@@ -5,16 +5,13 @@
     <div class="wishlist-container-grid">
       @for (product of wishlistService.getWishlist(); track $index) {
         <div class="wishlist-card">
-          <!-- Image -->
           <div class="img-box">
             <img [src]="product.images[0]" [alt]="product.title" />
           </div>
 
-          <!-- Details -->
           <div class="details">
             <h3>{{ product.title }}</h3>
 
-            <!-- Rating -->
             <div class="rating">
               @for (star of getRating().getStars(product.rating); track $index) {
                 <span [ngClass]="star">&#9733;</span>
@@ -30,7 +27,6 @@
             </p>
           </div>
 
-          <!-- Actions -->
           <div class="actions">
             <button (click)="addToCart(product)" class="cart-btn">Add to Cart</button>
 

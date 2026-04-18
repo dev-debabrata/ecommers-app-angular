@@ -25,13 +25,15 @@
         appHighlight
         (click)="viewDetails(product.id)"
       >
-        <div class="fav-icon">
-          <button (click)="toggleWishlist(product); $event.stopPropagation()">
-            <mat-icon [ngClass]="{ 'active-wish': wishlistService.isInWishlist(product.id) }">
-              {{ wishlistService.isInWishlist(product.id) ? 'favorite' : 'favorite_border' }}
-            </mat-icon>
-          </button>
-        </div>
+        @if (showWishlistIcon) {
+          <div class="fav-icon">
+            <button (click)="toggleWishlist(product); $event.stopPropagation()">
+              <mat-icon [ngClass]="{ 'active-wish': wishlistService.isInWishlist(product.id) }">
+                {{ wishlistService.isInWishlist(product.id) ? 'favorite' : 'favorite_border' }}
+              </mat-icon>
+            </button>
+          </div>
+        }
 
         <div class="img-container">
           <img [src]="product.images" [alt]="product.title" class="product-img" />
