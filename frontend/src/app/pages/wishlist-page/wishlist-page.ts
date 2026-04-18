@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { WishlistService } from '../../services/wishlist-service';
@@ -15,6 +16,7 @@ import { Rating } from '../../utils/rating.util';
 })
 export class WishlistPage {
   public wishlistService = inject(WishlistService);
+  private router = inject(Router);
   private cartService = inject(CartService);
 
   private snackBar = inject(MatSnackBar);
@@ -32,5 +34,9 @@ export class WishlistPage {
       verticalPosition: 'top',
       panelClass: ['snackbar-success'],
     });
+  }
+
+  viewDetails(id: number) {
+    this.router.navigate(['/products', id]);
   }
 }

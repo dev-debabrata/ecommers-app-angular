@@ -4,7 +4,7 @@
   @if (wishlistService.getWishlist().length > 0) {
     <div class="wishlist-container-grid">
       @for (product of wishlistService.getWishlist(); track $index) {
-        <div class="wishlist-card">
+        <div (click)="viewDetails(product.id)" class="wishlist-card">
           <div class="img-box">
             <img [src]="product.images[0]" [alt]="product.title" />
           </div>
