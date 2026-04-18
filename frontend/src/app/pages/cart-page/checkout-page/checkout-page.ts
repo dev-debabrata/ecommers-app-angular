@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
-import { CartService } from '../../services/cart-service';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+
+import { CartService } from '../../../services/cart-service';
 
 @Component({
   selector: 'app-checkout-page',

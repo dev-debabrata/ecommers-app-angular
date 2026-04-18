@@ -7,7 +7,7 @@ import { ProductListPage } from './pages/products/product-list-page/product-list
 import { authGuard } from './guards/auth-guard';
 import { NotFound } from './components/not-found/not-found';
 import { CartPage } from './pages/cart-page/cart-page';
-import { CheckoutPage } from './pages/checkout-page/checkout-page';
+import { CheckoutPage } from './pages/cart-page/checkout-page/checkout-page';
 import { WishlistPage } from './pages/wishlist-page/wishlist-page';
 import { AboutPage } from './pages/about-page/about-page';
 import { ContactPage } from './pages/contact-page/contact-page';
