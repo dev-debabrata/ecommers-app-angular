@@ -10,6 +10,7 @@ import { CartPage } from './pages/cart-page/cart-page';
 import { CheckoutPage } from './pages/checkout-page/checkout-page';
 import { WishlistPage } from './pages/wishlist-page/wishlist-page';
 import { AboutPage } from './pages/about-page/about-page';
+import { ContactPage } from './pages/contact-page/contact-page';
 
 export const routes: Routes = [
   {
@@ -20,6 +21,13 @@ export const routes: Routes = [
   {
     path: 'about',
     component: AboutPage,
+    data: { breadcrumb: 'About' },
+  },
+
+  {
+    path: 'contact',
+    component: ContactPage,
+    data: { breadcrumb: 'Contact' },
   },
 
   { path: 'login', component: LoginPage, data: { hideLayout: true } },
