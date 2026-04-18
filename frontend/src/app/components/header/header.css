@@ -3,7 +3,7 @@
 }
 
 .top-header {
-  width: 100%;
+  min-width: 80%;
   background: white;
   border-bottom: 1px solid #eee;
   font-family: Arial, sans-serif;

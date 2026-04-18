@@ -1,8 +1,9 @@
 /* Footer container */
 .footer {
-  background-color: #222;
+  min-width: 80%;
+  padding: 18px 5rem;
+  background: #000;
   color: #fff;
-  padding: 40px 20px;
   font-family: Arial, sans-serif;
 }
 
@@ -12,7 +13,6 @@
   gap: 30px;
 }
 
-/* Left section */
 .footer-left h3 {
   font-size: 1.8rem;
   margin-bottom: 10px;
@@ -32,7 +32,6 @@
   height: 24px;
 }
 
-/* Links & Categories */
 .footer-links h4,
 .footer-categories h4,
 .footer-contact h4 {
@@ -54,7 +53,6 @@
   color: #007bff;
 }
 
-/* Footer bottom */
 .footer-bottom {
   text-align: center;
   margin-top: 30px;

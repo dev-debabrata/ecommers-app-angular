@@ -1,8 +1,9 @@
 import { Component, DestroyRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatIcon } from '@angular/material/icon';
+
 import { AuthService } from '../../../services/auth-service';
 import { ProductService } from '../../../services/product-service';
 import { Product } from '../../../models/products';
@@ -11,15 +12,18 @@ import { TimeAgoPipe } from '../../../pipes/time-ago-pipe';
 import { Loader } from '../../../components/loader/loader';
 import { Error } from '../../../components/error/error';
 import { CartService } from '../../../services/cart-service';
+import { WishlistService } from '../../../services/wishlist-service';
 
 @Component({
   selector: 'app-product-detail-page',
   standalone: true,
-  imports: [CommonModule, TimeAgoPipe, Loader, Error],
+  imports: [CommonModule, TimeAgoPipe, Loader, Error, MatIcon],
   templateUrl: './product-detail-page.html',
   styleUrl: './product-detail-page.css',
 })
 export class ProductDetailPage {
+  public wishlistService = inject(WishlistService);
+
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private authService = inject(AuthService);
@@ -98,6 +102,14 @@ export class ProductDetailPage {
 
   toggleReviews(): void {
     this.showAllReviews = !this.showAllReviews;
+  }
+
+  toggleWishlist(product: any) {
+    if (this.wishlistService.isInWishlist(product.id)) {
+      this.wishlistService.removeFromWishlist(product.id);
+    } else {
+      this.wishlistService.addToWishlist(product);
+    }
   }
 
   displayedReviews() {
