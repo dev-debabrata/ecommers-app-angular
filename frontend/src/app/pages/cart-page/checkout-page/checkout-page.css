@@ -62,7 +62,7 @@ textarea {
 
 .shipping-card {
   flex: 1;
-  border: 2px solid transparent;
+  border: 2px solid #ddd;
   border-radius: 10px;
   padding: 18px 20px;
   display: flex;

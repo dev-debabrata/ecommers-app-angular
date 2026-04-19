@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -19,7 +19,7 @@ import { AuthService } from '../../../services/auth-service';
   templateUrl: './checkout-page.html',
   styleUrl: './checkout-page.css',
 })
-export class CheckoutPage {
+export class CheckoutPage implements OnInit {
   public cartService = inject(CartService);
 
   private authService = inject(AuthService);
@@ -82,10 +82,6 @@ export class CheckoutPage {
     return this.cartService.totalPrice() + this.gst() + this.shippingPrice();
   }
 
-  // grandTotal() {
-  //   return this.cartService.totalPrice() + this.gst();
-  // }
-
   placeOrder() {
     if (this.checkoutForm.invalid) {
       this.checkoutForm.markAllAsTouched();
@@ -103,50 +99,44 @@ export class CheckoutPage {
       status: 'Placed',
     };
 
-    // Get existing orders
     // const existingOrders = JSON.parse(localStorage.getItem('orders') || '[]');
-
-    // Push new order
     // existingOrders.push(order);
-
-    // Save again
-    localStorage.setItem('orders', JSON.stringify(order));
     // localStorage.setItem('orders', JSON.stringify(existingOrders));
 
-    // Clear cart
-    this.cartService.clearCart();
+    localStorage.setItem('orders', JSON.stringify(order));
 
-    // Reset form
+    this.cartService.clearCart();
     this.checkoutForm.reset();
 
     alert('Order placed successfully!');
   }
-
-  // placeOrder() {
-  //   if (this.addressForm.invalid) {
-  //     this.addressForm.markAllAsTouched();
-  //     console.log('BUTTON CLICKED');
-  //     return;
-  //   }
-
-  //   const order = {
-  //     id: Date.now(),
-  //     address: this.addressForm.value,
-  //     items: this.cartService.cart(),
-  //     subtotal: this.cartService.totalPrice(),
-  //     gst: this.gst(),
-  //     total: this.grandTotal(),
-  //     date: new Date(),
-  //     status: 'Placed',
-  //   };
-
-  //   // const orders = JSON.parse(localStorage.getItem('orders') || '[]');
-  //   // orders.push(order);
-  //   localStorage.setItem('orders', JSON.stringify(order));
-
-  //   this.cartService.clearCart();
-
-  //   alert('Order placed successfully!');
-  //   this.addressForm.reset();
-  // }
 }
+
+//////////////////////////////////////////////////////////
+// placeOrder() {
+//   if (this.addressForm.invalid) {
+//     this.addressForm.markAllAsTouched();
+//     console.log('BUTTON CLICKED');
+//     return;
+//   }
+
+//   const order = {
+//     id: Date.now(),
+//     address: this.addressForm.value,
+//     items: this.cartService.cart(),
+//     subtotal: this.cartService.totalPrice(),
+//     gst: this.gst(),
+//     total: this.grandTotal(),
+//     date: new Date(),
+//     status: 'Placed',
+//   };
+
+//   // const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+//   // orders.push(order);
+//   localStorage.setItem('orders', JSON.stringify(order));
+
+//   this.cartService.clearCart();
+
+//   alert('Order placed successfully!');
+//   this.addressForm.reset();
+// }

@@ -95,10 +95,10 @@ export class ProductDetailPage {
     this.router.navigate(['/cart']);
   }
 
-  buyNow(product: any) {
-    localStorage.setItem('buyNowItem', JSON.stringify(product));
-    this.router.navigate(['/cart/checkout']);
-  }
+  // buyNow(product: any) {
+  //   localStorage.setItem('buyNowItem', JSON.stringify(product));
+  //   this.router.navigate(['/cart/checkout']);
+  // }
 
   toggleReviews(): void {
     this.showAllReviews = !this.showAllReviews;

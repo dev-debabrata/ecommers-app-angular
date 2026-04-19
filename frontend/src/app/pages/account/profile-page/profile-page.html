@@ -1,18 +1,74 @@
-<div class="profile">
-  @if (user) {
-    <div class="profile-container">
-      <h1>My Account</h1>
+<div class="account-page">
+  <!-- Sidebar -->
+  <aside class="account-sidebar">
+    <div class="profile-box">
+      <div class="avatar">{{ user?.firstName?.charAt(0) }}{{ user?.lastName?.charAt(0) }}</div>
 
-      <div class="profile-card">
-        <p><strong>Name:</strong> {{ user.firstName }} {{ user.lastName }}</p>
-        <p><strong>Email:</strong> {{ user.email }}</p>
+      <div>
+        <p>Hi,</p>
+        <h3>{{ user?.firstName }} {{ user?.lastName }}</h3>
       </div>
     </div>
-  }
-</div>
 
-<!-- <ng-template #notLoggedIn>
-  <div class="not-logged">
-    <p>Please login to view your profile.</p>
-  </div>
-</ng-template> -->
+    <ul class="menu-list">
+      <li (click)="changeSection('orders')" [class.active]="activeSection === 'orders'">
+        My Orders
+      </li>
+      <li (click)="changeSection('details')" [class.active]="activeSection === 'details'">
+        My Details
+      </li>
+      <li (click)="changeSection('address')" [class.active]="activeSection === 'address'">
+        Address Book
+      </li>
+      <li (click)="changeSection('payment')" [class.active]="activeSection === 'payment'">
+        Payment Methods
+      </li>
+      <li (click)="logout()">Sign Out</li>
+    </ul>
+  </aside>
+
+  <!-- Right Content -->
+  <section class="account-content">
+    <!-- Orders -->
+    @if (activeSection === 'orders') {
+      <h2>My Orders</h2>
+
+      @for (order of orders; track order.id) {
+        <div class="card-box">
+          <p><strong>Order ID:</strong> {{ order.id }}</p>
+          <p><strong>Total:</strong> ₹ {{ order.total }}</p>
+          <p><strong>Status:</strong> {{ order.status }}</p>
+        </div>
+      }
+    }
+
+    <!-- Details -->
+    @if (activeSection === 'details') {
+      <h2>My Details</h2>
+
+      <div class="card-box">
+        <p><strong>Name:</strong> {{ user?.firstName }} {{ user?.lastName }}</p>
+        <p><strong>Email:</strong> {{ user?.email }}</p>
+        <p><strong>Phone:</strong> {{ user?.phoneNumber?.[0] }}</p>
+      </div>
+    }
+
+    <!-- Address -->
+    @if (activeSection === 'address') {
+      <h2>Address Book</h2>
+
+      <div class="card-box">
+        <p>No saved address yet.</p>
+      </div>
+    }
+
+    <!-- Payment -->
+    @if (activeSection === 'payment') {
+      <h2>Payment Methods</h2>
+
+      <div class="card-box">
+        <button>Add New Payment Method</button>
+      </div>
+    }
+  </section>
+</div>
