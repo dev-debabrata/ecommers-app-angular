@@ -33,13 +33,43 @@
     @if (activeSection === 'orders') {
       <h2>My Orders</h2>
 
-      @for (order of orders; track order.id) {
+      @if (orders) {
+        <div class="card-box">
+          <p><strong>Order ID:</strong> {{ orders.id }}</p>
+          <p><strong>Total:</strong> ₹ {{ orders.total }}</p>
+          <p><strong>Status:</strong> {{ orders.status }}</p>
+
+          <h3>Ordered Products</h3>
+
+          @for (item of orders.items; track item.id) {
+            <div class="order-product">
+              <img [src]="item.image" alt="" />
+
+              <div class="product-info">
+                <h4>{{ item.name }}</h4>
+                <p>Qty: {{ item.quantity }}</p>
+                <p>₹ {{ item.price * item.quantity }}</p>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- @if (orders) {
+        <div class="card-box">
+          <p><strong>Order ID:</strong> {{ orders.id }}</p>
+          <p><strong>Total:</strong> ₹ {{ orders.total }}</p>
+          <p><strong>Status:</strong> {{ orders.status }}</p>
+        </div>
+      } -->
+
+      <!-- @for (order of orders; track order.id) {
         <div class="card-box">
           <p><strong>Order ID:</strong> {{ order.id }}</p>
           <p><strong>Total:</strong> ₹ {{ order.total }}</p>
           <p><strong>Status:</strong> {{ order.status }}</p>
         </div>
-      }
+      } -->
     }
 
     <!-- Details -->

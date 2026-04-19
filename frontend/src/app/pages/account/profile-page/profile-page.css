@@ -1,7 +1,10 @@
 .account-page {
+  display: flex;
+  gap: 30px;
   gap: 2rem;
   padding: 2rem;
   margin: 1rem 0;
+  min-height: 100vh;
   background: #f8f9fa;
 }
 
@@ -79,4 +82,29 @@ button {
   color: white;
   border: none;
   cursor: pointer;
+}
+
+.order-product {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 15px;
+  border-top: 1px solid #eee;
+  padding-top: 15px;
+}
+
+.order-product img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.product-info h4 {
+  margin: 0;
+  font-size: 14px;
+}
+
+.product-info p {
+  margin: 4px 0;
 }
