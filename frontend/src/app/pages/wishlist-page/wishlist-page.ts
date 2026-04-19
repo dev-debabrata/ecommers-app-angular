@@ -25,9 +25,12 @@ export class WishlistPage {
     return Rating;
   }
 
-  addToCart(product: any) {
+  addToCart(product: any, event: Event) {
+    event.stopPropagation();
+
     this.cartService.addToCart(product);
     this.wishlistService.removeFromWishlist(product.id);
+
     this.snackBar.open('Moved to cart', 'Close', {
       duration: 2000,
       horizontalPosition: 'center',
@@ -35,6 +38,17 @@ export class WishlistPage {
       panelClass: ['snackbar-success'],
     });
   }
+
+  // addToCart(product: any) {
+  //   this.cartService.addToCart(product);
+  //   this.wishlistService.removeFromWishlist(product.id);
+  //   this.snackBar.open('Moved to cart', 'Close', {
+  //     duration: 2000,
+  //     horizontalPosition: 'center',
+  //     verticalPosition: 'top',
+  //     panelClass: ['snackbar-success'],
+  //   });
+  // }
 
   viewDetails(id: number) {
     this.router.navigate(['/products', id]);

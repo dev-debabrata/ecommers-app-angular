@@ -5,9 +5,7 @@
       "lastName": "Sharma",
       "email": "amit.sharma1@gmail.com",
       "password": "123456",
-      "phoneNumber": [
-        "9876543210"
-      ],
+      "phoneNumber": ["9876543210"],
       "id": 1
     },
     {
@@ -15,9 +13,7 @@
       "lastName": "Verma",
       "email": "ravi.verma1@gmail.com",
       "password": "123456",
-      "phoneNumber": [
-        "9876500011"
-      ],
+      "phoneNumber": ["9876500011"],
       "id": 2
     },
     {
@@ -25,9 +21,7 @@
       "lastName": "Patel",
       "email": "sneha.patel1@gmail.com",
       "password": "123456",
-      "phoneNumber": [
-        "9876500022"
-      ],
+      "phoneNumber": ["9876500022"],
       "id": 3
     },
     {
@@ -35,9 +29,7 @@
       "lastName": "Roy",
       "email": "rahul.roy1@gmail.com",
       "password": "123456",
-      "phoneNumber": [
-        "9876500033"
-      ],
+      "phoneNumber": ["9876500033"],
       "id": 4
     },
     {
@@ -45,9 +37,7 @@
       "lastName": "Singh",
       "email": "priya.singh1@gmail.com",
       "password": "123456",
-      "phoneNumber": [
-        "9876500044"
-      ],
+      "phoneNumber": ["9876500044"],
       "id": 5
     },
     {
@@ -55,9 +45,7 @@
       "lastName": "Gupta",
       "email": "ankit.gupta1@gmail.com",
       "password": "123456",
-      "phoneNumber": [
-        "9876500055"
-      ],
+      "phoneNumber": ["9876500055"],
       "id": 6
     },
     {
@@ -65,9 +53,7 @@
       "lastName": "Das",
       "email": "neha.das1@gmail.com",
       "password": "123456",
-      "phoneNumber": [
-        "9876500066"
-      ],
+      "phoneNumber": ["9876500066"],
       "id": 7
     },
     {
@@ -75,9 +61,7 @@
       "lastName": "Yadav",
       "email": "suresh.yadav1@gmail.com",
       "password": "123456",
-      "phoneNumber": [
-        "9876500077"
-      ],
+      "phoneNumber": ["9876500077"],
       "id": 8
     },
     {
@@ -85,9 +69,7 @@
       "lastName": "Mishra",
       "email": "pooja.mishra1@gmail.com",
       "password": "123456",
-      "phoneNumber": [
-        "9876500088"
-      ],
+      "phoneNumber": ["9876500088"],
       "id": 9
     },
     {
@@ -95,9 +77,7 @@
       "lastName": "Singh",
       "email": "vikram.singh1@gmail.com",
       "password": "123456",
-      "phoneNumber": [
-        "9876500099"
-      ],
+      "phoneNumber": ["9876500099"],
       "id": 10
     },
     {
@@ -105,9 +85,7 @@
       "lastName": "Mehta",
       "email": "karan.mehta1@gmail.com",
       "password": "123456",
-      "phoneNumber": [
-        "9876500101"
-      ],
+      "phoneNumber": ["9876500101"],
       "id": 11
     },
     {
@@ -115,9 +93,7 @@
       "lastName": "Sharma",
       "email": "divya.sharma1@gmail.com",
       "password": "123456",
-      "phoneNumber": [
-        "9876500102"
-      ],
+      "phoneNumber": ["9876500102"],
       "id": 12
     },
     {
@@ -125,9 +101,7 @@
       "lastName": "Patil",
       "email": "aakash.patil1@gmail.com",
       "password": "123456",
-      "phoneNumber": [
-        "9876500103"
-      ],
+      "phoneNumber": ["9876500103"],
       "id": 13
     },
     {
@@ -135,9 +109,7 @@
       "lastName": "Reddy",
       "email": "isha.reddy1@gmail.com",
       "password": "123456",
-      "phoneNumber": [
-        "9876500104"
-      ],
+      "phoneNumber": ["9876500104"],
       "id": 14
     },
     {
@@ -145,9 +117,7 @@
       "lastName": "Kumar",
       "email": "manoj.kumar1@gmail.com",
       "password": "123456",
-      "phoneNumber": [
-        "9876500105"
-      ],
+      "phoneNumber": ["9876500105"],
       "id": 15
     },
     {
@@ -155,9 +125,7 @@
       "lastName": "Verma",
       "email": "sakshi.verma1@gmail.com",
       "password": "123456",
-      "phoneNumber": [
-        "9876500106"
-      ],
+      "phoneNumber": ["9876500106"],
       "id": 16
     },
     {
@@ -165,9 +133,7 @@
       "lastName": "Jain",
       "email": "nitin.jain1@gmail.com",
       "password": "123456",
-      "phoneNumber": [
-        "9876500107"
-      ],
+      "phoneNumber": ["9876500107"],
       "id": 17
     },
     {
@@ -175,9 +141,7 @@
       "lastName": "Das",
       "email": "kavita.das1@gmail.com",
       "password": "123456",
-      "phoneNumber": [
-        "9876500108"
-      ],
+      "phoneNumber": ["9876500108"],
       "id": 18
     },
     {
@@ -185,9 +149,7 @@
       "lastName": "Sen",
       "email": "arjun.sen1@gmail.com",
       "password": "123456",
-      "phoneNumber": [
-        "9876500109"
-      ],
+      "phoneNumber": ["9876500109"],
       "id": 19
     },
     {
@@ -195,9 +157,7 @@
       "lastName": "Chatterjee",
       "email": "meera.chatterjee1@gmail.com",
       "password": "123456",
-      "phoneNumber": [
-        "9876500110"
-      ],
+      "phoneNumber": ["9876500110"],
       "id": 20
     },
     {
@@ -205,9 +165,7 @@
       "lastName": "Malhotra",
       "email": "raj.malhotra1@gmail.com",
       "password": "123456",
-      "phoneNumber": [
-        "9876500111"
-      ],
+      "phoneNumber": ["9876500111"],
       "id": 21
     },
     {
@@ -215,9 +173,7 @@
       "lastName": "Bose",
       "email": "tina.bose1@gmail.com",
       "password": "123456",
-      "phoneNumber": [
-        "9876500112"
-      ],
+      "phoneNumber": ["9876500112"],
       "id": 22
     },
     {
@@ -225,9 +181,7 @@
       "lastName": "Roy",
       "email": "dev.roy1@gmail.com",
       "password": "123456",
-      "phoneNumber": [
-        "9876500113"
-      ],
+      "phoneNumber": ["9876500113"],
       "id": 23
     },
     {
@@ -235,9 +189,7 @@
       "lastName": "Khan",
       "email": "alisha.khan1@gmail.com",
       "password": "123456",
-      "phoneNumber": [
-        "9876500114"
-      ],
+      "phoneNumber": ["9876500114"],
       "id": 24
     },
     {
@@ -245,9 +197,7 @@
       "lastName": "Das",
       "email": "rohan.das1@gmail.com",
       "password": "123456",
-      "phoneNumber": [
-        "9876500115"
-      ],
+      "phoneNumber": ["9876500115"],
       "id": 25
     },
     {
@@ -255,9 +205,7 @@
       "lastName": "Gill",
       "email": "simran.gill1@gmail.com",
       "password": "123456",
-      "phoneNumber": [
-        "9876500116"
-      ],
+      "phoneNumber": ["9876500116"],
       "id": 26
     },
     {
@@ -265,9 +213,7 @@
       "lastName": "Pandey",
       "email": "harsh.pandey1@gmail.com",
       "password": "123456",
-      "phoneNumber": [
-        "9876500117"
-      ],
+      "phoneNumber": ["9876500117"],
       "id": 27
     },
     {
@@ -275,9 +221,7 @@
       "lastName": "Roy",
       "email": "ananya.roy1@gmail.com",
       "password": "123456",
-      "phoneNumber": [
-        "9876500118"
-      ],
+      "phoneNumber": ["9876500118"],
       "id": 28
     },
     {
@@ -285,9 +229,7 @@
       "lastName": "Saxena",
       "email": "mohit.saxena1@gmail.com",
       "password": "123456",
-      "phoneNumber": [
-        "9876500119"
-      ],
+      "phoneNumber": ["9876500119"],
       "id": 29
     },
     {
@@ -295,9 +237,7 @@
       "lastName": "Nair",
       "email": "ritika.nair1@gmail.com",
       "password": "123456",
-      "phoneNumber": [
-        "9876500120"
-      ],
+      "phoneNumber": ["9876500120"],
       "id": 30
     },
     {
@@ -305,9 +245,7 @@
       "lastName": "Das",
       "email": "debabratadas@gmail.com",
       "password": "123456",
-      "phoneNumber": [
-        "9734990919"
-      ],
+      "phoneNumber": ["9734990919"],
       "id": 31
     },
     {
@@ -315,9 +253,7 @@
       "lastName": "Das",
       "email": "debabratadas711@gmail.com",
       "password": "123456",
-      "phoneNumber": [
-        "09734990919"
-      ],
+      "phoneNumber": ["09734990919"],
       "id": 32
     }
   ]

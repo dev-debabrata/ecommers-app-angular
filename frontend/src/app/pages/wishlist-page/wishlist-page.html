@@ -28,9 +28,12 @@
           </div>
 
           <div class="actions">
-            <button (click)="addToCart(product)" class="cart-btn">Add to Cart</button>
+            <button (click)="addToCart(product, $event)" class="cart-btn">Add to Cart</button>
 
-            <button class="remove-btn" (click)="wishlistService.removeFromWishlist(product.id)">
+            <button
+              class="remove-btn"
+              (click)="wishlistService.removeFromWishlist(product.id); $event.stopPropagation()"
+            >
               Remove
             </button>
           </div>
