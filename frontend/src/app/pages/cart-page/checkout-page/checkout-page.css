@@ -114,9 +114,13 @@ textarea {
 }
 
 small {
-  /* color: red; */
+  color: red;
   font-size: 12px;
   margin-top: 4px;
+}
+
+.cart-details small {
+  color: #666;
 }
 
 button {
