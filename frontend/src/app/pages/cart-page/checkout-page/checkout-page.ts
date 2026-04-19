@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import {
-  FormBuilder,
   FormControl,
   FormGroup,
   FormsModule,
@@ -9,7 +9,6 @@ import {
 } from '@angular/forms';
 
 import { CartService } from '../../../services/cart-service';
-import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../services/auth-service';
 
 @Component({
