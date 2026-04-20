@@ -4,7 +4,7 @@
     <div class="profile-box">
       <div class="avatar">{{ user?.firstName?.charAt(0) }}{{ user?.lastName?.charAt(0) }}</div>
 
-      <div>
+      <div class="profile-name">
         <p>Hi,</p>
         <h3>{{ user?.firstName }} {{ user?.lastName }}</h3>
       </div>
@@ -29,47 +29,40 @@
 
   <!-- Right Content -->
   <section class="account-content">
-    <!-- Orders -->
     @if (activeSection === 'orders') {
       <h2>My Orders</h2>
 
-      @if (orders) {
-        <div class="card-box">
-          <p><strong>Order ID:</strong> {{ orders.id }}</p>
-          <p><strong>Total:</strong> ₹ {{ orders.total }}</p>
-          <p><strong>Status:</strong> {{ orders.status }}</p>
+      @if (orders.length > 0) {
+        @for (order of orders; track order.id) {
+          <div class="card-box">
+            <p><strong>Order ID:</strong> {{ order.id }}</p>
+            <p>
+              <strong>Placed On:</strong>
+              {{ order.date | date: 'medium' }}
+            </p>
+            <p><strong>Total:</strong> ₹ {{ order.total | number: '1.2-2' }}</p>
+            <p><strong>Status:</strong> {{ order.status }}</p>
 
-          <h3>Ordered Products</h3>
+            <h3>Products</h3>
 
-          @for (item of orders.items; track item.id) {
-            <div class="order-product">
-              <img [src]="item.image" alt="" />
+            @for (item of order.items; track item.id) {
+              <div class="order-product" (click)="viewProductDetails(item.id)">
+                <img [src]="item.image || item.images?.[0] || item.thumbnail" />
 
-              <div class="product-info">
-                <h4>{{ item.name }}</h4>
-                <p>Qty: {{ item.quantity }}</p>
-                <p>₹ {{ item.price * item.quantity }}</p>
+                <div>
+                  <h4>{{ item.title || item.name }}</h4>
+                  <p>Qty: {{ item.quantity }}</p>
+                  <p>₹ {{ item.price * item.quantity }}</p>
+                </div>
               </div>
-            </div>
-          }
+            }
+          </div>
+        }
+      } @else {
+        <div class="card-box">
+          <p>No orders yet</p>
         </div>
       }
-
-      <!-- @if (orders) {
-        <div class="card-box">
-          <p><strong>Order ID:</strong> {{ orders.id }}</p>
-          <p><strong>Total:</strong> ₹ {{ orders.total }}</p>
-          <p><strong>Status:</strong> {{ orders.status }}</p>
-        </div>
-      } -->
-
-      <!-- @for (order of orders; track order.id) {
-        <div class="card-box">
-          <p><strong>Order ID:</strong> {{ order.id }}</p>
-          <p><strong>Total:</strong> ₹ {{ order.total }}</p>
-          <p><strong>Status:</strong> {{ order.status }}</p>
-        </div>
-      } -->
     }
 
     <!-- Details -->
@@ -102,3 +95,46 @@
     }
   </section>
 </div>
+
+<!-- Orders -->
+<!-- @if (activeSection === 'orders') {
+      <h2>My Orders</h2>
+
+      @if (orders) {
+        <div class="card-box">
+          <p><strong>Order ID:</strong> {{ orders.id }}</p>
+          <p><strong>Total:</strong> ₹ {{ orders.total }}</p>
+          <p><strong>Status:</strong> {{ orders.status }}</p>
+
+          <h3>Ordered Products</h3>
+
+          @for (item of orders.items; track item.id) {
+            <div class="order-product">
+              <img [src]="item.image" alt="" />
+
+              <div class="product-info">
+                <h4>{{ item.name }}</h4>
+                <p>Qty: {{ item.quantity }}</p>
+                <p>₹ {{ item.price * item.quantity }}</p>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+     @if (orders) {
+        <div class="card-box">
+          <p><strong>Order ID:</strong> {{ orders.id }}</p>
+          <p><strong>Total:</strong> ₹ {{ orders.total }}</p>
+          <p><strong>Status:</strong> {{ orders.status }}</p>
+        </div>
+      }
+
+     @for (order of orders; track order.id) {
+        <div class="card-box">
+          <p><strong>Order ID:</strong> {{ order.id }}</p>
+          <p><strong>Total:</strong> ₹ {{ order.total }}</p>
+          <p><strong>Status:</strong> {{ order.status }}</p>
+        </div>
+      }
+    } -->

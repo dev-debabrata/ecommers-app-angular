@@ -17,16 +17,36 @@ export class ProfilePage {
 
   user = this.authService.getUser();
 
-  orders = JSON.parse(localStorage.getItem('orders') || '[]');
-
   activeSection = 'orders';
 
   changeSection(section: string) {
     this.activeSection = section;
   }
 
+  get orders() {
+    const data = localStorage.getItem('orders');
+
+    if (!data) return [];
+
+    try {
+      const orders = JSON.parse(data);
+
+      const orderList = Array.isArray(orders) ? orders : [orders];
+
+      return orderList.sort(
+        (a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+      );
+    } catch {
+      return [];
+    }
+  }
+
   logout() {
     this.authService.removeToken();
     this.router.navigate(['/login']);
+  }
+
+  viewProductDetails(productId: number) {
+    this.router.navigate(['/products', productId]);
   }
 }

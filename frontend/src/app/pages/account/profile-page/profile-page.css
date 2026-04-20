@@ -89,8 +89,17 @@ button {
   align-items: center;
   gap: 15px;
   margin-top: 15px;
-  border-top: 1px solid #eee;
-  padding-top: 15px;
+  border: 1px solid #ccc;
+  padding: 1rem;
+}
+
+.order-product h4 {
+  margin: 0;
+}
+
+.order-product p {
+  margin: 0;
+  margin-top: 4px;
 }
 
 .order-product img {
@@ -107,4 +116,13 @@ button {
 
 .product-info p {
   margin: 4px 0;
+}
+
+.profile-name p {
+  margin: 0;
+}
+
+.profile-name h3 {
+  margin: 0;
+  margin-top: 4px;
 }
