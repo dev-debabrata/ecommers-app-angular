@@ -130,30 +130,40 @@ export class CheckoutPage implements OnInit {
 }
 
 //////////////////////////////////////////////////////////
-// placeOrder() {
-//   if (this.addressForm.invalid) {
-//     this.addressForm.markAllAsTouched();
-//     console.log('BUTTON CLICKED');
-//     return;
+// getSubtotal() {
+//   let total = 0;
+
+//   const cartTotal = this.cartService.totalPrice();
+//   total += cartTotal;
+
+//   if (this.buyNowItem) {
+//     total += this.buyNowItem.price * (this.buyNowItem.quantity || 1);
 //   }
 
-//   const order = {
-//     id: Date.now(),
-//     address: this.addressForm.value,
-//     items: this.cartService.cart(),
-//     subtotal: this.cartService.totalPrice(),
-//     gst: this.gst(),
-//     total: this.grandTotal(),
-//     date: new Date(),
-//     status: 'Placed',
-//   };
+//   return total;
+// }
 
-//   // const orders = JSON.parse(localStorage.getItem('orders') || '[]');
-//   // orders.push(order);
-//   localStorage.setItem('orders', JSON.stringify(order));
+// gst() {
+//   return this.cartService.totalPrice() * 0.18;
+// }
 
-//   this.cartService.clearCart();
+// grandTotal() {
+//   return this.cartService.totalPrice() + this.gst() + this.shippingPrice();
+// }
 
-//   alert('Order placed successfully!');
-//   this.addressForm.reset();
+// items: this.buyNowItem ? [this.buyNowItem] : this.cartService.cart(),
+// items: this.cartService.cart(),
+// subtotal: this.cartService.totalPrice(),
+
+// shippingPrice() {
+//   return this.checkoutForm.value.shippingMethod === 'express' ? 110 : 20;
+// }
+
+// shippingPrice() {
+//   const baseShipping = 20;
+//   const expressCharge = 90;
+
+//   return this.checkoutForm.value.shippingMethod === 'express'
+//     ? baseShipping + expressCharge
+//     : baseShipping;
 // }

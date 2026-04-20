@@ -12,6 +12,7 @@ import { WishlistPage } from './pages/wishlist-page/wishlist-page';
 import { AboutPage } from './pages/about-page/about-page';
 import { ContactPage } from './pages/contact-page/contact-page';
 import { ProfilePage } from './pages/account/profile-page/profile-page';
+import { OrderSuccessPage } from './pages/cart-page/order-success-page/order-success-page';
 
 export const routes: Routes = [
   {
@@ -81,6 +82,13 @@ export const routes: Routes = [
     component: WishlistPage,
     canActivate: [authGuard],
     data: { breadcrumb: 'Wishlist' },
+  },
+
+  {
+    path: 'order-success/:id',
+    component: OrderSuccessPage,
+    canActivate: [authGuard],
+    data: { breadcrumb: 'Order Success' },
   },
 
   {

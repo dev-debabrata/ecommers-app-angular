@@ -24,8 +24,7 @@
           @if (product.stock > 0) {
             <div class="button-group">
               <button (click)="addToCart(product)" class="cart-button">Add to Cart</button>
-              <button class="buy-button">Buy Now</button>
-              <!-- (click)="buyNow(product)" -->
+              <button (click)="buyNow(product)" class="buy-button">Buy Now</button>
             </div>
           }
         </div>
@@ -35,6 +34,7 @@
       <div class="info-section">
         <h2>{{ product.title }}</h2>
 
+        <!-- <p><strong>Rating:</strong> {{ product.rating }} / 5</p> -->
         <div class="rating">
           @for (star of stars; track $index) {
             <span [ngClass]="star">&#9733;</span>

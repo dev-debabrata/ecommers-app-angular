@@ -74,9 +74,6 @@ export class ProductDetailPage {
     if (!isLoggedIn) {
       this.snackBar.open('Please login to add cart', 'Close', {
         duration: 3000,
-        horizontalPosition: 'center',
-        verticalPosition: 'top',
-        panelClass: ['snackbar-error'],
       });
 
       this.router.navigate(['/login']);
@@ -95,21 +92,22 @@ export class ProductDetailPage {
     this.router.navigate(['/cart']);
   }
 
-  // buyNow(product: any) {
-  //   localStorage.setItem('buyNowItem', JSON.stringify(product));
-  //   this.router.navigate(['/cart/checkout']);
-  // }
-
-  toggleReviews(): void {
-    this.showAllReviews = !this.showAllReviews;
-  }
-
   toggleWishlist(product: any) {
     if (this.wishlistService.isInWishlist(product.id)) {
       this.wishlistService.removeFromWishlist(product.id);
     } else {
       this.wishlistService.addToWishlist(product);
     }
+  }
+
+  buyNow(product: any) {
+    const item = { ...product, quantity: 1 };
+    localStorage.setItem('buyNowItem', JSON.stringify(item));
+    this.router.navigate(['/cart/checkout']);
+  }
+
+  toggleReviews(): void {
+    this.showAllReviews = !this.showAllReviews;
   }
 
   displayedReviews() {
