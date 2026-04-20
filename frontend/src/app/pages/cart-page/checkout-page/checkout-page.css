@@ -13,11 +13,13 @@
   flex: 2;
   background: white;
   padding: 30px;
+  height: fit-content;
   /* border-radius: 12px; */
 }
 
 h2 {
   margin-top: 0;
+  margin-bottom: 1.5rem;
 }
 
 .checkout-right {
@@ -31,7 +33,7 @@ h2 {
 .form-row {
   display: flex;
   gap: 15px;
-  margin-bottom: 20px;
+  margin-bottom: 1.5rem;
 }
 
 .input-box {
@@ -40,13 +42,25 @@ h2 {
   flex-direction: column;
 }
 
+.input-box label {
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
 input,
 textarea {
   width: 100%;
   padding: 12px;
-  border: 1px solid #ddd;
+  border: 1px solid #ced4da;
   border-radius: 8px;
   box-sizing: border-box;
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+  border: 1px solid #e67700;
+  box-shadow: 0 0 0 3px rgba(230, 119, 0, 0.2);
 }
 
 textarea {
@@ -62,7 +76,7 @@ textarea {
 
 .shipping-card {
   flex: 1;
-  border: 2px solid #ddd;
+  border: 2px solid #ccc;
   border-radius: 10px;
   padding: 18px 20px;
   display: flex;
@@ -104,7 +118,7 @@ textarea {
 }
 
 .shipping-card:has(input:checked) {
-  border: 2px solid black;
+  border: 2px solid #e67700;
 }
 
 .input-box {
@@ -124,10 +138,11 @@ small {
 }
 
 button {
+  font-size: 16px;
   width: 100%;
   padding: 14px;
-  background: black;
-  color: white;
+  background: #e67700;
+  /* color: white; */
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -135,7 +150,7 @@ button {
 }
 
 button:hover {
-  background: #212529;
+  background: #fd7e14;
 }
 
 .cart-item {

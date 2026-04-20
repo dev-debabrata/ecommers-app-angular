@@ -6,24 +6,16 @@
     <form [formGroup]="checkoutForm" (ngSubmit)="submitForm()">
       <div class="form-row">
         <div class="input-box">
-          <input type="text" placeholder="First Name" formControlName="firstName" />
+          <label for="fullName">Full Name</label>
+          <input type="text" placeholder="First Name" formControlName="fullName" />
 
-          @if (checkoutForm.get('firstName')?.invalid && checkoutForm.get('firstName')?.touched) {
+          @if (checkoutForm.get('fullName')?.invalid && checkoutForm.get('fullName')?.touched) {
             <small>First name is required</small>
           }
         </div>
 
         <div class="input-box">
-          <input type="text" placeholder="Last Name" formControlName="lastName" />
-
-          @if (checkoutForm.get('lastName')?.invalid && checkoutForm.get('lastName')?.touched) {
-            <small>Last name is required</small>
-          }
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="input-box">
+          <label for="email">Email</label>
           <input type="email" placeholder="Email" formControlName="email" />
 
           @if (checkoutForm.get('email')?.invalid && checkoutForm.get('email')?.touched) {
@@ -32,10 +24,30 @@
         </div>
 
         <div class="input-box">
+          <label for="phone no">Phone no</label>
           <input type="text" placeholder="Phone Number" formControlName="phone" />
 
           @if (checkoutForm.get('phone')?.invalid && checkoutForm.get('phone')?.touched) {
             <small>Phone number is required</small>
+          }
+        </div>
+      </div>
+
+      <h3>Address</h3>
+      <div class="form-row">
+        <div class="input-box">
+          <input type="text" placeholder="Address" formControlName="address" />
+
+          @if (checkoutForm.get('address')?.invalid && checkoutForm.get('address')?.touched) {
+            <small>Address is required</small>
+          }
+        </div>
+
+        <div class="input-box">
+          <input type="text" placeholder="Landmark" formControlName="landmark" />
+
+          @if (checkoutForm.get('landmark')?.invalid && checkoutForm.get('landmark')?.touched) {
+            <small>Landmark is required</small>
           }
         </div>
       </div>
@@ -58,15 +70,13 @@
         </div>
 
         <div class="input-box">
-          <input type="text" placeholder="Zip Code" formControlName="zipCode" />
+          <input type="text" placeholder="6-digit PIN code" formControlName="pinCode" />
 
-          @if (checkoutForm.get('zipCode')?.invalid && checkoutForm.get('zipCode')?.touched) {
-            <small>Zip code is required</small>
+          @if (checkoutForm.get('pinCode')?.invalid && checkoutForm.get('pinCode')?.touched) {
+            <small>PIN code is required</small>
           }
         </div>
       </div>
-
-      <textarea placeholder="Description" formControlName="description"></textarea>
 
       <h3>Shipping Method</h3>
 
@@ -104,6 +114,19 @@
   <div class="checkout-right">
     <h2>Order Summary</h2>
 
+    @if (buyNowItem) {
+      <div class="cart-item">
+        <img [src]="buyNowItem.images" alt="" />
+
+        <div class="cart-details">
+          <h4>{{ buyNowItem.title }}</h4>
+          <small>Qty: {{ buyNowItem.quantity || 1 }}</small>
+        </div>
+
+        <p class="price">₹ {{ buyNowItem.price * (buyNowItem.quantity || 1) }}</p>
+      </div>
+    }
+
     @for (item of cartService.cart(); track item.id) {
       <div class="cart-item">
         <img [src]="item.image" alt="" />
@@ -119,7 +142,7 @@
     <div class="summary">
       <div class="summary-row">
         <span>Subtotal</span>
-        <span>₹ {{ cartService.totalPrice() | number: '1.2-2' }}</span>
+        <span>₹ {{ getSubtotal() | number: '1.2-2' }}</span>
       </div>
 
       <div class="summary-row">
@@ -134,64 +157,10 @@
 
       <div class="summary-total">
         <span>Total</span>
-        <span>₹ {{ grandTotal() | number: '1.2-2' }}</span>
+        <span>₹ {{ totalPrice() | number: '1.2-2' }}</span>
       </div>
     </div>
 
     <button (click)="placeOrder()" type="button">Continue to Payment</button>
   </div>
 </div>
-
-<!-- <div class="checkout-container">
-
-  <div class="checkout-left">
-    <h2>Delivery Address</h2>
-
-    <form [formGroup]="addressForm" class="address-form">
-      <input type="text" formControlName="name" placeholder="Full Name" />
-
-      @if (addressForm.get('name')?.invalid && addressForm.get('name')?.touched) {
-        <small> Name is required </small>
-      }
-
-      <input type="text" formControlName="phone" placeholder="Phone Number" />
-
-      @if (addressForm.get('phone')?.invalid && addressForm.get('phone')?.touched) {
-        <small> Enter valid 10-digit number </small>
-      }
-
-      <input type="text" formControlName="pincode" placeholder="Pincode" />
-
-      <textarea formControlName="address" placeholder="Full Address"></textarea>
-
-      <input type="text" formControlName="city" placeholder="City" />
-      <input type="text" formControlName="state" placeholder="State" />
-    </form>
-  </div>
-
-
-  <div class="checkout-right">
-    <h2>Order Summary</h2>
-
-    @for (item of cartService.cart(); track item.id) {
-      <div class="item">
-        <img [src]="item.image" />
-        <div>
-          <p>{{ item.name }}</p>
-          <small>Qty: {{ item.quantity }}</small>
-          <p>₹ {{ item.price * item.quantity }}</p>
-        </div>
-      </div>
-    }
-
-    <div class="price-box">
-      <p>Subtotal: ₹ {{ cartService.totalPrice() }}</p>
-      <p>GST (18%): ₹ {{ gst() }}</p>
-      <p>
-        <b>Total: ₹ {{ grandTotal() }}</b>
-      </p>
-    </div>
-
-    <button (click)="placeOrder()">Pay & Place Order</button>
-  </div>
-</div> -->
