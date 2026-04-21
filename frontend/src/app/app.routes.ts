@@ -92,6 +92,11 @@ export const routes: Routes = [
   },
 
   {
+    path: 'admin',
+    loadChildren: () => import('./admin/admin.routes').then((m) => m.adminRoutes),
+  },
+
+  {
     path: '**',
     component: NotFound,
     data: { hideLayout: true, hideBreadcrumb: true },
