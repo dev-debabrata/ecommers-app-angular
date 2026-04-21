@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormControl,
@@ -28,25 +28,39 @@ export class CheckoutPage implements OnInit {
   private snackBar = inject(MatSnackBar);
 
   buyNowItem: any = null;
+  submitted = signal(false);
+  touchedFields = signal<Record<string, boolean>>({});
 
-  checkoutForm = new FormGroup({
-    fullName: new FormControl('', Validators.required),
-    email: new FormControl('', [Validators.required, Validators.email]),
-    phone: new FormControl('', Validators.required),
-    address: new FormControl('', Validators.required),
-    landmark: new FormControl('', Validators.required),
-    city: new FormControl('', Validators.required),
-    state: new FormControl('', Validators.required),
-    pinCode: new FormControl('', Validators.required),
-    shippingMethod: new FormControl('free'),
+  checkoutForm = signal({
+    fullName: '',
+    email: '',
+    phone: '',
+    address: '',
+    landmark: '',
+    city: '',
+    state: '',
+    pinCode: '',
+    shippingMethod: 'free',
   });
 
-  submitForm() {
-    console.log(this.checkoutForm.value);
+  markTouched(field: string) {
+    this.touchedFields.update((touch) => ({
+      ...touch,
+      [field]: true,
+    }));
   }
 
-  ngOnInit() {
+  updateField(field: string, value: string) {
+    this.checkoutForm.update((form) => ({ ...form, [field]: value }));
+  }
+
+  isInvalid(field: keyof ReturnType<typeof this.checkoutForm>) {
+    return (this.submitted() || this.touchedFields()[field]) && !this.checkoutForm()[field];
+  }
+
+  ngOnInit(): void {
     const item = localStorage.getItem('buyNowItem');
+
     if (item) {
       this.buyNowItem = JSON.parse(item);
     }
@@ -57,66 +71,96 @@ export class CheckoutPage implements OnInit {
     }
 
     const user = this.authService.getUser();
+
     if (user) {
-      this.checkoutForm.patchValue({
+      this.checkoutForm.update((form) => ({
+        ...form,
         fullName: user.firstName + ' ' + user.lastName,
         email: user.email,
         phone: user.phoneNumber?.[0] || '',
-      });
+      }));
     }
-    console.log('BUY NOW ITEM:', this.buyNowItem);
   }
 
-  shippingPrice() {
-    return this.checkoutForm.value.shippingMethod === 'express' ? 110 : 20;
-  }
+  shippingPrice = computed(() => (this.checkoutForm().shippingMethod === 'express' ? 110 : 20));
 
-  getSubtotal() {
+  subTotal = computed(() => {
     let total = this.cartService.totalPrice();
 
     if (this.buyNowItem) {
       total += this.buyNowItem.price * (this.buyNowItem.quantity || 1);
     }
-
     return total;
-  }
+  });
 
-  gst() {
-    return this.getSubtotal() * 0.18;
-  }
+  gst = computed(() => this.subTotal() * 0.18);
 
-  totalPrice() {
-    return this.getSubtotal() + this.gst() + this.shippingPrice();
+  totalPrice = computed(() => this.subTotal() + this.gst() + this.shippingPrice());
+
+  isFormValid() {
+    const form = this.checkoutForm();
+    return (
+      form.fullName &&
+      form.email &&
+      form.phone &&
+      form.address &&
+      form.landmark &&
+      form.city &&
+      form.state &&
+      form.pinCode
+    );
   }
 
   submitOrder() {
-    if (this.checkoutForm.invalid) {
-      this.checkoutForm.markAllAsTouched();
+    this.submitted.set(true);
+
+    if (!this.isFormValid()) {
+      this.snackBar.open('Please fill all required fields correctly!', 'Close', {
+        duration: 2500,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+        panelClass: ['snackbar-error'],
+      });
+
+      document.querySelector('.checkout-left')?.scrollIntoView({ behavior: 'smooth' });
       return;
     }
+
     const items = [...this.cartService.cart(), ...(this.buyNowItem ? [this.buyNowItem] : [])];
 
     const order = {
       id: Date.now(),
-      address: this.checkoutForm.value,
-      items: items,
-      subtotal: this.getSubtotal(),
+      address: this.checkoutForm(),
+      items,
+      subTotal: this.subTotal(),
       gst: this.gst(),
       total: this.totalPrice(),
       date: new Date(),
-      status: 'Placed',
+      status: 'Places',
     };
 
     const existingOrders = JSON.parse(localStorage.getItem('orders') || '[]');
     existingOrders.push(order);
-
     localStorage.setItem('orders', JSON.stringify(existingOrders));
     localStorage.setItem('latestOrder', JSON.stringify(order));
 
     this.buyNowItem = null;
     localStorage.removeItem('buyNowItem');
     this.cartService.clearCart();
-    this.checkoutForm.reset();
+
+    this.checkoutForm.set({
+      fullName: '',
+      email: '',
+      phone: '',
+      address: '',
+      landmark: '',
+      city: '',
+      state: '',
+      pinCode: '',
+      shippingMethod: 'free',
+    });
+    this.submitted.set(false);
+    this.touchedFields.set({});
 
     this.snackBar.open('Order placed successfully!', 'Close', {
       duration: 2000,
@@ -128,6 +172,117 @@ export class CheckoutPage implements OnInit {
     this.router.navigate(['/order-success', order.id]);
   }
 }
+
+// This is Reactive Form type
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+// public cartService = inject(CartService);
+// private authService = inject(AuthService);
+// private router = inject(Router);
+
+// private snackBar = inject(MatSnackBar);
+
+// buyNowItem: any = null;
+
+// checkoutForm = new FormGroup({
+//   fullName: new FormControl('', Validators.required),
+//   email: new FormControl('', [Validators.required, Validators.email]),
+//   phone: new FormControl('', Validators.required),
+//   address: new FormControl('', Validators.required),
+//   landmark: new FormControl('', Validators.required),
+//   city: new FormControl('', Validators.required),
+//   state: new FormControl('', Validators.required),
+//   pinCode: new FormControl('', Validators.required),
+//   shippingMethod: new FormControl('free'),
+// });
+
+// submitForm() {
+//   console.log(this.checkoutForm.value);
+// }
+
+// ngOnInit() {
+//   const item = localStorage.getItem('buyNowItem');
+//   if (item) {
+//     this.buyNowItem = JSON.parse(item);
+//   }
+
+//   if (this.cartService.cart().length === 0 && !this.buyNowItem) {
+//     this.router.navigate(['/']);
+//     return;
+//   }
+
+//   const user = this.authService.getUser();
+//   if (user) {
+//     this.checkoutForm.patchValue({
+//       fullName: user.firstName + ' ' + user.lastName,
+//       email: user.email,
+//       phone: user.phoneNumber?.[0] || '',
+//     });
+//   }
+//   console.log('BUY NOW ITEM:', this.buyNowItem);
+// }
+
+// shippingPrice() {
+//   return this.checkoutForm.value.shippingMethod === 'express' ? 110 : 20;
+// }
+
+// getSubtotal() {
+//   let total = this.cartService.totalPrice();
+
+//   if (this.buyNowItem) {
+//     total += this.buyNowItem.price * (this.buyNowItem.quantity || 1);
+//   }
+
+//   return total;
+// }
+
+// gst() {
+//   return this.getSubtotal() * 0.18;
+// }
+
+// totalPrice() {
+//   return this.getSubtotal() + this.gst() + this.shippingPrice();
+// }
+
+// submitOrder() {
+//   if (this.checkoutForm.invalid) {
+//     this.checkoutForm.markAllAsTouched();
+//     return;
+//   }
+//   const items = [...this.cartService.cart(), ...(this.buyNowItem ? [this.buyNowItem] : [])];
+
+//   const order = {
+//     id: Date.now(),
+//     address: this.checkoutForm.value,
+//     items: items,
+//     subtotal: this.getSubtotal(),
+//     gst: this.gst(),
+//     total: this.totalPrice(),
+//     date: new Date(),
+//     status: 'Placed',
+//   };
+
+//   const existingOrders = JSON.parse(localStorage.getItem('orders') || '[]');
+//   existingOrders.push(order);
+
+//   localStorage.setItem('orders', JSON.stringify(existingOrders));
+//   localStorage.setItem('latestOrder', JSON.stringify(order));
+
+//   this.buyNowItem = null;
+//   localStorage.removeItem('buyNowItem');
+//   this.cartService.clearCart();
+//   this.checkoutForm.reset();
+
+//   this.snackBar.open('Order placed successfully!', 'Close', {
+//     duration: 2000,
+//     horizontalPosition: 'center',
+//     verticalPosition: 'top',
+//     panelClass: ['snackbar-success'],
+//   });
+
+//   this.router.navigate(['/order-success', order.id]);
+// }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////
 // getSubtotal() {

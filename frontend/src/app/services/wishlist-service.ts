@@ -8,10 +8,6 @@ export class WishlistService {
 
   itemCount = computed(() => this.wishlist().length);
 
-  // constructor() {
-  //   this.wishlist = signal(this.loadWishlist());
-  // }
-
   getWishlist() {
     return this.wishlist();
   }
@@ -38,10 +34,10 @@ export class WishlistService {
     return this.wishlist().some((p) => p.id === id);
   }
 
-  clearWishlist() {
-    this.wishlist.set([]);
-    localStorage.removeItem('wishlist');
-  }
+  // clearWishlist() {
+  //   this.wishlist.set([]);
+  //   localStorage.removeItem('wishlist');
+  // }
 
   private save(data: any[]) {
     localStorage.setItem('wishlist', JSON.stringify(data));
