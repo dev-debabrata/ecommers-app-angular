@@ -61,9 +61,9 @@ export class Header {
   }
 
   logout() {
-    this.authService.removeToken();
+    this.authService.logout();
     this.showMenu = false;
-    // this.cartService.clearCart();
+
     this.snackBar.open('Logged out successfully', 'Close', {
       duration: 3000,
       horizontalPosition: 'center',
@@ -73,6 +73,21 @@ export class Header {
 
     this.router.navigate(['/']);
   }
+
+  // logout() {
+  //   this.authService.removeToken();
+  //   this.wishlistService.clearWishlist();
+  //   this.showMenu = false;
+  //   // this.cartService.clearCart();
+  //   this.snackBar.open('Logged out successfully', 'Close', {
+  //     duration: 3000,
+  //     horizontalPosition: 'center',
+  //     verticalPosition: 'top',
+  //     panelClass: ['snackbar-success'],
+  //   });
+
+  //   this.router.navigate(['/']);
+  // }
 
   viewProfile() {
     this.showMenu = false;

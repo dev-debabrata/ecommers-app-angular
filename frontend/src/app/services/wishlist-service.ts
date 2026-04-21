@@ -8,9 +8,9 @@ export class WishlistService {
 
   itemCount = computed(() => this.wishlist().length);
 
-  constructor() {
-    this.wishlist = signal(this.loadWishlist());
-  }
+  // constructor() {
+  //   this.wishlist = signal(this.loadWishlist());
+  // }
 
   getWishlist() {
     return this.wishlist();
@@ -36,6 +36,11 @@ export class WishlistService {
 
   isInWishlist(id: number): boolean {
     return this.wishlist().some((p) => p.id === id);
+  }
+
+  clearWishlist() {
+    this.wishlist.set([]);
+    localStorage.removeItem('wishlist');
   }
 
   private save(data: any[]) {

@@ -1,20 +1,22 @@
-<div class="app-wrapper">
+<!-- <div class="app-wrapper">
   @if (!hideLayout) {
-    <app-header [hideBreadcrumb]="hideBreadcrumb" />
+    <app-header [hideBreadcrumb]="hideBreadcrumb" /> -->
 
-    <!-- <div class="breadcrumb">
+<!-- <div class="breadcrumb">
       <app-breadcrumb />
     </div> -->
-  }
+<!-- } -->
 
-  <main class="page-container" [class.auth-page]="hideLayout">
+<!-- <main class="page-container" [class.auth-page]="hideLayout">
     <router-outlet />
   </main>
 
   @if (!hideLayout) {
     <app-footer />
   }
-</div>
+</div> -->
+
+<router-outlet />
 
 <!-- <div class="app-wrapper">
   @if (!hideLayout && !hideBreadcrumb) {

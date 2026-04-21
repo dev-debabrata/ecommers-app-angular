@@ -12,6 +12,7 @@ import { TruncatePipe } from '../../../pipes/truncate-pipe';
 import { Loader } from '../../../components/loader/loader';
 import { Highlight } from '../../../directives/highlight';
 import { WishlistService } from '../../../services/wishlist-service';
+import { AuthService } from '../../../services/auth-service';
 
 @Component({
   selector: 'app-product-list-page',
@@ -21,8 +22,8 @@ import { WishlistService } from '../../../services/wishlist-service';
   styleUrl: './product-list-page.css',
 })
 export class ProductListPage {
-  public wishlistService = inject(WishlistService);
-
+  private wishlistService = inject(WishlistService);
+  private authService = inject(AuthService);
   private router = inject(Router);
   private productService = inject(ProductService);
 
@@ -86,7 +87,16 @@ export class ProductListPage {
     });
   }
 
-  toggleWishlist(product: any) {
+  isWishlisted(productId: number): boolean {
+    return this.authService.isLoggedIn() && this.wishlistService.isInWishlist(productId);
+  }
+
+  addToWishlist(product: any) {
+    if (!this.authService.isLoggedIn()) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
     if (this.wishlistService.isInWishlist(product.id)) {
       this.wishlistService.removeFromWishlist(product.id);
     } else {

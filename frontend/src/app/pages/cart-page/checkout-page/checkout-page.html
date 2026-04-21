@@ -3,7 +3,7 @@
   <div class="checkout-left">
     <h2>Shipping Address</h2>
 
-    <form [formGroup]="checkoutForm" (ngSubmit)="submitForm()">
+    <form [formGroup]="checkoutForm" (ngSubmit)="submitOrder()">
       <div class="form-row">
         <div class="input-box">
           <label for="fullName">Full Name</label>
@@ -161,6 +161,6 @@
       </div>
     </div>
 
-    <button (click)="placeOrder()" type="button">Continue to Payment</button>
+    <button type="button">Continue to Payment</button>
   </div>
 </div>

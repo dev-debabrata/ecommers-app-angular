@@ -7,45 +7,37 @@ import { Footer } from './components/footer/footer';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, Header, Footer],
+  imports: [RouterOutlet],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
 export class App {
-  router = inject(Router);
-  route = inject(ActivatedRoute);
-
-  hideLayout = false;
-  hideBreadcrumb = false;
-
-  constructor() {
-    this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        this.updateLayoutFlags(this.router.routerState.root);
-      }
-    });
-  }
-
-  private updateLayoutFlags(route: ActivatedRoute) {
-    let current: ActivatedRoute | null = route;
-
-    this.hideLayout = false;
-    this.hideBreadcrumb = false;
-
-    while (current) {
-      const data = current.snapshot.data;
-
-      if (data?.['hideLayout']) {
-        this.hideLayout = true;
-      }
-
-      if (data?.['hideBreadcrumb']) {
-        this.hideBreadcrumb = true;
-      }
-
-      current = current.firstChild!;
-    }
-  }
+  // router = inject(Router);
+  // route = inject(ActivatedRoute);
+  // hideLayout = false;
+  // hideBreadcrumb = false;
+  // constructor() {
+  //   this.router.events.subscribe((event) => {
+  //     if (event instanceof NavigationEnd) {
+  //       this.updateLayoutFlags(this.router.routerState.root);
+  //     }
+  //   });
+  // }
+  // private updateLayoutFlags(route: ActivatedRoute) {
+  //   let current: ActivatedRoute | null = route;
+  //   this.hideLayout = false;
+  //   this.hideBreadcrumb = false;
+  //   while (current) {
+  //     const data = current.snapshot.data;
+  //     if (data?.['hideLayout']) {
+  //       this.hideLayout = true;
+  //     }
+  //     if (data?.['hideBreadcrumb']) {
+  //       this.hideBreadcrumb = true;
+  //     }
+  //     current = current.firstChild!;
+  //   }
+  // }
 }
 
 ///////////////////////////////////////////////////////////////

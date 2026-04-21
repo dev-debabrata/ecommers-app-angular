@@ -13,82 +13,98 @@ import { AboutPage } from './pages/about-page/about-page';
 import { ContactPage } from './pages/contact-page/contact-page';
 import { ProfilePage } from './pages/account/profile-page/profile-page';
 import { OrderSuccessPage } from './pages/cart-page/order-success-page/order-success-page';
+import { CustomerLayout } from './layouts/customer-layout/customer-layout';
 
 export const routes: Routes = [
   {
     path: '',
-    component: HomePage,
-  },
-
-  {
-    path: 'account',
-    component: ProfilePage,
-    canActivate: [authGuard],
-    data: { breadcrumb: 'Profile' },
-  },
-
-  {
-    path: 'about',
-    component: AboutPage,
-    data: { breadcrumb: 'About' },
-  },
-
-  {
-    path: 'contact',
-    component: ContactPage,
-    data: { breadcrumb: 'Contact' },
-  },
-
-  { path: 'login', component: LoginPage, data: { hideLayout: true } },
-  { path: 'signup', component: SignupPage, data: { hideLayout: true } },
-
-  {
-    path: 'products',
-    data: { breadcrumb: 'Products' },
+    component: CustomerLayout,
     children: [
       {
         path: '',
-        component: ProductListPage,
+        component: HomePage,
       },
+
       {
-        path: ':id',
-        loadComponent: () =>
-          import('./pages/products/product-detail-page/product-detail-page').then(
-            (m) => m.ProductDetailPage,
-          ),
+        path: 'account',
+        component: ProfilePage,
+        canActivate: [authGuard],
+        data: { breadcrumb: 'Profile' },
+      },
+
+      {
+        path: 'about',
+        component: AboutPage,
+        data: { breadcrumb: 'About' },
+      },
+
+      {
+        path: 'contact',
+        component: ContactPage,
+        data: { breadcrumb: 'Contact' },
+      },
+
+      {
+        path: 'login',
+        component: LoginPage,
+        data: { hideLayout: true },
+      },
+
+      {
+        path: 'signup',
+        component: SignupPage,
+        data: { hideLayout: true },
+      },
+
+      {
+        path: 'products',
+        data: { breadcrumb: 'Products' },
+        children: [
+          {
+            path: '',
+            component: ProductListPage,
+          },
+          {
+            path: ':id',
+            loadComponent: () =>
+              import('./pages/products/product-detail-page/product-detail-page').then(
+                (m) => m.ProductDetailPage,
+              ),
+          },
+        ],
+      },
+
+      {
+        path: 'cart',
+        canActivate: [authGuard],
+        data: { breadcrumb: 'Cart' },
+        children: [
+          {
+            path: '',
+            component: CartPage,
+          },
+          {
+            path: 'checkout',
+            component: CheckoutPage,
+            data: { breadcrumb: 'Checkout' },
+          },
+        ],
+      },
+
+      {
+        path: 'wishlist',
+        component: WishlistPage,
+        canActivate: [authGuard],
+        data: { breadcrumb: 'Wishlist' },
+      },
+
+      {
+        path: 'order-success/:id',
+        component: OrderSuccessPage,
+        canActivate: [authGuard],
+        data: { breadcrumb: 'Order Success' },
       },
     ],
-  },
-
-  {
-    path: 'cart',
-    canActivate: [authGuard],
-    data: { breadcrumb: 'Cart' },
-    children: [
-      {
-        path: '',
-        component: CartPage,
-      },
-      {
-        path: 'checkout',
-        component: CheckoutPage,
-        data: { breadcrumb: 'Checkout' },
-      },
-    ],
-  },
-
-  {
-    path: 'wishlist',
-    component: WishlistPage,
-    canActivate: [authGuard],
-    data: { breadcrumb: 'Wishlist' },
-  },
-
-  {
-    path: 'order-success/:id',
-    component: OrderSuccessPage,
-    canActivate: [authGuard],
-    data: { breadcrumb: 'Order Success' },
   },
 
   {
@@ -101,4 +117,91 @@ export const routes: Routes = [
     component: NotFound,
     data: { hideLayout: true, hideBreadcrumb: true },
   },
+
+  // {
+  //   path: '',
+  //   component: HomePage,
+  // },
+
+  // {
+  //   path: 'account',
+  //   component: ProfilePage,
+  //   canActivate: [authGuard],
+  //   data: { breadcrumb: 'Profile' },
+  // },
+
+  // {
+  //   path: 'about',
+  //   component: AboutPage,
+  //   data: { breadcrumb: 'About' },
+  // },
+
+  // {
+  //   path: 'contact',
+  //   component: ContactPage,
+  //   data: { breadcrumb: 'Contact' },
+  // },
+
+  // { path: 'login', component: LoginPage, data: { hideLayout: true } },
+  // { path: 'signup', component: SignupPage, data: { hideLayout: true } },
+
+  // {
+  //   path: 'products',
+  //   data: { breadcrumb: 'Products' },
+  //   children: [
+  //     {
+  //       path: '',
+  //       component: ProductListPage,
+  //     },
+  //     {
+  //       path: ':id',
+  //       loadComponent: () =>
+  //         import('./pages/products/product-detail-page/product-detail-page').then(
+  //           (m) => m.ProductDetailPage,
+  //         ),
+  //     },
+  //   ],
+  // },
+
+  // {
+  //   path: 'cart',
+  //   canActivate: [authGuard],
+  //   data: { breadcrumb: 'Cart' },
+  //   children: [
+  //     {
+  //       path: '',
+  //       component: CartPage,
+  //     },
+  //     {
+  //       path: 'checkout',
+  //       component: CheckoutPage,
+  //       data: { breadcrumb: 'Checkout' },
+  //     },
+  //   ],
+  // },
+
+  // {
+  //   path: 'wishlist',
+  //   component: WishlistPage,
+  //   canActivate: [authGuard],
+  //   data: { breadcrumb: 'Wishlist' },
+  // },
+
+  // {
+  //   path: 'order-success/:id',
+  //   component: OrderSuccessPage,
+  //   canActivate: [authGuard],
+  //   data: { breadcrumb: 'Order Success' },
+  // },
+
+  // {
+  //   path: 'admin',
+  //   loadChildren: () => import('./admin/admin.routes').then((m) => m.adminRoutes),
+  // },
+
+  // {
+  //   path: '**',
+  //   component: NotFound,
+  //   data: { hideLayout: true, hideBreadcrumb: true },
+  // },
 ];

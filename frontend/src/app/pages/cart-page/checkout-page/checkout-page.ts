@@ -89,7 +89,7 @@ export class CheckoutPage implements OnInit {
     return this.getSubtotal() + this.gst() + this.shippingPrice();
   }
 
-  placeOrder() {
+  submitOrder() {
     if (this.checkoutForm.invalid) {
       this.checkoutForm.markAllAsTouched();
       return;
@@ -109,8 +109,8 @@ export class CheckoutPage implements OnInit {
 
     const existingOrders = JSON.parse(localStorage.getItem('orders') || '[]');
     existingOrders.push(order);
-    localStorage.setItem('orders', JSON.stringify(existingOrders));
 
+    localStorage.setItem('orders', JSON.stringify(existingOrders));
     localStorage.setItem('latestOrder', JSON.stringify(order));
 
     this.buyNowItem = null;
