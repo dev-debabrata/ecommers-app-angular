@@ -1,4 +1,13 @@
 {
+  "admin": [
+    {
+      "id": 1,
+      "email": "debu@gmail.com",
+      "password": "123456",
+      "role": "admin"
+    }
+  ],
+
   "users": [
     {
       "firstName": "Amit Kumar",
