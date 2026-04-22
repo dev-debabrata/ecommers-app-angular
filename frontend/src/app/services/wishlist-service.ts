@@ -8,9 +8,10 @@ export class WishlistService {
 
   itemCount = computed(() => this.wishlist().length);
 
-  getWishlist() {
-    return this.wishlist();
-  }
+  getWishlist = this.wishlist.asReadonly();
+  // getWishlist() {
+  //   return this.wishlist();
+  // }
 
   addToWishlist(product: any) {
     if (!this.wishlist().find((p) => p.id === product.id)) {
