@@ -1,8 +1,9 @@
 import { Component, inject } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AdminAuthService } from '../../../services/admin-auth-service';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+
+import { AdminAuthService } from '../../../services/admin-auth-service';
 
 @Component({
   selector: 'app-admin-login',

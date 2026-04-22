@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
+
 import { Header } from '../../components/header/header';
 import { Footer } from '../../components/footer/footer';
 
