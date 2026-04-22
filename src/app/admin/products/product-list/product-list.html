@@ -1,1 +1,56 @@
-<p>product-list works!</p>
+<div class="products">
+  <div class="product-add">
+    <h2>Products</h2>
+
+    <button routerLink="/admin/products/add-product">Add new</button>
+  </div>
+
+  <!-- (keyup)="applyFilter($event)" -->
+  <div class="filter-box">
+    <input type="text" placeholder="Filter (Ex. Mia)" />
+  </div>
+
+  <div class="product-table-box">
+    <table class="product-table">
+      <thead class="product-table-head">
+        <tr>
+          <th>ID</th>
+          <th>Image</th>
+          <th>Name</th>
+          <th>Stock</th>
+          <th>Price</th>
+          <th>Brands</th>
+          <th>Color</th>
+          <th>Category</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr class="product-body">
+          <td>01</td>
+          <td></td>
+          <td>Egge</td>
+          <td>In Stock</td>
+          <td>20</td>
+          <td></td>
+          <td></td>
+          <td></td>
+
+          <td class="product-body-btn">
+            <button>
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button>
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </tr>
+
+        <tr>
+          <!-- <td colspan="11" class="">No data matching the filter</td> -->
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

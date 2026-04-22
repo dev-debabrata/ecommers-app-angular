@@ -1,0 +1,155 @@
+.products {
+  padding: 1rem 2rem;
+}
+
+.products h2 {
+  font-size: 26px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.product-add {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.product-add button {
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1971c2;
+  background: white;
+  border: 1px solid #ced4da;
+}
+
+.product-add button:hover {
+  background: #eee;
+}
+
+.filter-box {
+  margin-top: 2rem;
+  width: 400px;
+}
+
+.filter-box input {
+  padding: 10px;
+  width: 300px;
+  font-size: 14px;
+}
+
+.product-table-box {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  overflow-x: auto;
+  margin-top: 2rem;
+}
+
+.product-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+}
+
+.product-table th:nth-child(1),
+.product-table td:nth-child(1) {
+  width: 40px;
+}
+
+.product-table th:nth-child(9),
+.product-table td:nth-child(9) {
+  width: 140px;
+}
+
+.product-table-head th {
+  background: #f5f7fa;
+  color: #333;
+  font-weight: 600;
+  text-align: left;
+  padding: 12px;
+  border-bottom: 2px solid #e0e0e0;
+  font-size: 14px;
+}
+
+.product-table tbody tr {
+  border-bottom: 1px solid #ddd;
+  transition: background 0.2s ease;
+}
+
+.product-table tbody tr:hover {
+  background: #f9fbfd;
+}
+
+.product-table td {
+  padding: 12px;
+  font-size: 14px;
+  color: #555;
+}
+
+.product-table td[colspan] {
+  text-align: center;
+  padding: 20px;
+  color: #999;
+}
+
+.product-body-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.product-body-btn button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.product-body-btn button:first-child {
+  background: #4caf50;
+  color: white;
+}
+
+.product-body-btn button:first-child:hover {
+  background: #43a047;
+}
+
+.product-body-btn button:last-child {
+  background: #f44336;
+  color: white;
+}
+
+.product-body-btn button:last-child:hover {
+  background: #d32f2f;
+}
+
+.product-body-btn mat-icon {
+  font-size: 24px;
+}
+
+.product-table th,
+.product-table td {
+  text-align: center;
+}
+
+/* .product-table th:nth-child(1),
+.product-table td:nth-child(1),
+.product-table th:nth-child(4),
+.product-table td:nth-child(4),
+.product-table th:nth-child(5),
+.product-table td:nth-child(5),
+.product-table th:nth-child(9),
+.product-table td:nth-child(9),
+.product-table th:nth-child(10),
+.product-table td:nth-child(10),
+.product-table th:nth-child(11),
+.product-table td:nth-child(11) {
+  text-align: center;
+} */

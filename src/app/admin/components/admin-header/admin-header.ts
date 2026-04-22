@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
+
 import { AdminAuthService } from '../../../services/admin-auth-service';
 
 @Component({
@@ -10,7 +11,6 @@ import { AdminAuthService } from '../../../services/admin-auth-service';
   styleUrl: './admin-header.css',
 })
 export class AdminHeader {
-  private router = inject(Router);
   private adminAuthService = inject(AdminAuthService);
 
   logout() {
