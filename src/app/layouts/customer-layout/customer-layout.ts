@@ -47,3 +47,19 @@ export class CustomerLayout {
     }
   }
 }
+
+///////////////////////////////////////////////////////////////
+// constructor() {
+//   this.router.events.subscribe((event) => {
+//     if (event instanceof NavigationEnd) {
+//       let current = this.route.firstChild;
+
+//       while (current?.firstChild) {
+//         current = current.firstChild;
+//       }
+
+//       this.hideLayout = current?.snapshot.data['hideLayout'] ?? false;
+//       this.hideBreadcrumb = current?.snapshot.data['hideBreadcrumb'] ?? false;
+//     }
+//   });
+// }

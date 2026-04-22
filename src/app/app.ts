@@ -1,8 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
-
-import { Header } from './components/header/header';
-import { Footer } from './components/footer/footer';
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -11,47 +8,4 @@ import { Footer } from './components/footer/footer';
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
-export class App {
-  // router = inject(Router);
-  // route = inject(ActivatedRoute);
-  // hideLayout = false;
-  // hideBreadcrumb = false;
-  // constructor() {
-  //   this.router.events.subscribe((event) => {
-  //     if (event instanceof NavigationEnd) {
-  //       this.updateLayoutFlags(this.router.routerState.root);
-  //     }
-  //   });
-  // }
-  // private updateLayoutFlags(route: ActivatedRoute) {
-  //   let current: ActivatedRoute | null = route;
-  //   this.hideLayout = false;
-  //   this.hideBreadcrumb = false;
-  //   while (current) {
-  //     const data = current.snapshot.data;
-  //     if (data?.['hideLayout']) {
-  //       this.hideLayout = true;
-  //     }
-  //     if (data?.['hideBreadcrumb']) {
-  //       this.hideBreadcrumb = true;
-  //     }
-  //     current = current.firstChild!;
-  //   }
-  // }
-}
-
-///////////////////////////////////////////////////////////////
-// constructor() {
-//   this.router.events.subscribe((event) => {
-//     if (event instanceof NavigationEnd) {
-//       let current = this.route.firstChild;
-
-//       while (current?.firstChild) {
-//         current = current.firstChild;
-//       }
-
-//       this.hideLayout = current?.snapshot.data['hideLayout'] ?? false;
-//       this.hideBreadcrumb = current?.snapshot.data['hideBreadcrumb'] ?? false;
-//     }
-//   });
-// }
+export class App {}
