@@ -7,8 +7,6 @@ import { ProductListPage } from './pages/products/product-list-page/product-list
 import { authGuard } from './guards/auth-guard';
 import { NotFound } from './components/not-found/not-found';
 import { CartPage } from './pages/cart-page/cart-page';
-import { CheckoutPage } from './pages/cart-page/checkout-page/checkout-page';
-import { WishlistPage } from './pages/wishlist-page/wishlist-page';
 import { AboutPage } from './pages/about-page/about-page';
 import { ContactPage } from './pages/contact-page/contact-page';
 import { ProfilePage } from './pages/account/profile-page/profile-page';
@@ -85,7 +83,8 @@ export const routes: Routes = [
           },
           {
             path: 'checkout',
-            component: CheckoutPage,
+            loadComponent: () =>
+              import('./pages/cart-page/checkout-page/checkout-page').then((m) => m.CheckoutPage),
             data: { breadcrumb: 'Checkout' },
           },
         ],
@@ -93,7 +92,8 @@ export const routes: Routes = [
 
       {
         path: 'wishlist',
-        component: WishlistPage,
+        loadComponent: () =>
+          import('./pages/wishlist-page/wishlist-page').then((m) => m.WishlistPage),
         canActivate: [authGuard],
         data: { breadcrumb: 'Wishlist' },
       },

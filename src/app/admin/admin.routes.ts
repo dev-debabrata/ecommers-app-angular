@@ -5,7 +5,6 @@ import { Dashboard } from './dashboard/dashboard';
 import { AdminLogin } from './auth/admin-login/admin-login';
 import { adminAuthGuard } from '../guards/admin-auth-guard';
 import { ProductList } from './products/product-list/product-list';
-import { AddProduct } from './products/add-product/add-product';
 import { Users } from './users/users';
 import { Orders } from './orders/orders';
 
@@ -13,6 +12,7 @@ export const adminRoutes: Routes = [
   {
     path: 'login',
     component: AdminLogin,
+    canActivate: [adminAuthGuard],
   },
 
   {
@@ -27,14 +27,25 @@ export const adminRoutes: Routes = [
 
       {
         path: 'users',
-        component: Users,
+        children: [
+          { path: '', component: Users },
+          {
+            path: ':id',
+            loadComponent: () =>
+              import('./users/user-detail/user-detail').then((m) => m.UserDetail),
+          },
+        ],
       },
 
       {
         path: 'products',
         children: [
           { path: '', component: ProductList },
-          { path: 'add-product', component: AddProduct },
+          {
+            path: 'add-product',
+            loadComponent: () =>
+              import('./products/add-product/add-product').then((m) => m.AddProduct),
+          },
         ],
       },
 
