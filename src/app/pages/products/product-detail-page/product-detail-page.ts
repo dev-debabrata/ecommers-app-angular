@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject } from '@angular/core';
+import { Component, DestroyRef, inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -22,17 +22,18 @@ import { WishlistService } from '../../../services/wishlist-service';
   styleUrl: './product-detail-page.css',
 })
 export class ProductDetailPage {
-  public wishlistService = inject(WishlistService);
-
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private authService = inject(AuthService);
   private productService = inject(ProductService);
   private cartService = inject(CartService);
+  private wishlistService = inject(WishlistService);
 
   private destroyRef = inject(DestroyRef);
 
   private snackBar = inject(MatSnackBar);
+
+  @Input() showWishlistIcon: boolean = true;
 
   product: Product | null = null;
   isLoading = true;
@@ -92,7 +93,16 @@ export class ProductDetailPage {
     this.router.navigate(['/cart']);
   }
 
-  toggleWishlist(product: any) {
+  isWishlisted(productId: number): boolean {
+    return this.authService.isLoggedIn() && this.wishlistService.isInWishlist(productId);
+  }
+
+  addToWishlist(product: any) {
+    if (!this.authService.isLoggedIn()) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
     if (this.wishlistService.isInWishlist(product.id)) {
       this.wishlistService.removeFromWishlist(product.id);
     } else {

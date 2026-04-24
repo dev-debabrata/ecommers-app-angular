@@ -31,21 +31,6 @@
               <mat-icon [ngClass]="{ 'active-wish': isWishlisted(product.id) }">
                 {{ isWishlisted(product.id) ? 'favorite' : 'favorite_border' }}
               </mat-icon>
-              <!-- <mat-icon
-                [ngClass]="{
-                  'active-wish':
-                    authService.isLoggedIn() && wishlistService.isInWishlist(product.id),
-                }"
-              >
-                {{
-                  authService.isLoggedIn() && wishlistService.isInWishlist(product.id)
-                    ? 'favorite'
-                    : 'favorite_border'
-                }}
-              </mat-icon> -->
-              <!-- <mat-icon [ngClass]="{ 'active-wish': wishlistService.isInWishlist(product.id) }">
-                {{ wishlistService.isInWishlist(product.id) ? 'favorite' : 'favorite_border' }}
-              </mat-icon> -->
             </button>
           </div>
         }
@@ -85,3 +70,19 @@
     }
   </div>
 }
+
+<!-- <mat-icon
+                [ngClass]="{
+                  'active-wish':
+                    authService.isLoggedIn() && wishlistService.isInWishlist(product.id),
+                }"
+              >
+                {{
+                  authService.isLoggedIn() && wishlistService.isInWishlist(product.id)
+                    ? 'favorite'
+                    : 'favorite_border'
+                }}
+              </mat-icon> -->
+<!-- <mat-icon [ngClass]="{ 'active-wish': wishlistService.isInWishlist(product.id) }">
+                {{ wishlistService.isInWishlist(product.id) ? 'favorite' : 'favorite_border' }}
+              </mat-icon> -->
