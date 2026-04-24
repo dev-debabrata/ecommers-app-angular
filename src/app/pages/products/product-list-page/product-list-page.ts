@@ -22,10 +22,10 @@ import { AuthService } from '../../../services/auth-service';
   styleUrl: './product-list-page.css',
 })
 export class ProductListPage {
-  private wishlistService = inject(WishlistService);
   private authService = inject(AuthService);
   private router = inject(Router);
   private productService = inject(ProductService);
+  private wishlistService = inject(WishlistService);
 
   private destroyRef = inject(DestroyRef);
 

@@ -1,9 +1,9 @@
 <div class="wishlist-container">
   <h2 class="wishlist-title">My Wishlist</h2>
 
-  @if (wishlistService.getWishlist().length > 0) {
+  @if (wishlistCount() > 0) {
     <div class="wishlist-container-grid">
-      @for (product of wishlistService.getWishlist(); track $index) {
+      @for (product of wishlistItems(); track product.id) {
         <div (click)="viewDetails(product.id)" class="wishlist-card">
           <div class="img-box">
             <img [src]="product.images[0]" [alt]="product.title" />
@@ -30,10 +30,7 @@
           <div class="actions">
             <button (click)="addToCart(product, $event)" class="cart-btn">Add to Cart</button>
 
-            <button
-              class="remove-btn"
-              (click)="wishlistService.removeFromWishlist(product.id); $event.stopPropagation()"
-            >
+            <button class="remove-btn" (click)="removeFromWishlist(product.id, $event)">
               Remove
             </button>
           </div>
