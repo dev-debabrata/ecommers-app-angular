@@ -45,12 +45,14 @@ export const routes: Routes = [
       {
         path: 'login',
         component: LoginPage,
+        canActivate: [authGuard],
         data: { hideLayout: true },
       },
 
       {
         path: 'signup',
         component: SignupPage,
+        canActivate: [authGuard],
         data: { hideLayout: true },
       },
 

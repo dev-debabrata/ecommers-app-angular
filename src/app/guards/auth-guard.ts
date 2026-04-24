@@ -6,19 +6,39 @@ import { AuthService } from '../services/auth-service';
 
 export const authGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
-  const snackBar = inject(MatSnackBar);
   const authService = inject(AuthService);
 
-  if (authService.isLoggedIn()) {
+  const snackBar = inject(MatSnackBar);
+
+  const isLoggedIn = authService.isLoggedIn();
+  const url = state.url;
+
+  const isAuthPage = url.startsWith('/login') || url.startsWith('/signup');
+
+  if (isLoggedIn && isAuthPage) {
+    snackBar.open('You are already logged in', 'Close', {
+      duration: 3000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+      panelClass: ['snackbar-error'],
+    });
+    return router.createUrlTree(['/']);
+  }
+
+  if (!isLoggedIn && isAuthPage) {
     return true;
   }
 
-  snackBar.open('Please login first!', 'Close', {
-    duration: 3000,
-    horizontalPosition: 'center',
-    verticalPosition: 'top',
-    panelClass: ['snackbar-error'],
-  });
+  if (!isLoggedIn) {
+    snackBar.open('Please login first', 'Close', {
+      duration: 3000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+      panelClass: ['snackbar-error'],
+    });
+    localStorage.setItem('redirectUrl', state.url);
+    return router.createUrlTree(['/login']);
+  }
 
-  return router.createUrlTree(['/login']);
+  return true;
 };

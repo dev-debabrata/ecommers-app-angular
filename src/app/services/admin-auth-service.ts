@@ -17,6 +17,10 @@ export class AdminAuthService {
     return this.http.get<Admin[]>(`${this.apiUrl}?email=${email}&password=${password}`);
   }
 
+  isLoggedIn(): boolean {
+    return !!localStorage.getItem('admin');
+  }
+
   logout() {
     localStorage.removeItem('admin');
     this.router.navigate(['/admin/login']);
