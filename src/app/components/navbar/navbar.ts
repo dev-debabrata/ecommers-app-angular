@@ -59,6 +59,10 @@ export class Navbar {
     Jewellery: ['Gold', 'Silver', 'Rings'],
   };
 
+  get authReady() {
+    return this.authService.isAuthReady();
+  }
+
   get isLoggedIn() {
     return this.authService.isLoggedIn();
   }
@@ -68,7 +72,7 @@ export class Navbar {
   }
 
   logout() {
-    this.authService.removeToken();
+    this.authService.logout();
     this.isMenuOpen = false;
 
     this.snackBar.open('Logged out successfully', 'Close', {

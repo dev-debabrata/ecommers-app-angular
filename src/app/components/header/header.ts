@@ -47,6 +47,10 @@ export class Header {
   showMenu = false;
   openDropdownIndex: number | null = null;
 
+  get authReady() {
+    return this.authService.isAuthReady();
+  }
+
   get isLoggedIn() {
     return this.authService.isLoggedIn();
   }
