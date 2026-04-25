@@ -1,6 +1,12 @@
 export interface Admin {
-  id: number;
+  uid?: string;
   email: string;
-  password: string;
-  role: string;
+  role: 'admin';
 }
+
+// export interface Admin {
+//   id: number;
+//   email: string;
+//   password: string;
+//   role: string;
+// }

@@ -54,8 +54,31 @@ export class AuthService {
   async login(email: string, password: string) {
     const res = await signInWithEmailAndPassword(this.auth, email, password);
 
+    const uid = res.user.uid;
+
+    const userRef = doc(this.firestore, 'users/' + uid);
+    const snap = await getDoc(userRef);
+
+    if (!snap.exists()) {
+      await signOut(this.auth);
+      throw new Error('User not found');
+    }
+
+    const role = snap.data()?.['role'];
+
+    if (role !== 'user') {
+      await signOut(this.auth);
+      throw new Error('Unauthorized');
+    }
+
     return res.user;
   }
+
+  // async login(email: string, password: string) {
+  //   const res = await signInWithEmailAndPassword(this.auth, email, password);
+
+  //   return res.user;
+  // }
 
   async logout() {
     return await signOut(this.auth);
