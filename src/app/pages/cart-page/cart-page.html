@@ -9,7 +9,8 @@
 
       <div class="divider"></div>
 
-      @for (item of cart(); track item.id) {
+      <!-- @for (item of cart(); track item.id) { -->
+      @for (item of cart(); track item.id ?? $index) {
         <div class="cart-item">
           <!-- IMAGE -->
           <div class="cart-image">

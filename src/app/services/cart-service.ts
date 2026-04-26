@@ -9,7 +9,7 @@ import {
   deleteDoc,
 } from '@angular/fire/firestore';
 
-import { Auth } from '@angular/fire/auth';
+import { Auth, authState } from '@angular/fire/auth';
 
 import { Product } from '../models/products';
 import { CartItem } from '../models/cart-item';
@@ -30,7 +30,7 @@ export class CartService {
   );
 
   constructor() {
-    this.auth.onAuthStateChanged((user) => {
+    authState(this.auth).subscribe((user) => {
       if (user) {
         this.loadCart();
       } else {
@@ -38,6 +38,16 @@ export class CartService {
       }
     });
   }
+
+  // constructor() {
+  //   this.auth.onAuthStateChanged((user) => {
+  //     if (user) {
+  //       this.loadCart();
+  //     } else {
+  //       this.cart.set([]);
+  //     }
+  //   });
+  // }
 
   loadCart() {
     const uid = this.auth.currentUser?.uid;
@@ -47,15 +57,37 @@ export class CartService {
     const cartRef = collection(this.firestore, `users/${uid}/cart`);
 
     collectionData(cartRef).subscribe((items: any) => {
-      this.cart.set(
-        items.map((item: any) => ({
-          ...item,
-          quantity: item.quantity ?? 1,
-          discount: item.discount ?? 0,
-        })),
-      );
+      const updated = items.map((item: any) => ({
+        ...item,
+        quantity: item.quantity ?? 1,
+        discount: item.discount ?? 0,
+      }));
+
+      const current = this.cart();
+
+      if (JSON.stringify(current) !== JSON.stringify(updated)) {
+        this.cart.set(updated);
+      }
     });
   }
+
+  // loadCart() {
+  //   const uid = this.auth.currentUser?.uid;
+
+  //   if (!uid) return;
+
+  //   const cartRef = collection(this.firestore, `users/${uid}/cart`);
+
+  //   collectionData(cartRef).subscribe((items: any) => {
+  //     this.cart.set(
+  //       items.map((item: any) => ({
+  //         ...item,
+  //         quantity: item.quantity ?? 1,
+  //         discount: item.discount ?? 0,
+  //       })),
+  //     );
+  //   });
+  // }
 
   async addToCart(product: Product) {
     const uid = this.auth.currentUser?.uid;

@@ -9,7 +9,7 @@ import {
   deleteDoc,
 } from '@angular/fire/firestore';
 
-import { Auth } from '@angular/fire/auth';
+import { Auth, authState } from '@angular/fire/auth';
 
 import { Product } from '../models/products';
 
@@ -27,7 +27,7 @@ export class WishlistService {
   getWishlist = this.wishlist.asReadonly();
 
   constructor() {
-    this.auth.onAuthStateChanged((user) => {
+    authState(this.auth).subscribe((user) => {
       if (user) {
         this.loadWishlist();
       } else {
@@ -35,6 +35,16 @@ export class WishlistService {
       }
     });
   }
+
+  // constructor() {
+  //   this.auth.onAuthStateChanged((user) => {
+  //     if (user) {
+  //       this.loadWishlist();
+  //     } else {
+  //       this.wishlist.set([]);
+  //     }
+  //   });
+  // }
 
   loadWishlist() {
     const uid = this.auth.currentUser?.uid;

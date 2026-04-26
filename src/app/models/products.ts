@@ -13,6 +13,18 @@ export interface Product {
   rating?: number;
 }
 
+export type ProductField =
+  | 'title'
+  | 'price'
+  | 'discount'
+  | 'stock'
+  | 'brand'
+  | 'color'
+  | 'category'
+  | 'image'
+  | 'description'
+  | 'rating';
+
 // export interface Review {
 //   rating: number;
 //   comment: string;
