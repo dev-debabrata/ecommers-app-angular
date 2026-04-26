@@ -116,7 +116,7 @@ export class AuthService {
       firstName,
       lastName,
       displayName: user.displayName || '',
-      phoneNumber: [],
+      phoneNumber: user.phoneNumber || '',
     };
   }
 

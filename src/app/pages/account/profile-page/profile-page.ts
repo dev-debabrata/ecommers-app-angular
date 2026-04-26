@@ -15,9 +15,13 @@ export class ProfilePage {
   private authService = inject(AuthService);
   private router = inject(Router);
 
-  user = this.authService.getUser();
+  user: any = null;
 
   activeSection = 'orders';
+
+  async ngOnInit() {
+    this.user = await this.authService.getFullUser();
+  }
 
   changeSection(section: string) {
     this.activeSection = section;

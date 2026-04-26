@@ -58,7 +58,7 @@ export class CheckoutPage implements OnInit {
     return (this.submitted() || this.touchedFields()[field]) && !this.checkoutForm()[field];
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     const item = localStorage.getItem('buyNowItem');
 
     if (item) {
@@ -70,17 +70,41 @@ export class CheckoutPage implements OnInit {
       return;
     }
 
-    const user = this.authService.getUser();
+    const user: any = await this.authService.getFullUser();
 
     if (user) {
       this.checkoutForm.update((form) => ({
         ...form,
         fullName: user.firstName + ' ' + user.lastName,
         email: user.email,
-        phone: user.phoneNumber?.[0] || '',
+        phone: user.phoneNumber || '',
       }));
     }
   }
+
+  // ngOnInit(): void {
+  //   const item = localStorage.getItem('buyNowItem');
+
+  //   if (item) {
+  //     this.buyNowItem = JSON.parse(item);
+  //   }
+
+  //   if (this.cartService.cart().length === 0 && !this.buyNowItem) {
+  //     this.router.navigate(['/']);
+  //     return;
+  //   }
+
+  //   const user = this.authService.getUser();
+
+  //   if (user) {
+  //     this.checkoutForm.update((form) => ({
+  //       ...form,
+  //       fullName: user.firstName + ' ' + user.lastName,
+  //       email: user.email,
+  //       phone: user.phoneNumber?.[0] || '',
+  //     }));
+  //   }
+  // }
 
   shippingPrice = computed(() => (this.checkoutForm().shippingMethod === 'express' ? 110 : 20));
 
