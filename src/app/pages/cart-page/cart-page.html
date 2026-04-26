@@ -35,8 +35,8 @@
             <span class="small-text">
               <b>Price:</b> ₹{{ item.price | number: '1.2-2' }}
               <span class="discount">
-                @if (item.discountPercentage) {
-                  ({{ item.discountPercentage }}% OFF)
+                @if (item.discount) {
+                  ({{ item.discount }}% OFF)
                 }
               </span>
             </span>

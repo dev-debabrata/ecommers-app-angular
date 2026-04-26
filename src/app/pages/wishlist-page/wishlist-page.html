@@ -4,6 +4,50 @@
   @if (wishlistCount() > 0) {
     <div class="wishlist-container-grid">
       @for (product of wishlistItems(); track product.id) {
+        <div (click)="viewDetails(product.id!)" class="wishlist-card">
+          <div class="img-box">
+            <img [src]="product.image" [alt]="product.title" />
+          </div>
+
+          <div class="details">
+            <h3>{{ product.title }}</h3>
+
+            <div class="rating">
+              @for (star of getRating().getStars(product.rating || 0); track $index) {
+                <span [ngClass]="star">&#9733;</span>
+              }
+              <span class="rating-number">({{ product.rating || 0 }})</span>
+            </div>
+
+            <p><strong>Category:</strong> {{ product.category }}</p>
+
+            <p class="price">
+              ₹ {{ product.price }}
+              <span class="discount"> ({{ product.discount || 0 }}% OFF) </span>
+            </p>
+          </div>
+
+          <div class="actions">
+            <button (click)="addToCart(product, $event)" class="cart-btn">Add to Cart</button>
+
+            <button class="remove-btn" (click)="removeFromWishlist(product.id!, $event)">
+              Remove
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  } @else {
+    <p class="empty-msg">Wishlist is empty!</p>
+  }
+</div>
+
+<!-- <div class="wishlist-container">
+  <h2 class="wishlist-title">My Wishlist</h2>
+
+  @if (wishlistCount() > 0) {
+    <div class="wishlist-container-grid">
+      @for (product of wishlistItems(); track product.id) {
         <div (click)="viewDetails(product.id)" class="wishlist-card">
           <div class="img-box">
             <img [src]="product.images[0]" [alt]="product.title" />
@@ -40,7 +84,7 @@
   } @else {
     <p class="empty-msg">Wishlist is empty!</p>
   }
-</div>
+</div> -->
 
 <!-- Empty State -->
 

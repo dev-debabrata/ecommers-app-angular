@@ -1,11 +1,22 @@
 export interface CartItem {
-  id: number;
+  id: string;
   name: string;
   price: number;
-  discountPercentage?: number;
-  quantity: number;
-
+  discount: number;
   image: string;
   category: string;
   stock: number;
+  quantity: number;
 }
+
+// export interface CartItem {
+//   id: number;
+//   name: string;
+//   price: number;
+//   discountPercentage?: number;
+//   quantity: number;
+
+//   image: string;
+//   category: string;
+//   stock: number;
+// }

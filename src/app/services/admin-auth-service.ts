@@ -31,29 +31,84 @@ export class AdminAuthService {
     const snap = await getDoc(adminRef);
 
     if (!snap.exists()) {
-      await signOut(this.auth);
       throw new Error('Admin not found');
     }
 
     const role = snap.data()?.['role'];
 
     if (role !== 'admin') {
-      await signOut(this.auth);
       throw new Error('Unauthorized');
     }
+
+    localStorage.setItem('adminSession', 'true');
+
+    await signOut(this.auth);
 
     return result.user;
   }
 
   isLoggedIn(): boolean {
-    return !!this.auth.currentUser;
+    return localStorage.getItem('adminSession') === 'true';
   }
 
   async logout() {
-    await signOut(this.auth);
+    localStorage.removeItem('adminSession');
     this.router.navigate(['/admin/login']);
   }
 }
+
+// async loginAdmin(email: string, password: string) {
+//   const result = await signInWithEmailAndPassword(this.auth, email, password);
+
+//   const uid = result.user.uid;
+
+//   const adminRef = doc(this.firestore, 'users/' + uid);
+//   const snap = await getDoc(adminRef);
+
+//   if (!snap.exists()) {
+//     throw new Error('Admin not found');
+//   }
+
+//   const role = snap.data()?.['role'];
+
+//   if (role !== 'admin') {
+//     throw new Error('Unauthorized');
+//   }
+
+//   localStorage.setItem('adminSession', 'true');
+
+//   return result.user;
+// }
+
+// async loginAdmin(email: string, password: string) {
+//   const result = await signInWithEmailAndPassword(this.auth, email, password);
+
+//   const uid = result.user.uid;
+
+//   const adminRef = doc(this.firestore, 'users/' + uid);
+//   const snap = await getDoc(adminRef);
+
+//   if (!snap.exists()) {
+//     await signOut(this.auth);
+//     throw new Error('Admin not found');
+//   }
+
+//   const role = snap.data()?.['role'];
+
+//   if (role !== 'admin') {
+//     await signOut(this.auth);
+//     throw new Error('Unauthorized');
+//   }
+
+//   return result.user;
+// }
+
+// isLoggedIn(): boolean {
+//   return !!this.auth.currentUser;
+// }
+
+///////////////////////////////////////////////////////////////////////////
+
 // import { inject, Injectable } from '@angular/core';
 // import { HttpClient } from '@angular/common/http';
 // import { Router } from '@angular/router';

@@ -26,12 +26,11 @@ export class ProductListPage {
   private router = inject(Router);
   private productService = inject(ProductService);
   private wishlistService = inject(WishlistService);
-
   private destroyRef = inject(DestroyRef);
 
-  @Input() showCategories: boolean = true;
+  @Input() showCategories = true;
   @Input() limit: number | null = null;
-  @Input() showWishlistIcon: boolean = true;
+  @Input() showWishlistIcon = true;
 
   products: Product[] = [];
   isLoading = true;
@@ -43,10 +42,10 @@ export class ProductListPage {
 
   ngOnInit(): void {
     const productSub = this.productService.getProducts().subscribe({
-      next: (res: any) => {
+      next: (res: Product[]) => {
         this.isLoading = false;
 
-        let products = res.products;
+        let products = res;
 
         if (this.limit) {
           products = products.slice(0, this.limit);
@@ -56,11 +55,10 @@ export class ProductListPage {
 
         if (this.showCategories) {
           const cats = this.products.map((p) => p.category);
-
           const uniqueCats = Array.from(new Set(cats));
-
           this.categories = ['All', ...uniqueCats];
         }
+
         console.log(res);
       },
 
@@ -69,6 +67,7 @@ export class ProductListPage {
         this.errorMsg = true;
       },
     });
+
     this.destroyRef.onDestroy(() => {
       productSub.unsubscribe();
     });
@@ -87,24 +86,24 @@ export class ProductListPage {
     });
   }
 
-  isWishlisted(productId: number): boolean {
+  isWishlisted(productId: string): boolean {
     return this.authService.isLoggedIn() && this.wishlistService.isInWishlist(productId);
   }
 
-  addToWishlist(product: any) {
+  addToWishlist(product: Product) {
     if (!this.authService.isLoggedIn()) {
       this.router.navigate(['/login']);
       return;
     }
 
-    if (this.wishlistService.isInWishlist(product.id)) {
-      this.wishlistService.removeFromWishlist(product.id);
+    if (this.wishlistService.isInWishlist(product.id!)) {
+      this.wishlistService.removeFromWishlist(product.id!);
     } else {
       this.wishlistService.addToWishlist(product);
     }
   }
 
-  viewDetails(id: number) {
+  viewDetails(id: string) {
     this.router.navigate(['/products', id]);
   }
 
@@ -112,6 +111,121 @@ export class ProductListPage {
     return Rating;
   }
 }
+
+// import { Component, DestroyRef, inject, Input } from '@angular/core';
+// import { CommonModule } from '@angular/common';
+// import { FormsModule } from '@angular/forms';
+// import { Router } from '@angular/router';
+// import { MatIcon } from '@angular/material/icon';
+
+// import { ProductService } from '../../../services/product-service';
+// import { Product } from '../../../models/products';
+// import { Rating } from '../../../utils/rating.util';
+// import { Error } from '../../../components/error/error';
+// import { TruncatePipe } from '../../../pipes/truncate-pipe';
+// import { Loader } from '../../../components/loader/loader';
+// import { Highlight } from '../../../directives/highlight';
+// import { WishlistService } from '../../../services/wishlist-service';
+// import { AuthService } from '../../../services/auth-service';
+
+// @Component({
+//   selector: 'app-product-list-page',
+//   standalone: true,
+//   imports: [CommonModule, FormsModule, TruncatePipe, Highlight, Loader, Error, MatIcon],
+//   templateUrl: './product-list-page.html',
+//   styleUrl: './product-list-page.css',
+// })
+// export class ProductListPage {
+//   private authService = inject(AuthService);
+//   private router = inject(Router);
+//   private productService = inject(ProductService);
+//   private wishlistService = inject(WishlistService);
+
+//   private destroyRef = inject(DestroyRef);
+
+//   @Input() showCategories: boolean = true;
+//   @Input() limit: number | null = null;
+//   @Input() showWishlistIcon: boolean = true;
+
+//   products: Product[] = [];
+//   isLoading = true;
+//   errorMsg = false;
+
+//   searchTerm = '';
+//   selectedCategory = 'All';
+//   categories: string[] = [];
+
+//   ngOnInit(): void {
+//     const productSub = this.productService.getProducts().subscribe({
+//       next: (res: any) => {
+//         this.isLoading = false;
+
+//         let products = res.products;
+
+//         if (this.limit) {
+//           products = products.slice(0, this.limit);
+//         }
+
+//         this.products = products;
+
+//         if (this.showCategories) {
+//           const cats = this.products.map((p) => p.category);
+
+//           const uniqueCats = Array.from(new Set(cats));
+
+//           this.categories = ['All', ...uniqueCats];
+//         }
+//         console.log(res);
+//       },
+
+//       error: () => {
+//         this.isLoading = false;
+//         this.errorMsg = true;
+//       },
+//     });
+//     this.destroyRef.onDestroy(() => {
+//       productSub.unsubscribe();
+//     });
+//   }
+
+//   getFilteredProducts(): Product[] {
+//     const search = this.searchTerm.toLowerCase();
+
+//     return this.products.filter((product) => {
+//       const matchesSearch = product.title.toLowerCase().includes(search);
+
+//       const matchesCategory =
+//         this.selectedCategory === 'All' || product.category === this.selectedCategory;
+
+//       return matchesSearch && matchesCategory;
+//     });
+//   }
+
+//   isWishlisted(productId: number): boolean {
+//     return this.authService.isLoggedIn() && this.wishlistService.isInWishlist(productId);
+//   }
+
+//   addToWishlist(product: any) {
+//     if (!this.authService.isLoggedIn()) {
+//       this.router.navigate(['/login']);
+//       return;
+//     }
+
+//     if (this.wishlistService.isInWishlist(product.id)) {
+//       this.wishlistService.removeFromWishlist(product.id);
+//     } else {
+//       this.wishlistService.addToWishlist(product);
+//     }
+//   }
+
+//   viewDetails(id: number) {
+//     this.router.navigate(['/products', id]);
+//   }
+
+//   getRating() {
+//     return Rating;
+//   }
+// }
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // @Input() showCategories: boolean = true;

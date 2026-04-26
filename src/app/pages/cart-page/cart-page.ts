@@ -18,11 +18,11 @@ export class CartPage {
   cart = this.cartService.cart;
   total = this.cartService.totalPrice;
 
-  remove(id: number) {
+  remove(id: string) {
     this.cartService.removeItem(id);
   }
 
-  changeQty(id: number, event: Event) {
+  changeQty(id: string, event: Event) {
     const value = +(event.target as HTMLSelectElement).value;
     this.cartService.updateQuantity(id, value);
   }

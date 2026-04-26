@@ -13,7 +13,7 @@ export const authGuard: CanActivateFn = (route, state) => {
   return authService.firebaseUser$.pipe(
     take(1),
     map((user) => {
-      const isLoggedIn = !!user;
+      const isLoggedIn = authService.isLoggedIn();
       const url = state.url;
 
       const isAuthPage = url.startsWith('/login') || url.startsWith('/signup');

@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router';
+
 import { ProductService } from '../../services/product-service';
 import { filter } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { Product } from '../../models/products';
 
 @Component({
   selector: 'app-breadcrumb',
@@ -17,7 +19,6 @@ export class Breadcrumb {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-
     private productService: ProductService,
   ) {
     this.buildBreadcrumbs();
@@ -27,19 +28,22 @@ export class Breadcrumb {
     });
   }
 
-  private buildBreadcrumbs() {
+  private async buildBreadcrumbs() {
     if (this.router.url === '/') {
       this.breadcrumbs = [];
       return;
     }
 
     this.breadcrumbs = [{ label: 'Home', url: '/' }];
+
     let currentRoute = this.route.root;
     let url = '';
 
     while (currentRoute.firstChild) {
       currentRoute = currentRoute.firstChild;
+
       const routeURL = currentRoute.snapshot.url.map((s) => s.path).join('/');
+
       if (!routeURL) continue;
 
       url += `/${routeURL}`;
@@ -53,19 +57,91 @@ export class Breadcrumb {
       ) {
         this.breadcrumbs = [...this.breadcrumbs, { label: staticLabel, url }];
       }
-      // if (staticLabel && staticLabel !== 'Home') {
-      //   this.breadcrumbs.push({ label: staticLabel, url });
-      // }
 
       const postId = currentRoute.snapshot.params['id'];
+
       if (postId) {
-        this.productService.getProductById(+postId).subscribe((post) => {
-          this.breadcrumbs.push({ label: post.title, url });
-        });
+        const post = await this.productService.getProductById(postId);
+
+        if (post) {
+          this.breadcrumbs.push({
+            label: (post as Product).title,
+            url,
+          });
+        }
       }
     }
   }
 }
+
+// import { Component } from '@angular/core';
+// import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router';
+// import { ProductService } from '../../services/product-service';
+// import { filter } from 'rxjs';
+// import { CommonModule } from '@angular/common';
+
+// @Component({
+//   selector: 'app-breadcrumb',
+//   standalone: true,
+//   imports: [CommonModule, RouterLink],
+//   templateUrl: './breadcrumb.html',
+//   styleUrl: './breadcrumb.css',
+// })
+// export class Breadcrumb {
+//   breadcrumbs: { label: string; url: string }[] = [];
+
+//   constructor(
+//     private router: Router,
+//     private route: ActivatedRoute,
+
+//     private productService: ProductService,
+//   ) {
+//     this.buildBreadcrumbs();
+
+//     this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
+//       this.buildBreadcrumbs();
+//     });
+//   }
+
+//   private buildBreadcrumbs() {
+//     if (this.router.url === '/') {
+//       this.breadcrumbs = [];
+//       return;
+//     }
+
+//     this.breadcrumbs = [{ label: 'Home', url: '/' }];
+//     let currentRoute = this.route.root;
+//     let url = '';
+
+//     while (currentRoute.firstChild) {
+//       currentRoute = currentRoute.firstChild;
+//       const routeURL = currentRoute.snapshot.url.map((s) => s.path).join('/');
+//       if (!routeURL) continue;
+
+//       url += `/${routeURL}`;
+
+//       const staticLabel = currentRoute.snapshot.data['breadcrumb'];
+
+//       if (
+//         staticLabel &&
+//         staticLabel !== 'Home' &&
+//         this.breadcrumbs[this.breadcrumbs.length - 1]?.label !== staticLabel
+//       ) {
+//         this.breadcrumbs = [...this.breadcrumbs, { label: staticLabel, url }];
+//       }
+//       // if (staticLabel && staticLabel !== 'Home') {
+//       //   this.breadcrumbs.push({ label: staticLabel, url });
+//       // }
+
+//       const postId = currentRoute.snapshot.params['id'];
+//       if (postId) {
+//         this.productService.getProductById(+postId).subscribe((post) => {
+//           this.breadcrumbs.push({ label: post.title, url });
+//         });
+//       }
+//     }
+//   }
+// }
 
 // import { Component } from '@angular/core';
 // import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
