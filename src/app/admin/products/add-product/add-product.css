@@ -49,8 +49,10 @@ textarea {
 
 input:focus,
 textarea:focus {
-  border-color: #111827;
-  box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.08);
+  border-color: #3f51b5;
+  box-shadow: 0 0 5px rgba(63, 81, 181, 0.4);
+  /* border-color: #111827;
+  box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.08); */
 }
 
 textarea {
@@ -63,6 +65,56 @@ textarea {
 }
 
 .btn {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+/* CREATE (Add Product) → Green */
+.create-btn {
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  padding: 13px 28px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.create-btn:hover {
+  background-color: #218838;
+}
+
+/* UPDATE → Blue */
+.update-btn {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 13px 28px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.update-btn:hover {
+  background-color: #0056b3;
+}
+
+/* CANCEL → Red */
+.cancel-btn {
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  padding: 13px 28px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.cancel-btn:hover {
+  background-color: #b02a37;
+}
+
+/* .btn {
   width: 100%;
   display: flex;
   justify-content: flex-end;
@@ -79,9 +131,23 @@ button {
   font-weight: 600;
 }
 
+.btn {
+  display: flex;
+  gap: 10px;
+}
+
+.cancel-btn {
+  background: #ccc;
+  color: #333;
+}
+
+.cancel-btn:hover {
+  background: #999;
+}
+
 button:hover {
   background: #1f2937;
-}
+} */
 
 small {
   color: red;

@@ -1,4 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
+import { CommonModule, Location } from '@angular/common';
 import { ProductService } from '../../../services/product-service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Product, ProductField } from '../../../models/products';
@@ -8,7 +9,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-add-product',
   standalone: true,
-  imports: [FormsModule, MatSnackBarModule],
+  imports: [FormsModule, CommonModule, MatSnackBarModule],
   templateUrl: './add-product.html',
   styleUrl: './add-product.css',
 })
@@ -16,6 +17,8 @@ export class AddProduct {
   private productService = inject(ProductService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private location = inject(Location);
+
   private snackBar = inject(MatSnackBar);
 
   editId: string | null = null;
@@ -79,8 +82,17 @@ export class AddProduct {
     const product = this.product();
     const touched = this.touched();
 
-    return !product[field] && touched[field];
+    const value = product[field];
+
+    return touched[field] && (value === '' || value === null || value === undefined);
   }
+
+  // isInvalid(field: ProductField): boolean {
+  //   const product = this.product();
+  //   const touched = this.touched();
+
+  //   return !product[field] && touched[field];
+  // }
 
   isFormValid = computed(() => {
     const p = this.product();
@@ -89,7 +101,7 @@ export class AddProduct {
       p.title &&
       p.price > 0 &&
       (p.discount ?? 0) >= 0 &&
-      p.stock > 0 &&
+      p.stock >= 0 &&
       p.brand &&
       p.color &&
       p.category &&
@@ -132,6 +144,14 @@ export class AddProduct {
     }
 
     this.router.navigate(['/admin/products']);
+  }
+
+  //   onCancel() {
+  //   this.router.navigate(['/admin/products']);
+  // }
+
+  onCancel() {
+    this.location.back();
   }
 }
 
