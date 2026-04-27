@@ -39,7 +39,7 @@
           <img [src]="product.image" [alt]="product.title" class="product-img" />
         </div>
 
-        <h3>{{ product.title }}</h3>
+        <h3>{{ product.title || '' | truncate: 35 }}</h3>
 
         <div class="rating">
           @for (star of getRating().getStars(product.rating || 0); track $index) {
@@ -49,10 +49,25 @@
         </div>
 
         <p class="category"><strong>Category:</strong> {{ product.category }}</p>
+        <p class="brand"><strong>Brand:</strong> {{ product.brand }}</p>
 
-        <p><strong>Price:</strong> {{ product.price | currency: 'INR' }}</p>
+        <div class="price-box">
+          <div>
+            @if (product.discount && product.discount > 0) {
+              <span class="discount"> -{{ product.discount }}% </span>
+            }
 
-        <p class="discount"><strong>Discount:</strong> {{ product.discount || 0 }}%</p>
+            <span class="final-price"> ₹{{ getDiscountPrice(product) | number: '1.0-0' }}.00</span>
+          </div>
+
+          <p class="original-price-mrp">
+            M.R.P.: <span class="original-price">₹{{ product.price | number: '1.0-0' }}.00</span>
+          </p>
+        </div>
+
+        <!-- <p><strong>Price:</strong> {{ product.price | currency: 'INR' }}</p> -->
+
+        <!-- <p class="discount"><strong>Discount:</strong> {{ product.discount || 0 }}%</p> -->
 
         <p>{{ product.description || '' | truncate: 80 }}</p>
 

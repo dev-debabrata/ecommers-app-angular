@@ -43,9 +43,11 @@ export class ProductListPage {
   ngOnInit(): void {
     const productSub = this.productService.getProducts().subscribe({
       next: (res: Product[]) => {
+        const sorted = [...res].sort((a: any, b: any) => (b.createdAt || 0) - (a.createdAt || 0));
+
         this.isLoading = false;
 
-        let products = res;
+        let products = sorted;
 
         if (this.limit) {
           products = products.slice(0, this.limit);
@@ -71,6 +73,12 @@ export class ProductListPage {
     this.destroyRef.onDestroy(() => {
       productSub.unsubscribe();
     });
+  }
+
+  getDiscountPrice(product: Product): number {
+    if (!product.discount) return product.price;
+
+    return product.price - (product.price * product.discount) / 100;
   }
 
   getFilteredProducts(): Product[] {
