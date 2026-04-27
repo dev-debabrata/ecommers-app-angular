@@ -3,6 +3,7 @@ import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { CartService } from '../../services/cart-service';
+import { CartItem } from '../../models/cart-item';
 
 @Component({
   selector: 'app-cart-page',
@@ -17,6 +18,12 @@ export class CartPage {
 
   cart = this.cartService.cart;
   total = this.cartService.totalPrice;
+
+  getDiscountPrice(item: CartItem): number {
+    if (!item.discount) return item.price;
+
+    return item.price - (item.price * item.discount) / 100;
+  }
 
   remove(id: string) {
     this.cartService.removeItem(id);

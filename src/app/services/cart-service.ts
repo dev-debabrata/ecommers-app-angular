@@ -91,10 +91,29 @@ export class CartService {
 
   async addToCart(product: Product) {
     const uid = this.auth.currentUser?.uid;
-
     if (!uid) return;
 
     const existing = this.cart().find((i) => i.id === product.id);
+
+    if (existing) {
+      const updatedItem = {
+        ...existing,
+        quantity: existing.quantity + 1,
+
+        price: product.price,
+        name: product.title,
+        discount: product.discount || 0,
+        image: product.image,
+        category: product.category,
+        stock: product.stock,
+      };
+
+      this.cart.update((items) => items.map((i) => (i.id === product.id ? updatedItem : i)));
+
+      await setDoc(doc(this.firestore, `users/${uid}/cart/${product.id}`), updatedItem);
+
+      return;
+    }
 
     const cartItem: CartItem = {
       id: product.id!,
@@ -103,20 +122,45 @@ export class CartService {
       discount: product.discount || 0,
       image: product.image,
       category: product.category,
+      brand: product.brand,
       stock: product.stock,
-      quantity: existing ? existing.quantity + 1 : 1,
+      quantity: 1,
     };
 
-    this.cart.update((items) => {
-      if (existing) {
-        return items.map((i) => (i.id === product.id ? { ...i, quantity: i.quantity + 1 } : i));
-      }
-
-      return [...items, cartItem];
-    });
+    this.cart.update((items) => [...items, cartItem]);
 
     await setDoc(doc(this.firestore, `users/${uid}/cart/${product.id}`), cartItem);
   }
+
+  // async addToCart(product: Product) {
+  //   const uid = this.auth.currentUser?.uid;
+
+  //   if (!uid) return;
+
+  //   const existing = this.cart().find((i) => i.id === product.id);
+
+  //   const cartItem: CartItem = {
+  //     id: product.id!,
+  //     name: product.title,
+  //     price: product.price,
+  //     discount: product.discount || 0,
+  //     image: product.image,
+  //     category: product.category,
+  //     stock: product.stock,
+  //     brand: product.brand,
+  //     quantity: existing ? existing.quantity + 1 : 1,
+  //   };
+
+  //   this.cart.update((items) => {
+  //     if (existing) {
+  //       return items.map((i) => (i.id === product.id ? { ...i, quantity: i.quantity + 1 } : i));
+  //     }
+
+  //     return [...items, cartItem];
+  //   });
+
+  //   await setDoc(doc(this.firestore, `users/${uid}/cart/${product.id}`), cartItem);
+  // }
 
   async removeItem(id: string) {
     const uid = this.auth.currentUser?.uid;
