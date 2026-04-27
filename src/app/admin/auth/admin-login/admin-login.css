@@ -28,11 +28,30 @@
   margin: 10px 0;
   box-sizing: border-box;
   margin-bottom: 1rem;
+
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none; /* 🔥 important */
+  transition: 0.2s ease;
+}
+
+/* Focus style */
+.login-box input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+/* .login-box input {
+  width: 100%;
+  padding: 10px 8px;
+  margin: 10px 0;
+  box-sizing: border-box;
+  margin-bottom: 1rem;
 }
 
 .login-box input:focus {
   border-color: #2563eb;
-}
+} */
 
 .login-box button {
   width: 100%;
