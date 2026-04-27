@@ -46,14 +46,30 @@
             {{ product.stock > 0 ? product.stock + ' in stock' : 'Out of Stock' }}
           </p>
 
-          <p class="price">₹{{ product.price | number: '1.2-2' }}</p>
+          <!-- <p class="price">₹{{ product.price | number: '1.2-2' }}</p> -->
+
+          <div class="price-box">
+            <div>
+              @if (product.discount && product.discount > 0) {
+                <span class="discount"> -{{ product.discount }}% </span>
+              }
+
+              <span class="final-price">
+                ₹{{ getDiscountPrice(product) | number: '1.0-0' }}.00</span
+              >
+            </div>
+
+            <p class="original-price-mrp">
+              M.R.P.: <span class="original-price">₹{{ product.price | number: '1.0-0' }}.00</span>
+            </p>
+          </div>
         </div>
 
         <p><strong>Category:</strong> {{ product.category }}</p>
         <p><strong>Brand:</strong> {{ product.brand }}</p>
         <p><strong>Color:</strong> {{ product.color }}</p>
 
-        <p>
+        <p class="description">
           <strong>Description:</strong>
           {{ product.description }}
         </p>

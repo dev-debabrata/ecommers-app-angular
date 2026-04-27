@@ -71,6 +71,12 @@ export class ProductDetailPage {
     });
   }
 
+  getDiscountPrice(product: Product): number {
+    if (!product.discount) return product.price;
+
+    return product.price - (product.price * product.discount) / 100;
+  }
+
   addToCart(product: Product) {
     if (!this.authService.isLoggedIn()) {
       this.snackBar.open('Please login to add cart', 'Close', {
