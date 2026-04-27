@@ -10,7 +10,9 @@ export interface Product {
 
   description: string;
   discount?: number;
+  discountPrice?: number;
   rating?: number;
+  createdAt?: number;
 }
 
 export type ProductField =

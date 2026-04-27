@@ -44,8 +44,15 @@ export class ProductService {
   // }
 
   addProduct(product: Product) {
-    return addDoc(this.productsRef, product);
+    return addDoc(this.productsRef, {
+      ...product,
+      createdAt: Date.now(),
+    });
   }
+
+  // addProduct(product: Product) {
+  //   return addDoc(this.productsRef, product);
+  // }
 
   deleteProduct(id: string) {
     const productRef = doc(this.firestore, 'products/' + id);

@@ -23,13 +23,14 @@
           <th>Name</th>
           <th>Stock</th>
           <th>Price</th>
+          <th>Discount Price</th>
           <th>Brands</th>
           <th>Color</th>
           <th>Category</th>
 
           <th>Description</th>
           <th>Rating</th>
-
+          <th>Date</th>
           <th>Action</th>
         </tr>
       </thead>
@@ -44,13 +45,31 @@
               <img [src]="product.image" width="50" height="50" />
             </td>
 
-            <td>{{ product.title }}</td>
+            <td>{{ product.title || '' | truncate: 20 }}</td>
 
             <td>
-              {{ product.stock > 0 ? 'In Stock' : 'Out of Stock' }}
+              <span [ngClass]="product.stock > 0 ? 'stock-in' : 'stock-out'">
+                {{ product.stock > 0 ? 'In Stock' : 'Out of Stock' }}
+              </span>
+              ({{ product.stock }})
             </td>
+            <!-- <td>
+              {{ product.stock > 0 ? 'In Stock' : 'Out of Stock' }}
+            </td> -->
 
             <td>₹{{ product.price }}</td>
+
+            <td>
+              @if (product.discount && product.discount > 0) {
+                <span class="discount-badge">-{{ product.discount }}%</span>
+
+                <span class="discount-price">
+                  ₹{{ getDiscountPrice(product) | number: '1.0-0' }}
+                </span>
+              } @else {
+                <span>—</span>
+              }
+            </td>
 
             <td>{{ product.brand }}</td>
 
@@ -61,6 +80,11 @@
             <td>{{ product.description || '' | truncate: 20 }}</td>
 
             <td>{{ product.rating }}</td>
+
+            <td>
+              <!-- {{ product.createdAt | date: 'dd MMM yyyy, hh:mm a' }} -->
+              {{ product.createdAt ? (product.createdAt | date: 'mediumDate') : '—' }}
+            </td>
 
             <td class="product-body-btn">
               <button [routerLink]="['/admin/products/edit', product.id]">
