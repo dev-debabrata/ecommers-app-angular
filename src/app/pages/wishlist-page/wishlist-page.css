@@ -16,8 +16,8 @@
 
 .wishlist-container-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3rem;
+  /* grid-template-columns: 1fr 1fr; */
+  gap: 2rem;
   padding: 2rem;
   /* margin: 1rem 0; */
   background: #f8f9fa;
@@ -46,7 +46,9 @@
 }
 
 .details h3 {
+  font-size: 16px;
   margin: 0 0 5px;
+  font-weight: 500;
 }
 
 .rating {
@@ -54,17 +56,22 @@
   margin-bottom: 5px;
 }
 
+.category {
+  color: #555;
+  margin: 0 0 5px 0;
+}
+
 .price {
   font-size: 18px;
   font-weight: bold;
 }
 
-.discount {
+/* .discount {
   color: red;
   font-size: 14px;
   margin-left: 6px;
   font-weight: 500;
-}
+} */
 
 .actions {
   display: flex;
@@ -104,4 +111,42 @@
   margin-top: 50px;
   font-size: 1.5rem;
   color: #868e96;
+}
+
+.price-box {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 4px;
+  margin-bottom: 5px;
+}
+.discount {
+  color: red;
+  font-size: 18px;
+  margin-right: 4px;
+}
+
+/* .discount-text {
+  color: #388e3c;
+  font-weight: 600;
+} */
+
+.final-price {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.original-price {
+  text-decoration: line-through;
+  color: gray;
+}
+
+.original-price-mrp {
+  font-size: 13px;
+  margin: 0;
+}
+
+.brand {
+  margin: 0 0 5px 0;
+  color: #555;
 }

@@ -28,6 +28,12 @@ export class WishlistPage {
     return Rating;
   }
 
+  getDiscountPrice(product: Product): number {
+    if (!product.discount) return product.price;
+
+    return product.price - (product.price * product.discount) / 100;
+  }
+
   addToCart(product: Product, event: Event) {
     event.stopPropagation();
 

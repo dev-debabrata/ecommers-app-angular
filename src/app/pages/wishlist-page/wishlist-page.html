@@ -19,12 +19,30 @@
               <span class="rating-number">({{ product.rating || 0 }})</span>
             </div>
 
-            <p><strong>Category:</strong> {{ product.category }}</p>
+            <p class="category"><strong>Category:</strong> {{ product.category }}</p>
+            <p class="brand"><strong>Brand:</strong> {{ product.brand }}</p>
 
-            <p class="price">
-              ₹ {{ product.price }}
+            <div class="price-box">
+              <div>
+                @if (product.discount && product.discount > 0) {
+                  <span class="discount"> -{{ product.discount }}% </span>
+                }
+
+                <span class="final-price">
+                  ₹{{ getDiscountPrice(product) | number: '1.0-0' }}.00</span
+                >
+              </div>
+
+              <p class="original-price-mrp">
+                M.R.P.:
+                <span class="original-price">₹{{ product.price | number: '1.0-0' }}.00</span>
+              </p>
+            </div>
+
+            <!-- <p class="price">
+              ₹ {{ product.price | number: '1.2-2' }}
               <span class="discount"> ({{ product.discount || 0 }}% OFF) </span>
-            </p>
+            </p> -->
           </div>
 
           <div class="actions">
