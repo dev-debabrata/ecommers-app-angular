@@ -54,13 +54,19 @@
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   overflow-x: auto;
+  /* width: 100%; */
   margin-top: 1rem;
 }
 
 .product-table {
-  width: 100%;
+  min-width: 1400px;
   border-collapse: collapse;
   font-family: Arial, sans-serif;
+}
+
+.product-table th,
+.product-table td {
+  white-space: nowrap;
 }
 
 .product-table th:nth-child(1),
