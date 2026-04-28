@@ -12,11 +12,12 @@ import { CartService } from '../../../services/cart-service';
 import { AuthService } from '../../../services/auth-service';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { TruncatePipe } from '../../../pipes/truncate-pipe';
 
 @Component({
   selector: 'app-checkout-page',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, CommonModule],
+  imports: [FormsModule, ReactiveFormsModule, CommonModule, TruncatePipe],
   templateUrl: './checkout-page.html',
   styleUrl: './checkout-page.css',
 })
@@ -135,7 +136,7 @@ export class CheckoutPage implements OnInit {
     );
   }
 
-  submitOrder() {
+  async submitOrder() {
     this.submitted.set(true);
 
     if (!this.isFormValid()) {
@@ -150,51 +151,125 @@ export class CheckoutPage implements OnInit {
       return;
     }
 
+    const user: any = await this.authService.getFullUser();
+    if (!user?.uid) {
+      this.snackBar.open('User not logged in!', 'Close', { duration: 2000 });
+      return;
+    }
+
     const items = [...this.cartService.cart(), ...(this.buyNowItem ? [this.buyNowItem] : [])];
 
     const order = {
-      id: Date.now(),
       address: this.checkoutForm(),
       items,
       subTotal: this.subTotal(),
       gst: this.gst(),
       total: this.totalPrice(),
       date: new Date(),
-      status: 'Places',
+      status: 'placed',
     };
 
-    const existingOrders = JSON.parse(localStorage.getItem('orders') || '[]');
-    existingOrders.push(order);
-    localStorage.setItem('orders', JSON.stringify(existingOrders));
-    localStorage.setItem('latestOrder', JSON.stringify(order));
+    try {
+      const docRef = await this.orderService.createOrder(user.uid, order);
 
-    this.buyNowItem = null;
-    localStorage.removeItem('buyNowItem');
-    this.cartService.clearCart();
+      this.buyNowItem = null;
+      localStorage.removeItem('buyNowItem');
+      this.cartService.clearCart();
 
-    this.checkoutForm.set({
-      fullName: '',
-      email: '',
-      phone: '',
-      address: '',
-      landmark: '',
-      city: '',
-      state: '',
-      pinCode: '',
-      shippingMethod: 'free',
-    });
-    this.submitted.set(false);
-    this.touchedFields.set({});
+      this.checkoutForm.set({
+        fullName: '',
+        email: '',
+        phone: '',
+        address: '',
+        landmark: '',
+        city: '',
+        state: '',
+        pinCode: '',
+        shippingMethod: 'free',
+      });
 
-    this.snackBar.open('Order placed successfully!', 'Close', {
-      duration: 2000,
-      horizontalPosition: 'center',
-      verticalPosition: 'top',
-      panelClass: ['snackbar-success'],
-    });
+      this.submitted.set(false);
+      this.touchedFields.set({});
 
-    this.router.navigate(['/order-success', order.id]);
+      this.snackBar.open('Order placed successfully!', 'Close', {
+        duration: 3000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+        panelClass: ['snackbar-success'],
+      });
+
+      this.router.navigate(['/order-success', docRef.id]);
+    } catch (error) {
+      console.error(error);
+      this.snackBar.open('Failed to place order!', 'Close', {
+        duration: 3000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+        panelClass: ['snackbar-error'],
+      });
+    }
   }
+
+  // submitOrder() {
+  //   this.submitted.set(true);
+
+  //   if (!this.isFormValid()) {
+  //     this.snackBar.open('Please fill all required fields correctly!', 'Close', {
+  //       duration: 3000,
+  //       horizontalPosition: 'center',
+  //       verticalPosition: 'top',
+  //       panelClass: ['snackbar-error'],
+  //     });
+
+  //     document.querySelector('.checkout-left')?.scrollIntoView({ behavior: 'smooth' });
+  //     return;
+  //   }
+
+  //   const items = [...this.cartService.cart(), ...(this.buyNowItem ? [this.buyNowItem] : [])];
+
+  //   const order = {
+  //     id: Date.now(),
+  //     address: this.checkoutForm(),
+  //     items,
+  //     subTotal: this.subTotal(),
+  //     gst: this.gst(),
+  //     total: this.totalPrice(),
+  //     date: new Date(),
+  //     status: 'Places',
+  //   };
+
+  //   const existingOrders = JSON.parse(localStorage.getItem('orders') || '[]');
+  //   existingOrders.push(order);
+  //   localStorage.setItem('orders', JSON.stringify(existingOrders));
+  //   localStorage.setItem('latestOrder', JSON.stringify(order));
+
+  //   this.buyNowItem = null;
+  //   localStorage.removeItem('buyNowItem');
+  //   this.cartService.clearCart();
+
+  //   this.checkoutForm.set({
+  //     fullName: '',
+  //     email: '',
+  //     phone: '',
+  //     address: '',
+  //     landmark: '',
+  //     city: '',
+  //     state: '',
+  //     pinCode: '',
+  //     shippingMethod: 'free',
+  //   });
+  //   this.submitted.set(false);
+  //   this.touchedFields.set({});
+
+  //   this.snackBar.open('Order placed successfully!', 'Close', {
+  //     duration: 2000,
+  //     horizontalPosition: 'center',
+  //     verticalPosition: 'top',
+  //     panelClass: ['snackbar-success'],
+  //   });
+
+  //   this.router.navigate(['/order-success', order.id]);
+  // }
 }
 
 // This is Reactive Form type

@@ -158,7 +158,7 @@ button:hover {
   align-items: center;
   justify-content: space-between;
   gap: 15px;
-  /* margin-bottom: 20px; */
+  margin-bottom: 10px;
 }
 
 .cart-item img {
@@ -175,6 +175,7 @@ button:hover {
 .cart-details h4 {
   margin: 0;
   font-size: 14px;
+  font-weight: 500;
 }
 
 .cart-details small {
@@ -183,7 +184,7 @@ button:hover {
 }
 
 .price {
-  font-weight: 600;
+  font-weight: 500;
   white-space: nowrap;
 }
 .summary {

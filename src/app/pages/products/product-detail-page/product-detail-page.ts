@@ -90,7 +90,7 @@ export class ProductDetailPage {
     this.cartService.addToCart(product);
 
     this.snackBar.open('Added to cart', 'Close', {
-      duration: 2000,
+      duration: 3000,
       horizontalPosition: 'center',
       verticalPosition: 'top',
       panelClass: ['snackbar-success'],

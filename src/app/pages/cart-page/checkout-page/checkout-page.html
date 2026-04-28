@@ -78,7 +78,7 @@
           />
 
           @if (isInvalid('city')) {
-            <small>Landmark is required</small>
+            <small>City is required</small>
           }
         </div>
 
@@ -91,7 +91,7 @@
             (blur)="markTouched('state')"
           />
           @if (isInvalid('state')) {
-            <small>Landmark is required</small>
+            <small>State is required</small>
           }
         </div>
 
@@ -105,7 +105,7 @@
           />
 
           @if (isInvalid('pinCode')) {
-            <small>Landmark is required</small>
+            <small>PIN Code is required</small>
           }
         </div>
       </div>
@@ -159,11 +159,13 @@
           <img [src]="buyNowItem.images" alt="" />
 
           <div class="cart-details">
-            <h4>{{ buyNowItem.title }}</h4>
+            <h4>{{ buyNowItem.title || '' | truncate: 30 }}</h4>
             <small>Qty: {{ buyNowItem.quantity || 1 }}</small>
           </div>
 
-          <p class="price">₹ {{ buyNowItem.price * (buyNowItem.quantity || 1) }}</p>
+          <p class="price">
+            ₹ {{ buyNowItem.price * (buyNowItem.quantity || 1) | number: '1.0-0' }}.00
+          </p>
         </div>
       }
 
@@ -172,10 +174,10 @@
           <img [src]="item.image" alt="" />
 
           <div class="cart-details">
-            <h4>{{ item.name }}</h4>
+            <h4>{{ item.name || '' | truncate: 30 }}</h4>
             <small>Qty: {{ item.quantity }}</small>
           </div>
-          <p class="price">₹ {{ item.price * item.quantity }}</p>
+          <p class="price">₹ {{ item.price * item.quantity | number: '1.0-0' }}.00</p>
         </div>
       }
 
