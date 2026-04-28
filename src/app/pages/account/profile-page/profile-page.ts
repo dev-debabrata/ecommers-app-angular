@@ -1,8 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
 import { AuthService } from '../../../services/auth-service';
+import { OrderService } from '../../../services/order-service';
 
 @Component({
   selector: 'app-profile-page',
@@ -13,36 +14,34 @@ import { AuthService } from '../../../services/auth-service';
 })
 export class ProfilePage {
   private authService = inject(AuthService);
+  private orderService = inject(OrderService);
   private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
 
   user: any = null;
+  orders: any[] = [];
 
   activeSection = 'orders';
 
   async ngOnInit() {
     this.user = await this.authService.getFullUser();
+
+    if (this.user?.uid) {
+      const orderSub = this.orderService.getUserOrders(this.user.uid).subscribe((orders) => {
+        this.orders = orders.map((o: any) => ({
+          ...o,
+          date: o.date?.toDate ? o.date.toDate() : o.date,
+        }));
+      });
+
+      this.destroyRef.onDestroy(() => {
+        orderSub.unsubscribe();
+      });
+    }
   }
 
   changeSection(section: string) {
     this.activeSection = section;
-  }
-
-  get orders() {
-    const data = localStorage.getItem('orders');
-
-    if (!data) return [];
-
-    try {
-      const orders = JSON.parse(data);
-
-      const orderList = Array.isArray(orders) ? orders : [orders];
-
-      return orderList.sort(
-        (a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-      );
-    } catch {
-      return [];
-    }
   }
 
   logout() {
@@ -54,3 +53,21 @@ export class ProfilePage {
     this.router.navigate(['/products', productId]);
   }
 }
+
+///////////////////////////////////////////////////////////////
+
+// async ngOnInit() {
+//   this.user = await this.authService.getFullUser();
+
+//   if (this.user?.uid) {
+//     this.orderService
+//       .getUserOrders(this.user.uid)
+//       .pipe(takeUntilDestroyed(this.destroyRef))
+//       .subscribe((orders) => {
+//         this.orders = orders.map((o: any) => ({
+//           ...o,
+//           date: o.date?.toDate ? o.date.toDate() : o.date,
+//         }));
+//       });
+//   }
+// }

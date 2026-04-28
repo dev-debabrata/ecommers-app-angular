@@ -1,22 +1,52 @@
 import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
+import { Auth } from '@angular/fire/auth';
+import { map } from 'rxjs/operators';
+import { authState } from '@angular/fire/auth';
 
 export const adminAuthGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
+  const auth = inject(Auth);
 
-  const isAdminLoggedIn = localStorage.getItem('adminSession') === 'true';
-  const isAdminAuthPage = state.url.startsWith('/admin/login');
+  return authState(auth).pipe(
+    map((user) => {
+      const isLoginPage = state.url.startsWith('/admin/login');
 
-  if (isAdminLoggedIn && isAdminAuthPage) {
-    return router.createUrlTree(['/admin']);
-  }
+      if (user && isLoginPage) {
+        return router.createUrlTree(['/admin']);
+      }
 
-  if (!isAdminLoggedIn && !isAdminAuthPage) {
-    return router.createUrlTree(['/admin/login']);
-  }
+      if (!user && !isLoginPage) {
+        return router.createUrlTree(['/admin/login']);
+      }
 
-  return true;
+      return true;
+    }),
+  );
 };
+
+////////////////////////////////////////////////////////////////
+// import { CanActivateFn, Router } from '@angular/router';
+// import { inject } from '@angular/core';
+
+// export const adminAuthGuard: CanActivateFn = (route, state) => {
+//   const router = inject(Router);
+
+//   const isAdminLoggedIn = localStorage.getItem('adminSession') === 'true';
+//   const isAdminAuthPage = state.url.startsWith('/admin/login');
+
+//   if (isAdminLoggedIn && isAdminAuthPage) {
+//     return router.createUrlTree(['/admin']);
+//   }
+
+//   if (!isAdminLoggedIn && !isAdminAuthPage) {
+//     return router.createUrlTree(['/admin/login']);
+//   }
+
+//   return true;
+// };
+
+/////////////////////////////////////////////////////////////////////////
 
 // import { inject } from '@angular/core';
 // import { CanActivateFn, Router } from '@angular/router';

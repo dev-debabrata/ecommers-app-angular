@@ -8,7 +8,6 @@ import {
 } from '@angular/fire/auth';
 
 import { Firestore, doc, getDoc } from '@angular/fire/firestore';
-
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
@@ -31,32 +30,94 @@ export class AdminAuthService {
     const snap = await getDoc(adminRef);
 
     if (!snap.exists()) {
+      await signOut(this.auth);
       throw new Error('Admin not found');
     }
 
     const role = snap.data()?.['role'];
 
     if (role !== 'admin') {
+      await signOut(this.auth);
       throw new Error('Unauthorized');
     }
-
-    localStorage.setItem('adminSession', 'true');
-
-    await signOut(this.auth);
 
     return result.user;
   }
 
-  isLoggedIn(): boolean {
-    return localStorage.getItem('adminSession') === 'true';
+  async logout() {
+    await signOut(this.auth);
+    this.router.navigateByUrl('/admin/login', { replaceUrl: true });
   }
 
-  async logout() {
-    localStorage.removeItem('adminSession');
-    this.router.navigate(['/admin/login']);
-  }
+  // async logout() {
+  //   await signOut(this.auth);
+  // }
+
+  isAdmin$ = this.firebaseUser$;
 }
 
+//////////////////////////////////////////////////////////////////////////////////
+
+// import { Injectable, inject } from '@angular/core';
+// import {
+//   Auth,
+//   signInWithEmailAndPassword,
+//   signOut,
+//   authState,
+//   User as FirebaseUser,
+// } from '@angular/fire/auth';
+
+// import { Firestore, doc, getDoc } from '@angular/fire/firestore';
+
+// import { Router } from '@angular/router';
+// import { Observable } from 'rxjs';
+
+// @Injectable({
+//   providedIn: 'root',
+// })
+// export class AdminAuthService {
+//   private auth = inject(Auth);
+//   private firestore = inject(Firestore);
+//   private router = inject(Router);
+
+//   firebaseUser$: Observable<FirebaseUser | null> = authState(this.auth);
+
+//   async loginAdmin(email: string, password: string) {
+//     const result = await signInWithEmailAndPassword(this.auth, email, password);
+
+//     const uid = result.user.uid;
+
+//     const adminRef = doc(this.firestore, 'users/' + uid);
+//     const snap = await getDoc(adminRef);
+
+//     if (!snap.exists()) {
+//       throw new Error('Admin not found');
+//     }
+
+//     const role = snap.data()?.['role'];
+
+//     if (role !== 'admin') {
+//       throw new Error('Unauthorized');
+//     }
+
+//     localStorage.setItem('adminSession', 'true');
+
+//     await signOut(this.auth);
+
+//     return result.user;
+//   }
+
+//   isLoggedIn(): boolean {
+//     return localStorage.getItem('adminSession') === 'true';
+//   }
+
+//   async logout() {
+//     localStorage.removeItem('adminSession');
+//     this.router.navigate(['/admin/login']);
+//   }
+// }
+
+////////////////////////////////////////////////////////////////////////////
 // async loginAdmin(email: string, password: string) {
 //   const result = await signInWithEmailAndPassword(this.auth, email, password);
 
