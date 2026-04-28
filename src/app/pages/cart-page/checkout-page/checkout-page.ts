@@ -13,6 +13,7 @@ import { AuthService } from '../../../services/auth-service';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TruncatePipe } from '../../../pipes/truncate-pipe';
+import { OrderService } from '../../../services/order-service';
 
 @Component({
   selector: 'app-checkout-page',
@@ -25,6 +26,7 @@ export class CheckoutPage implements OnInit {
   public cartService = inject(CartService);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private orderService = inject(OrderService);
 
   private snackBar = inject(MatSnackBar);
 
