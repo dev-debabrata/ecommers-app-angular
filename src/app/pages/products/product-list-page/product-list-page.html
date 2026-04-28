@@ -39,7 +39,7 @@
           <img [src]="product.image" [alt]="product.title" class="product-img" />
         </div>
 
-        <h3>{{ product.title || '' | truncate: 35 }}</h3>
+        <h3>{{ product.title || '' | truncate: 30 }}</h3>
 
         <div class="rating">
           @for (star of getRating().getStars(product.rating || 0); track $index) {
