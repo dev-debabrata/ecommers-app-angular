@@ -111,8 +111,20 @@ export class ProductDetailPage {
 
     if (this.wishlistService.isInWishlist(product.id!)) {
       this.wishlistService.removeFromWishlist(product.id!);
+      this.snackBar.open('Removed from wishlist', 'Close', {
+        duration: 3000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+        panelClass: ['snackbar-error'],
+      });
     } else {
       this.wishlistService.addToWishlist(product);
+      this.snackBar.open('Added to wishlist', 'Close', {
+        duration: 3000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+        panelClass: ['snackbar-success'],
+      });
     }
   }
 

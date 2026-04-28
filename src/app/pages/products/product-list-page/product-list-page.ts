@@ -13,6 +13,7 @@ import { Loader } from '../../../components/loader/loader';
 import { Highlight } from '../../../directives/highlight';
 import { WishlistService } from '../../../services/wishlist-service';
 import { AuthService } from '../../../services/auth-service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-product-list-page',
@@ -27,6 +28,8 @@ export class ProductListPage {
   private productService = inject(ProductService);
   private wishlistService = inject(WishlistService);
   private destroyRef = inject(DestroyRef);
+
+  private snackBar = inject(MatSnackBar);
 
   @Input() showCategories = true;
   @Input() limit: number | null = null;
@@ -106,8 +109,20 @@ export class ProductListPage {
 
     if (this.wishlistService.isInWishlist(product.id!)) {
       this.wishlistService.removeFromWishlist(product.id!);
+      this.snackBar.open('Removed from wishlist', 'Close', {
+        duration: 3000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+        panelClass: ['snackbar-error'],
+      });
     } else {
       this.wishlistService.addToWishlist(product);
+      this.snackBar.open('Added to wishlist', 'Close', {
+        duration: 3000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+        panelClass: ['snackbar-success'],
+      });
     }
   }
 
