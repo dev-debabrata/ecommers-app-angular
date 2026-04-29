@@ -39,35 +39,33 @@ export class OrderService {
   //   return userOrder;
   // }
 
-  //   async createOrder(userId: string, order: any) {
-  //   const fullOrder = {
-  //     ...order,
-  //     userId,
-  //     createdAt: Date.now(),
-  //   };
-
-  //   // 1️⃣ Save in user orders (profile page)
-  //   const userOrdersRef = collection(this.firestore, `users/${userId}/orders`);
-  //   const userOrder = await addDoc(userOrdersRef, fullOrder);
-
-  //   // 2️⃣ Save in global orders (admin panel)
-  //   const globalOrdersRef = collection(this.firestore, 'orders');
-  //   await addDoc(globalOrdersRef, {
-  //     ...fullOrder,
-  //     userOrderId: userOrder.id, // reference back to user order
-  //   });
-
-  //   return userOrder;
-  // }
-
   async createOrder(userId: string, order: any) {
-    const ordersRef = collection(this.firestore, `users/${userId}/orders`);
-
-    return await addDoc(ordersRef, {
+    const fullOrder = {
       ...order,
+      userId,
       createdAt: Date.now(),
+    };
+
+    const userOrdersRef = collection(this.firestore, `users/${userId}/orders`);
+    const userOrder = await addDoc(userOrdersRef, fullOrder);
+
+    const globalOrdersRef = collection(this.firestore, 'orders');
+    await addDoc(globalOrdersRef, {
+      ...fullOrder,
+      userOrderId: userOrder.id,
     });
+
+    return userOrder;
   }
+
+  // async createOrder(userId: string, order: any) {
+  //   const ordersRef = collection(this.firestore, `users/${userId}/orders`);
+
+  //   return await addDoc(ordersRef, {
+  //     ...order,
+  //     createdAt: Date.now(),
+  //   });
+  // }
 
   getUserOrders(userId: string): Observable<any[]> {
     const ordersRef = collection(this.firestore, `users/${userId}/orders`);

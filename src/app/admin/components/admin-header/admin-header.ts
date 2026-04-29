@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { AdminAuthService } from '../../../services/admin-auth-service';
+import { doc, Firestore, getDoc } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-admin-header',
@@ -12,6 +13,34 @@ import { AdminAuthService } from '../../../services/admin-auth-service';
 })
 export class AdminHeader {
   private adminAuthService = inject(AdminAuthService);
+  private firestore = inject(Firestore);
+
+  adminName = 'Admin';
+
+  // ngOnInit() {
+  //   this.adminAuthService.firebaseUser$.subscribe(async (user) => {
+  //     if (user) {
+  //       const adminRef = doc(this.firestore, 'users/' + user.uid);
+  //       const snap = await getDoc(adminRef);
+
+  //       if (snap.exists()) {
+  //         const data = snap.data();
+  //         this.adminName = `${data['firstName']} ${data['lastName']}`;
+  //       }
+  //     }
+  //   });
+  // }
+
+  ngOnInit() {
+    this.adminAuthService.firebaseUser$.subscribe((user) => {
+      // if (user?.displayName) {
+      //   this.adminName = user.displayName;
+      // }
+      if (user) {
+        this.adminName = user.displayName || user.email || 'Admin';
+      }
+    });
+  }
 
   logout() {
     this.adminAuthService.logout();

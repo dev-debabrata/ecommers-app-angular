@@ -10,7 +10,7 @@ import {
   fetchSignInMethodsForEmail,
 } from '@angular/fire/auth';
 
-import { Firestore, doc, getDoc, setDoc } from '@angular/fire/firestore';
+import { Firestore, doc, getDoc, serverTimestamp, setDoc } from '@angular/fire/firestore';
 
 import { Observable } from 'rxjs';
 
@@ -46,6 +46,7 @@ export class AuthService {
       ...data,
       uid,
       role: 'user',
+      createdAt: serverTimestamp(),
     });
 
     return result.user;
