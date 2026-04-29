@@ -1,5 +1,4 @@
 <div class="account-page">
-  <!-- Sidebar -->
   <aside class="account-sidebar">
     <div class="profile-box">
       <div class="avatar">{{ user?.firstName?.charAt(0) }}{{ user?.lastName?.charAt(0) }}</div>
@@ -14,114 +13,36 @@
       <li (click)="changeSection('orders')" [class.active]="activeSection === 'orders'">
         My Orders
       </li>
-      <li (click)="changeSection('details')" [class.active]="activeSection === 'details'">
+
+      <li (click)="changeSection('profile')" [class.active]="activeSection === 'profile'">
         My Details
       </li>
+
       <li (click)="changeSection('address')" [class.active]="activeSection === 'address'">
         Address Book
       </li>
+
       <li (click)="changeSection('payment')" [class.active]="activeSection === 'payment'">
         Payment Methods
       </li>
+
       <li (click)="logout()">Sign Out</li>
     </ul>
   </aside>
 
-  <!-- Right Content -->
   <section class="account-content">
-    @if (activeSection === 'orders') {
-      <h2>My Orders</h2>
-
-      @if (orders.length > 0) {
-        @for (order of orders; track order.id) {
-          <div class="card-box">
-            <p><strong>Order ID:</strong> {{ order.id }}</p>
-            <p>
-              <strong>Placed On:</strong>
-              {{ order.date | date: 'medium' }}
-            </p>
-            <p><strong>Total:</strong> ₹ {{ order.total | number: '1.0-0' }}.00</p>
-            <p><strong>Status:</strong> {{ order.status }}</p>
-
-            <h3>Products</h3>
-
-            @for (item of order.items; track item.id) {
-              <div class="order-product" (click)="viewProductDetails(item.id)">
-                <img [src]="item.image || item.images?.[0] || item.thumbnail" />
-
-                <div>
-                  <h4>{{ item.title || item.name }}</h4>
-                  <p>Qty: {{ item.quantity }}</p>
-                  <p>₹ {{ item.price * item.quantity | number: '1.0-0' }}.00</p>
-                </div>
-              </div>
-            }
-          </div>
-        }
-      } @else {
-        <div class="card-box">
-          <p>No orders yet</p>
-        </div>
-      }
+    @if (activeSection === 'profile') {
+      <app-profile-details [user]="user"></app-profile-details>
     }
 
-    <!-- @if (activeSection === 'orders') {
-      <h2>My Orders</h2>
-
-      @if (orders.length > 0) {
-        @for (order of orders; track order.id) {
-          <div class="card-box">
-            <p><strong>Order ID:</strong> {{ order.id }}</p>
-            <p>
-              <strong>Placed On:</strong>
-              {{ order.date | date: 'medium' }}
-            </p>
-            <p><strong>Total:</strong> ₹ {{ order.total | number: '1.2-2' }}</p>
-            <p><strong>Status:</strong> {{ order.status }}</p>
-
-            <h3>Products</h3>
-
-            @for (item of order.items; track item.id) {
-              <div class="order-product" (click)="viewProductDetails(item.id)">
-                <img [src]="item.image || item.images?.[0] || item.thumbnail" />
-
-                <div>
-                  <h4>{{ item.title || item.name }}</h4>
-                  <p>Qty: {{ item.quantity }}</p>
-                  <p>₹ {{ item.price * item.quantity }}</p>
-                </div>
-              </div>
-            }
-          </div>
-        }
-      } @else {
-        <div class="card-box">
-          <p>No orders yet</p>
-        </div>
-      }
-    } -->
-
-    <!-- Details -->
-    @if (activeSection === 'details') {
-      <h2>My Details</h2>
-
-      <div class="card-box">
-        <p><strong>Name:</strong> {{ user?.firstName }} {{ user?.lastName }}</p>
-        <p><strong>Email:</strong> {{ user?.email }}</p>
-        <p><strong>Phone:</strong> {{ user?.phoneNumber }}</p>
-      </div>
-    }
-
-    <!-- Address -->
     @if (activeSection === 'address') {
-      <h2>Address Book</h2>
-
-      <div class="card-box">
-        <p>No saved address yet.</p>
-      </div>
+      <app-address-book [user]="user"></app-address-book>
     }
 
-    <!-- Payment -->
+    @if (activeSection === 'orders') {
+      <app-order-history [orders]="orders"></app-order-history>
+    }
+
     @if (activeSection === 'payment') {
       <h2>Payment Methods</h2>
 
@@ -131,46 +52,3 @@
     }
   </section>
 </div>
-
-<!-- Orders -->
-<!-- @if (activeSection === 'orders') {
-      <h2>My Orders</h2>
-
-      @if (orders) {
-        <div class="card-box">
-          <p><strong>Order ID:</strong> {{ orders.id }}</p>
-          <p><strong>Total:</strong> ₹ {{ orders.total }}</p>
-          <p><strong>Status:</strong> {{ orders.status }}</p>
-
-          <h3>Ordered Products</h3>
-
-          @for (item of orders.items; track item.id) {
-            <div class="order-product">
-              <img [src]="item.image" alt="" />
-
-              <div class="product-info">
-                <h4>{{ item.name }}</h4>
-                <p>Qty: {{ item.quantity }}</p>
-                <p>₹ {{ item.price * item.quantity }}</p>
-              </div>
-            </div>
-          }
-        </div>
-      }
-
-     @if (orders) {
-        <div class="card-box">
-          <p><strong>Order ID:</strong> {{ orders.id }}</p>
-          <p><strong>Total:</strong> ₹ {{ orders.total }}</p>
-          <p><strong>Status:</strong> {{ orders.status }}</p>
-        </div>
-      }
-
-     @for (order of orders; track order.id) {
-        <div class="card-box">
-          <p><strong>Order ID:</strong> {{ order.id }}</p>
-          <p><strong>Total:</strong> ₹ {{ order.total }}</p>
-          <p><strong>Status:</strong> {{ order.status }}</p>
-        </div>
-      }
-    } -->

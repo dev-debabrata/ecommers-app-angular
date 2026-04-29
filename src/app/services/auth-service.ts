@@ -10,7 +10,14 @@ import {
   fetchSignInMethodsForEmail,
 } from '@angular/fire/auth';
 
-import { Firestore, doc, getDoc, serverTimestamp, setDoc } from '@angular/fire/firestore';
+import {
+  Firestore,
+  doc,
+  getDoc,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+} from '@angular/fire/firestore';
 
 import { Observable } from 'rxjs';
 
@@ -134,6 +141,12 @@ export class AuthService {
     const snap = await getDoc(userRef);
 
     return snap.exists() ? snap.data() : null;
+  }
+
+  async updateUserAddress(uid: string, data: any) {
+    const userRef = doc(this.firestore, 'users/' + uid);
+
+    return await updateDoc(userRef, data);
   }
 
   async checkEmail(email: string): Promise<boolean> {

@@ -108,10 +108,10 @@ export class SignupPage {
     const value = this.form.getRawValue();
 
     const user: User = {
-      firstName: value.firstName,
-      lastName: value.lastName,
-      email: value.email,
-      phoneNumber: value.phoneNumber,
+      firstName: value.firstName.trim(),
+      lastName: value.lastName.trim(),
+      email: value.email.trim(),
+      phoneNumber: value.phoneNumber.map((p) => p.trim()),
     };
 
     this.loaderService.show();

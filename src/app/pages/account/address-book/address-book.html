@@ -1,0 +1,96 @@
+<h2>Address Book</h2>
+
+<button (click)="openAddressPopup()">Add New Address</button>
+
+@if (user()?.addresses?.length > 0) {
+  @for (addr of user()?.addresses; track $index; let i = $index) {
+    <div class="card-box">
+      <p>
+        <strong>{{ addr.fullName }}</strong>
+      </p>
+      <p>{{ addr.address }}</p>
+      <p>{{ addr.city }}, {{ addr.state }} - {{ addr.pinCode }}</p>
+      <p>{{ addr.phone }}</p>
+
+      <div class="card-btn">
+        <button (click)="editAddress(i)">Edit</button>
+        <button (click)="deleteAddress(i)">Delete</button>
+      </div>
+    </div>
+  }
+} @else {
+  <div class="card-box">
+    <p>No saved address yet.</p>
+  </div>
+}
+
+@if (showAddressPopup()) {
+  <div class="popup" (click)="showAddressPopup.set(false)">
+    <div class="popup-box" (click)="$event.stopPropagation()">
+      <div class="popup-header">
+        <h3>
+          {{ editAddressIndex() !== null ? 'Edit Address' : 'Add New Address' }}
+        </h3>
+
+        <button (click)="showAddressPopup.set(false)">
+          <mat-icon>closeSidebar</mat-icon>
+        </button>
+      </div>
+      <input
+        [ngModel]="newAddress().fullName"
+        (ngModelChange)="updateField('fullName', $event)"
+        placeholder="Full Name"
+      />
+
+      <input
+        [ngModel]="newAddress().email"
+        (ngModelChange)="updateField('email', $event)"
+        placeholder="Email"
+      />
+
+      <input
+        [ngModel]="newAddress().phone"
+        (ngModelChange)="updateField('phone', $event)"
+        placeholder="Phone"
+      />
+
+      <input
+        [ngModel]="newAddress().address"
+        (ngModelChange)="updateField('address', $event)"
+        placeholder="Address"
+      />
+
+      <input
+        [ngModel]="newAddress().landmark"
+        (ngModelChange)="updateField('landmark', $event)"
+        placeholder="Landmark"
+      />
+
+      <input
+        [ngModel]="newAddress().city"
+        (ngModelChange)="updateField('city', $event)"
+        placeholder="City"
+      />
+
+      <input
+        [ngModel]="newAddress().state"
+        (ngModelChange)="updateField('state', $event)"
+        placeholder="State"
+      />
+
+      <input
+        [ngModel]="newAddress().pinCode"
+        (ngModelChange)="updateField('pinCode', $event)"
+        placeholder="PIN Code"
+      />
+
+      <div class="popup-btn">
+        <!-- <button (click)="showAddressPopup.set(false)">Cancel</button> -->
+
+        <button (click)="saveAddress()">
+          {{ editAddressIndex() !== null ? 'Update Address' : 'Save Address' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
