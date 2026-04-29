@@ -9,12 +9,12 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { CartService } from '../../../services/cart-service';
-import { AuthService } from '../../../services/auth-service';
-import { TruncatePipe } from '../../../pipes/truncate-pipe';
-import { OrderService } from '../../../services/order-service';
-import { LoaderService } from '../../../services/loader-service';
-import { SnackbarService } from '../../../services/snackbar-service';
+import { CartService } from '../../../../services/cart-service';
+import { AuthService } from '../../../../services/auth-service';
+import { TruncatePipe } from '../../../../pipes/truncate-pipe';
+import { OrderService } from '../../../../services/order-service';
+import { LoaderService } from '../../../../services/loader-service';
+import { SnackbarService } from '../../../../services/snackbar-service';
 
 @Component({
   selector: 'app-checkout-page',

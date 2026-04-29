@@ -10,7 +10,7 @@ import { CartPage } from './pages/cart-page/cart-page';
 import { AboutPage } from './pages/about-page/about-page';
 import { ContactPage } from './pages/contact-page/contact-page';
 import { ProfilePage } from './pages/account/profile-page/profile-page';
-import { OrderSuccessPage } from './pages/cart-page/order-success-page/order-success-page';
+import { OrderSuccessPage } from './pages/cart-page/checkout/order-success-page/order-success-page';
 import { CustomerLayout } from './layouts/customer-layout/customer-layout';
 
 export const routes: Routes = [
@@ -86,7 +86,9 @@ export const routes: Routes = [
           {
             path: 'checkout',
             loadComponent: () =>
-              import('./pages/cart-page/checkout-page/checkout-page').then((m) => m.CheckoutPage),
+              import('./pages/cart-page/checkout/checkout-page/checkout-page').then(
+                (m) => m.CheckoutPage,
+              ),
             data: { breadcrumb: 'Checkout' },
           },
         ],

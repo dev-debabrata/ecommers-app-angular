@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from '../../../services/auth-service';
-import { OrderService } from '../../../services/order-service';
+import { AuthService } from '../../../../services/auth-service';
+import { OrderService } from '../../../../services/order-service';
 
 @Component({
   selector: 'app-order-success-page',
