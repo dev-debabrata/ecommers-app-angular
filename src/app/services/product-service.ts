@@ -9,6 +9,7 @@ import {
   getDoc,
   deleteDoc,
   updateDoc,
+  docData,
 } from '@angular/fire/firestore';
 
 import { Observable } from 'rxjs';
@@ -29,12 +30,20 @@ export class ProductService {
     }) as Observable<Product[]>;
   }
 
-  async getProductById(id: string) {
+  getProductById(id: string): Observable<Product | null> {
     const productRef = doc(this.firestore, 'products/' + id);
-    const snap = await getDoc(productRef);
 
-    return snap.exists() ? { id: snap.id, ...snap.data() } : null;
+    return docData(productRef, {
+      idField: 'id',
+    }) as Observable<Product | null>;
   }
+
+  // async getProductById(id: string) {
+  //   const productRef = doc(this.firestore, 'products/' + id);
+  //   const snap = await getDoc(productRef);
+
+  //   return snap.exists() ? { id: snap.id, ...snap.data() } : null;
+  // }
 
   // async getProductById(id: string) {
   //   const productRef = doc(this.firestore, 'products/' + id);

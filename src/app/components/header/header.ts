@@ -37,6 +37,8 @@ export class Header {
 
   private snackBar = inject(MatSnackBar);
 
+  isOnline = navigator.onLine;
+
   itemCount = this.cartService.itemCount;
   wishlistCount = this.wishlistService.itemCount;
 
@@ -47,13 +49,27 @@ export class Header {
   showMenu = false;
   openDropdownIndex: number | null = null;
 
+  ngOnInit() {
+    window.addEventListener('online', () => {
+      this.isOnline = true;
+    });
+
+    window.addEventListener('offline', () => {
+      this.isOnline = false;
+    });
+  }
+
   get authReady() {
     return this.authService.isAuthReady();
   }
 
   get isLoggedIn() {
-    return this.authService.isLoggedIn();
+    return this.authService.isLoggedIn() && this.isOnline;
   }
+
+  // get isLoggedIn() {
+  //   return this.authService.isLoggedIn();
+  // }
 
   toggleMenu(event: MouseEvent) {
     event.stopPropagation();

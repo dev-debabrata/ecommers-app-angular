@@ -12,6 +12,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { AuthService } from '../../../services/auth-service';
+import { SnackbarService } from '../../../services/snackbar-service';
+import { LoaderService } from '../../../services/loader-service';
 
 @Component({
   selector: 'app-login-page',
@@ -23,7 +25,8 @@ import { AuthService } from '../../../services/auth-service';
 export class LoginPage {
   private router = inject(Router);
   private authService = inject(AuthService);
-  private snackBar = inject(MatSnackBar);
+  private loaderService = inject(LoaderService);
+  private snackBar = inject(SnackbarService);
 
   form = new FormGroup({
     email: new FormControl<string>('', {
@@ -44,31 +47,26 @@ export class LoginPage {
     return this.form.controls.password;
   }
 
-  showSnackbar(message: string, type: 'success' | 'error') {
-    this.snackBar.open(message, 'Close', {
-      duration: 3000,
-      horizontalPosition: 'center',
-      verticalPosition: 'top',
-      panelClass: [`snackbar-${type}`],
-    });
-  }
-
   async onSubmit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.showSnackbar('Please enter valid email and password', 'error');
+      this.snackBar.error('Please enter valid email and password');
       return;
     }
 
     const { email, password } = this.form.getRawValue();
+
+    this.loaderService.show();
 
     try {
       const user = await this.authService.login(email, password);
 
       console.log(user);
 
-      this.showSnackbar('Login successful', 'success');
+      this.snackBar.success('Login successful');
       console.log();
+
+      this.loaderService.hide();
 
       const redirectUrl = localStorage.getItem('redirectUrl');
 
@@ -97,7 +95,8 @@ export class LoginPage {
         message = 'Invalid email format';
       }
 
-      this.showSnackbar(message, 'error');
+      this.snackBar.error(message);
+      this.loaderService.hide();
     }
   }
 }

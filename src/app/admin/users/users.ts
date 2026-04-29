@@ -5,6 +5,7 @@ import { MatIcon } from '@angular/material/icon';
 import { PageEvent, MatPaginatorModule } from '@angular/material/paginator';
 
 import { UserService } from '../../services/user-service';
+import { LoaderService } from '../../services/loader-service';
 
 @Component({
   selector: 'app-users',
@@ -15,6 +16,7 @@ import { UserService } from '../../services/user-service';
 })
 export class Users {
   private userService = inject(UserService);
+  private loaderService = inject(LoaderService);
 
   users = signal<any[]>([]);
   sortDirection = signal<'asc' | 'desc'>('asc');
@@ -27,13 +29,21 @@ export class Users {
   }
 
   loadUsers() {
-    this.userService.getUsers().subscribe((res) => {
-      const data = (res || []).map((u: any) => ({
-        ...u,
-        createdAt: u.createdAt?.toDate ? u.createdAt.toDate() : u.createdAt,
-      }));
+    this.loaderService.show();
 
-      this.users.set(data);
+    this.userService.getUsers().subscribe({
+      next: (res) => {
+        const data = (res || []).map((u: any) => ({
+          ...u,
+          createdAt: u.createdAt?.toDate ? u.createdAt.toDate() : u.createdAt,
+        }));
+
+        this.users.set(data);
+        this.loaderService.hide();
+      },
+      error: () => {
+        this.loaderService.hide();
+      },
     });
   }
 

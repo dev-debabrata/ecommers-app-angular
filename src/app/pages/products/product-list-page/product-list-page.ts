@@ -14,11 +14,13 @@ import { Highlight } from '../../../directives/highlight';
 import { WishlistService } from '../../../services/wishlist-service';
 import { AuthService } from '../../../services/auth-service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { LoaderService } from '../../../services/loader-service';
+import { SnackbarService } from '../../../services/snackbar-service';
 
 @Component({
   selector: 'app-product-list-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, TruncatePipe, Highlight, Loader, Error, MatIcon],
+  imports: [CommonModule, FormsModule, TruncatePipe, Highlight, Error, MatIcon],
   templateUrl: './product-list-page.html',
   styleUrl: './product-list-page.css',
 })
@@ -28,15 +30,15 @@ export class ProductListPage {
   private productService = inject(ProductService);
   private wishlistService = inject(WishlistService);
   private destroyRef = inject(DestroyRef);
-
-  private snackBar = inject(MatSnackBar);
+  private loaderService = inject(LoaderService);
+  private snackBar = inject(SnackbarService);
 
   @Input() showCategories = true;
   @Input() limit: number | null = null;
   @Input() showWishlistIcon = true;
 
   products: Product[] = [];
-  isLoading = true;
+  // isLoading = true;
   errorMsg = false;
 
   searchTerm = '';
@@ -44,11 +46,13 @@ export class ProductListPage {
   categories: string[] = [];
 
   ngOnInit(): void {
+    this.loaderService.show();
+
     const productSub = this.productService.getProducts().subscribe({
       next: (res: Product[]) => {
         const sorted = [...res].sort((a: any, b: any) => (b.createdAt || 0) - (a.createdAt || 0));
 
-        this.isLoading = false;
+        // this.isLoading = false;
 
         let products = sorted;
 
@@ -63,12 +67,13 @@ export class ProductListPage {
           const uniqueCats = Array.from(new Set(cats));
           this.categories = ['All', ...uniqueCats];
         }
-
+        this.loaderService.hide();
         console.log(res);
       },
 
       error: () => {
-        this.isLoading = false;
+        this.loaderService.hide();
+        // this.isLoading = false;
         this.errorMsg = true;
       },
     });
@@ -109,20 +114,10 @@ export class ProductListPage {
 
     if (this.wishlistService.isInWishlist(product.id!)) {
       this.wishlistService.removeFromWishlist(product.id!);
-      this.snackBar.open('Removed from wishlist', 'Close', {
-        duration: 3000,
-        horizontalPosition: 'center',
-        verticalPosition: 'top',
-        panelClass: ['snackbar-error'],
-      });
+      this.snackBar.error('Removed from wishlist');
     } else {
       this.wishlistService.addToWishlist(product);
-      this.snackBar.open('Added to wishlist', 'Close', {
-        duration: 3000,
-        horizontalPosition: 'center',
-        verticalPosition: 'top',
-        panelClass: ['snackbar-success'],
-      });
+      this.snackBar.success('Added to wishlist');
     }
   }
 

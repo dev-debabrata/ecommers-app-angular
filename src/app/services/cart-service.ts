@@ -63,11 +63,11 @@ export class CartService {
         discount: item.discount ?? 0,
       }));
 
-      const current = this.cart();
+      this.cart.set(updated);
+      //  const current = this.cart();
+      // if (JSON.stringify(current) !== JSON.stringify(updated)) {
 
-      if (JSON.stringify(current) !== JSON.stringify(updated)) {
-        this.cart.set(updated);
-      }
+      // }
     });
   }
 

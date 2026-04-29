@@ -17,6 +17,8 @@ import { from, map, of } from 'rxjs';
 
 import { AuthService } from '../../../services/auth-service';
 import { User } from '../../../models/user';
+import { SnackbarService } from '../../../services/snackbar-service';
+import { LoaderService } from '../../../services/loader-service';
 
 @Component({
   selector: 'app-signup-page',
@@ -28,7 +30,8 @@ import { User } from '../../../models/user';
 export class SignupPage {
   private router = inject(Router);
   private authService = inject(AuthService);
-  private snackBar = inject(MatSnackBar);
+  private snackBar = inject(SnackbarService);
+  private loaderService = inject(LoaderService);
 
   form = new FormGroup(
     {
@@ -95,19 +98,10 @@ export class SignupPage {
     this.phoneNumber.removeAt(index);
   }
 
-  showSnackbar(message: string, type: 'success' | 'error') {
-    this.snackBar.open(message, 'Close', {
-      duration: 3000,
-      horizontalPosition: 'center',
-      verticalPosition: 'top',
-      panelClass: [`snackbar-${type}`],
-    });
-  }
-
   async onSubmit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.showSnackbar('Please fill all fields correctly', 'error');
+      this.snackBar.error('Please fill all fields correctly');
       return;
     }
 
@@ -120,20 +114,24 @@ export class SignupPage {
       phoneNumber: value.phoneNumber,
     };
 
+    this.loaderService.show();
+
     try {
       await this.authService.signupUser(user, value.password);
 
-      this.showSnackbar('Signup successful', 'success');
+      this.snackBar.success('Signup successful');
       this.form.reset();
+      this.loaderService.hide();
       this.router.navigate(['/']);
     } catch (error: any) {
       if (error.code === 'auth/email-already-in-use') {
-        this.showSnackbar('Email already exists', 'error');
+        this.snackBar.error('Email already exists');
       } else {
-        this.showSnackbar('Signup failed', 'error');
+        this.snackBar.error('Signup failed');
       }
 
       console.error(error);
+      this.loaderService.hide();
     }
   }
 

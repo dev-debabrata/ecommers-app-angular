@@ -1,23 +1,22 @@
 import { Component, DestroyRef, inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatIcon } from '@angular/material/icon';
 
 import { AuthService } from '../../../services/auth-service';
 import { ProductService } from '../../../services/product-service';
 import { Product } from '../../../models/products';
 import { Rating } from '../../../utils/rating.util';
-import { TimeAgoPipe } from '../../../pipes/time-ago-pipe';
-import { Loader } from '../../../components/loader/loader';
 import { Error } from '../../../components/error/error';
 import { CartService } from '../../../services/cart-service';
 import { WishlistService } from '../../../services/wishlist-service';
+import { LoaderService } from '../../../services/loader-service';
+import { SnackbarService } from '../../../services/snackbar-service';
 
 @Component({
   selector: 'app-product-detail-page',
   standalone: true,
-  imports: [CommonModule, Loader, Error, MatIcon],
+  imports: [CommonModule, Error, MatIcon],
   templateUrl: './product-detail-page.html',
   styleUrl: './product-detail-page.css',
 })
@@ -29,47 +28,86 @@ export class ProductDetailPage {
   private cartService = inject(CartService);
   private wishlistService = inject(WishlistService);
   private destroyRef = inject(DestroyRef);
-  private snackBar = inject(MatSnackBar);
+  private snackBar = inject(SnackbarService);
+  private loaderService = inject(LoaderService);
 
   @Input() showWishlistIcon = true;
 
   product: Product | null = null;
-  isLoading = true;
+  // isLoading = true;
   errorMsg = false;
   stars: string[] = [];
   showAllReviews = false;
   isPopupOpen = false;
 
   ngOnInit(): void {
-    const productSub = this.route.paramMap.subscribe(async (params) => {
+    const routeSub = this.route.paramMap.subscribe((params) => {
       const productId = params.get('id');
 
       if (!productId) return;
 
-      this.isLoading = true;
+      this.loaderService.show();
       this.errorMsg = false;
       this.product = null;
 
-      try {
-        const res = await this.productService.getProductById(productId);
+      const productSub = this.productService.getProductById(productId).subscribe({
+        next: (res) => {
+          this.product = res as Product;
+          this.stars = Rating.getStars(this.product?.rating || 0);
 
-        this.product = res as Product;
-        this.stars = Rating.getStars(this.product?.rating || 0);
+          this.loaderService.hide();
+        },
 
-        this.isLoading = false;
+        error: (err) => {
+          this.errorMsg = true;
+          this.loaderService.hide();
+          console.error(err);
+        },
+      });
 
-        console.log(res);
-      } catch (err) {
-        this.errorMsg = true;
-        this.isLoading = false;
-        console.error(err);
-      }
+      this.destroyRef.onDestroy(() => {
+        productSub.unsubscribe();
+      });
     });
 
     this.destroyRef.onDestroy(() => {
-      productSub.unsubscribe();
+      routeSub.unsubscribe();
     });
   }
+
+  // ngOnInit(): void {
+  //   const productSub = this.route.paramMap.subscribe(async (params) => {
+  //     const productId = params.get('id');
+
+  //     if (!productId) return;
+
+  //     this.loaderService.show();
+  //     // this.isLoading = true;
+  //     this.errorMsg = false;
+  //     this.product = null;
+
+  //     try {
+  //       const res = await this.productService.getProductById(productId);
+
+  //       this.product = res as Product;
+  //       this.stars = Rating.getStars(this.product?.rating || 0);
+
+  //       this.loaderService.hide();
+  //       // this.isLoading = false;
+
+  //       console.log(res);
+  //     } catch (err) {
+  //       this.errorMsg = true;
+  //       // this.isLoading = false;
+  //       this.loaderService.hide();
+  //       console.error(err);
+  //     }
+  //   });
+
+  //   this.destroyRef.onDestroy(() => {
+  //     productSub.unsubscribe();
+  //   });
+  // }
 
   getDiscountPrice(product: Product): number {
     if (!product.discount) return product.price;
@@ -79,9 +117,7 @@ export class ProductDetailPage {
 
   addToCart(product: Product) {
     if (!this.authService.isLoggedIn()) {
-      this.snackBar.open('Please login to add cart', 'Close', {
-        duration: 3000,
-      });
+      this.snackBar.error('Please login to add cart');
 
       this.router.navigate(['/login']);
       return;
@@ -89,12 +125,7 @@ export class ProductDetailPage {
 
     this.cartService.addToCart(product);
 
-    this.snackBar.open('Added to cart', 'Close', {
-      duration: 3000,
-      horizontalPosition: 'center',
-      verticalPosition: 'top',
-      panelClass: ['snackbar-success'],
-    });
+    this.snackBar.success('Added to cart');
 
     this.router.navigate(['/cart']);
   }
@@ -111,20 +142,10 @@ export class ProductDetailPage {
 
     if (this.wishlistService.isInWishlist(product.id!)) {
       this.wishlistService.removeFromWishlist(product.id!);
-      this.snackBar.open('Removed from wishlist', 'Close', {
-        duration: 3000,
-        horizontalPosition: 'center',
-        verticalPosition: 'top',
-        panelClass: ['snackbar-error'],
-      });
+      this.snackBar.error('Removed from wishlist');
     } else {
       this.wishlistService.addToWishlist(product);
-      this.snackBar.open('Added to wishlist', 'Close', {
-        duration: 3000,
-        horizontalPosition: 'center',
-        verticalPosition: 'top',
-        panelClass: ['snackbar-success'],
-      });
+      this.snackBar.success('Added to wishlist');
     }
   }
 

@@ -6,6 +6,7 @@ import { Product } from '../../../models/products';
 import { TruncatePipe } from '../../../pipes/truncate-pipe';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { CommonModule } from '@angular/common';
+import { LoaderService } from '../../../services/loader-service';
 
 @Component({
   selector: 'app-product-list',
@@ -18,6 +19,8 @@ export class ProductList {
   private productService = inject(ProductService);
   private destroyRef = inject(DestroyRef);
 
+  private loaderService = inject(LoaderService);
+
   products = signal<Product[]>([]);
   searchTerm = signal('');
   sortDirection = signal<'asc' | 'desc'>('asc');
@@ -28,13 +31,17 @@ export class ProductList {
   totalItems = computed(() => this.filteredProducts().length);
 
   ngOnInit() {
+    this.loaderService.show();
+
     const sub = this.productService.getProducts().subscribe({
       next: (res) => {
         this.products.set(res || []);
+        this.loaderService.hide();
       },
       error: (err) => {
         console.error('Product load error:', err);
         this.products.set([]);
+        this.loaderService.hide();
       },
     });
 

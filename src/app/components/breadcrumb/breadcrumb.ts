@@ -1,10 +1,8 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router';
-
 import { ProductService } from '../../services/product-service';
 import { filter } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { Product } from '../../models/products';
 
 @Component({
   selector: 'app-breadcrumb',
@@ -19,6 +17,7 @@ export class Breadcrumb {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
+
     private productService: ProductService,
   ) {
     this.buildBreadcrumbs();
@@ -28,22 +27,19 @@ export class Breadcrumb {
     });
   }
 
-  private async buildBreadcrumbs() {
+  private buildBreadcrumbs() {
     if (this.router.url === '/') {
       this.breadcrumbs = [];
       return;
     }
 
     this.breadcrumbs = [{ label: 'Home', url: '/' }];
-
     let currentRoute = this.route.root;
     let url = '';
 
     while (currentRoute.firstChild) {
       currentRoute = currentRoute.firstChild;
-
       const routeURL = currentRoute.snapshot.url.map((s) => s.path).join('/');
-
       if (!routeURL) continue;
 
       url += `/${routeURL}`;
@@ -57,18 +53,28 @@ export class Breadcrumb {
       ) {
         this.breadcrumbs = [...this.breadcrumbs, { label: staticLabel, url }];
       }
+      // if (staticLabel && staticLabel !== 'Home') {
+      //   this.breadcrumbs.push({ label: staticLabel, url });
+      // }
 
       const postId = currentRoute.snapshot.params['id'];
-
       if (postId) {
-        const post = await this.productService.getProductById(postId);
+        this.productService.getProductById(postId).subscribe((post) => {
+          if (post) {
+            const shortTitle =
+              post.title.length > 25 ? post.title.slice(0, 25) + '...' : post.title;
 
-        if (post) {
-          this.breadcrumbs.push({
-            label: (post as Product).title,
-            url,
-          });
-        }
+            if (!this.breadcrumbs.some((b) => b.label === shortTitle)) {
+              this.breadcrumbs.push({
+                label: shortTitle,
+                url,
+              });
+            }
+          }
+        });
+        // this.productService.getProductById(+postId).subscribe((post) => {
+        //   this.breadcrumbs.push({ label: post.title, url });
+        // });
       }
     }
   }
@@ -76,9 +82,10 @@ export class Breadcrumb {
 
 // import { Component } from '@angular/core';
 // import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router';
-// import { ProductService } from '../../services/product-service';
-// import { filter } from 'rxjs';
 // import { CommonModule } from '@angular/common';
+// import { filter } from 'rxjs';
+
+// import { ProductService } from '../../services/product-service';
 
 // @Component({
 //   selector: 'app-breadcrumb',
@@ -93,7 +100,6 @@ export class Breadcrumb {
 //   constructor(
 //     private router: Router,
 //     private route: ActivatedRoute,
-
 //     private productService: ProductService,
 //   ) {
 //     this.buildBreadcrumbs();
@@ -110,12 +116,15 @@ export class Breadcrumb {
 //     }
 
 //     this.breadcrumbs = [{ label: 'Home', url: '/' }];
+
 //     let currentRoute = this.route.root;
 //     let url = '';
 
 //     while (currentRoute.firstChild) {
 //       currentRoute = currentRoute.firstChild;
+
 //       const routeURL = currentRoute.snapshot.url.map((s) => s.path).join('/');
+
 //       if (!routeURL) continue;
 
 //       url += `/${routeURL}`;
@@ -127,16 +136,24 @@ export class Breadcrumb {
 //         staticLabel !== 'Home' &&
 //         this.breadcrumbs[this.breadcrumbs.length - 1]?.label !== staticLabel
 //       ) {
-//         this.breadcrumbs = [...this.breadcrumbs, { label: staticLabel, url }];
+//         this.breadcrumbs.push({ label: staticLabel, url });
 //       }
-//       // if (staticLabel && staticLabel !== 'Home') {
-//       //   this.breadcrumbs.push({ label: staticLabel, url });
-//       // }
 
 //       const postId = currentRoute.snapshot.params['id'];
+
 //       if (postId) {
-//         this.productService.getProductById(+postId).subscribe((post) => {
-//           this.breadcrumbs.push({ label: post.title, url });
+//         this.productService.getProductById(postId).subscribe((post) => {
+//           if (post) {
+//             const shortTitle =
+//               post.title.length > 25 ? post.title.slice(0, 25) + '...' : post.title;
+
+//             if (this.breadcrumbs[this.breadcrumbs.length - 1]?.label !== shortTitle) {
+//               this.breadcrumbs.push({
+//                 label: shortTitle,
+//                 url,
+//               });
+//             }
+//           }
 //         });
 //       }
 //     }

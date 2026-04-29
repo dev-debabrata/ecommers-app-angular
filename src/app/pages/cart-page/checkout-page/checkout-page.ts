@@ -7,13 +7,14 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { CartService } from '../../../services/cart-service';
 import { AuthService } from '../../../services/auth-service';
-import { Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { TruncatePipe } from '../../../pipes/truncate-pipe';
 import { OrderService } from '../../../services/order-service';
+import { LoaderService } from '../../../services/loader-service';
+import { SnackbarService } from '../../../services/snackbar-service';
 
 @Component({
   selector: 'app-checkout-page',
@@ -28,7 +29,8 @@ export class CheckoutPage implements OnInit {
   private router = inject(Router);
   private orderService = inject(OrderService);
 
-  private snackBar = inject(MatSnackBar);
+  private loaderService = inject(LoaderService);
+  private snackbar = inject(SnackbarService);
 
   buyNowItem: any = null;
   submitted = signal(false);
@@ -142,12 +144,7 @@ export class CheckoutPage implements OnInit {
     this.submitted.set(true);
 
     if (!this.isFormValid()) {
-      this.snackBar.open('Please fill all required fields correctly!', 'Close', {
-        duration: 2500,
-        horizontalPosition: 'center',
-        verticalPosition: 'top',
-        panelClass: ['snackbar-error'],
-      });
+      this.snackbar.error('Please fill all required fields correctly!');
 
       document.querySelector('.checkout-left')?.scrollIntoView({ behavior: 'smooth' });
       return;
@@ -155,7 +152,7 @@ export class CheckoutPage implements OnInit {
 
     const user: any = await this.authService.getFullUser();
     if (!user?.uid) {
-      this.snackBar.open('User not logged in!', 'Close', { duration: 2000 });
+      this.snackbar.error('User not logged in!');
       return;
     }
 
@@ -171,44 +168,23 @@ export class CheckoutPage implements OnInit {
       status: 'placed',
     };
 
+    this.loaderService.show();
+
     try {
       const docRef = await this.orderService.createOrder(user.uid, order);
 
       this.buyNowItem = null;
       localStorage.removeItem('buyNowItem');
-      this.cartService.clearCart();
+      await this.cartService.clearCart();
 
-      this.checkoutForm.set({
-        fullName: '',
-        email: '',
-        phone: '',
-        address: '',
-        landmark: '',
-        city: '',
-        state: '',
-        pinCode: '',
-        shippingMethod: 'free',
-      });
-
-      this.submitted.set(false);
-      this.touchedFields.set({});
-
-      this.snackBar.open('Order placed successfully!', 'Close', {
-        duration: 3000,
-        horizontalPosition: 'center',
-        verticalPosition: 'top',
-        panelClass: ['snackbar-success'],
-      });
+      this.snackbar.success('Order placed successfully!');
+      this.loaderService.hide();
 
       this.router.navigate(['/order-success', docRef.id]);
     } catch (error) {
       console.error(error);
-      this.snackBar.open('Failed to place order!', 'Close', {
-        duration: 3000,
-        horizontalPosition: 'center',
-        verticalPosition: 'top',
-        panelClass: ['snackbar-error'],
-      });
+      this.snackbar.error('Failed to place order!');
+      this.loaderService.hide();
     }
   }
 

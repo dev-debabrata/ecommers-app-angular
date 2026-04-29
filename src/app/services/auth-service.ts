@@ -95,8 +95,12 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return this.isAuthReady() && !!this.auth.currentUser;
+    return this.isAuthReady() && !!this.auth.currentUser && navigator.onLine;
   }
+
+  // isLoggedIn(): boolean {
+  //   return this.isAuthReady() && !!this.auth.currentUser;
+  // }
 
   getUserName(): string {
     return this.auth.currentUser?.displayName || '';
