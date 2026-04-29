@@ -20,23 +20,18 @@ export class ProductList {
 
   products = signal<Product[]>([]);
   searchTerm = signal('');
+  sortDirection = signal<'asc' | 'desc'>('asc');
 
   pageSize = 5;
   pageIndex = 0;
 
+  totalItems = computed(() => this.filteredProducts().length);
+
   ngOnInit() {
     const sub = this.productService.getProducts().subscribe({
       next: (res) => {
-        if (!res) {
-          this.products.set([]);
-          return;
-        }
-
-        const sorted = [...res].sort((a: any, b: any) => (a.createdAt || 0) - (b.createdAt || 0));
-
-        this.products.set(sorted);
+        this.products.set(res || []);
       },
-
       error: (err) => {
         console.error('Product load error:', err);
         this.products.set([]);
@@ -49,6 +44,30 @@ export class ProductList {
   }
 
   // ngOnInit() {
+  //   const sub = this.productService.getProducts().subscribe({
+  //     next: (res) => {
+  //       if (!res) {
+  //         this.products.set([]);
+  //         return;
+  //       }
+
+  //       const sorted = [...res].sort((a: any, b: any) => (a.createdAt || 0) - (b.createdAt || 0));
+
+  //       this.products.set(sorted);
+  //     },
+
+  //     error: (err) => {
+  //       console.error('Product load error:', err);
+  //       this.products.set([]);
+  //     },
+  //   });
+
+  //   this.destroyRef.onDestroy(() => {
+  //     sub.unsubscribe();
+  //   });
+  // }
+
+  // ngOnInit() {
   //   const sub = this.productService.getProducts().subscribe((res) => {
   //     this.products.set(res);
   //   });
@@ -57,6 +76,44 @@ export class ProductList {
   //     sub.unsubscribe();
   //   });
   // }
+
+  filteredProducts = computed(() => {
+    const term = this.searchTerm().toLowerCase();
+
+    return this.products().filter((product) => product.title?.toLowerCase().includes(term));
+  });
+
+  sortedProducts = computed(() => {
+    const direction = this.sortDirection();
+
+    return [...this.filteredProducts()].sort((a: any, b: any) => {
+      const aVal = a.createdAt?.seconds || a.createdAt || 0;
+      const bVal = b.createdAt?.seconds || b.createdAt || 0;
+
+      return direction === 'asc' ? aVal - bVal : bVal - aVal;
+    });
+  });
+
+  get paginatedProducts() {
+    const start = this.pageIndex * this.pageSize;
+    const end = start + this.pageSize;
+
+    return this.sortedProducts().slice(start, end);
+  }
+
+  updateSearch(value: string) {
+    this.searchTerm.set(value);
+    this.pageIndex = 0;
+  }
+
+  toggleSort() {
+    this.sortDirection.set(this.sortDirection() === 'asc' ? 'desc' : 'asc');
+  }
+
+  onPageChange(event: PageEvent) {
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+  }
 
   getDiscountPrice(product: Product): number {
     if (!product.discount || product.discount <= 0) {
@@ -68,27 +125,5 @@ export class ProductList {
 
   deleteProduct(id: string) {
     this.productService.deleteProduct(id);
-  }
-
-  filteredProducts = computed(() => {
-    const term = this.searchTerm().toLowerCase();
-
-    return this.products().filter((product) => product.title.toLowerCase().includes(term));
-  });
-
-  updateSearch(value: string) {
-    this.searchTerm.set(value);
-  }
-
-  get paginatedProducts() {
-    const start = this.pageIndex * this.pageSize;
-    const end = start + this.pageSize;
-
-    return this.filteredProducts().slice(start, end);
-  }
-
-  onPageChange(event: PageEvent) {
-    this.pageIndex = event.pageIndex;
-    this.pageSize = event.pageSize;
   }
 }

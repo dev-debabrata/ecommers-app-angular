@@ -47,8 +47,7 @@ h2 {
   margin-bottom: 4px;
 }
 
-input,
-textarea {
+input {
   width: 100%;
   padding: 12px;
   border: 1px solid #ced4da;
@@ -56,17 +55,16 @@ textarea {
   box-sizing: border-box;
 }
 
-input:focus,
-textarea:focus {
+input:focus {
   outline: none;
   border: 1px solid #e67700;
   box-shadow: 0 0 0 3px rgba(230, 119, 0, 0.2);
 }
 
-textarea {
+/* textarea {
   height: 100px;
   resize: none;
-}
+} */
 
 .shipping-methods {
   display: flex;
