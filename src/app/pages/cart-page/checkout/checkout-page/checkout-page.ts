@@ -15,6 +15,7 @@ import { TruncatePipe } from '../../../../pipes/truncate-pipe';
 import { OrderService } from '../../../../services/order-service';
 import { LoaderService } from '../../../../services/loader-service';
 import { SnackbarService } from '../../../../services/snackbar-service';
+import { CartItem } from '../../../../models/cart-item';
 
 @Component({
   selector: 'app-checkout-page',
@@ -110,6 +111,10 @@ export class CheckoutPage implements OnInit {
   //     }));
   //   }
   // }
+
+  getDiscountPrice(item: CartItem): number {
+    return this.cartService.getDiscountPrice(item);
+  }
 
   shippingPrice = computed(() => (this.checkoutForm().shippingMethod === 'express' ? 110 : 20));
 
