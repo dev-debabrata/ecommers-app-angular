@@ -25,9 +25,19 @@ export class CartService {
 
   itemCount = computed(() => this.cart().length);
 
+  getDiscountPrice(item: CartItem): number {
+    if (!item.discount) return item.price;
+
+    return item.price - (item.price * item.discount) / 100;
+  }
+
   totalPrice = computed(() =>
-    this.cart().reduce((acc, item) => acc + item.price * item.quantity, 0),
+    this.cart().reduce((acc, item) => acc + this.getDiscountPrice(item) * item.quantity, 0),
   );
+
+  // totalPrice = computed(() =>
+  //   this.cart().reduce((acc, item) => acc + item.price * item.quantity, 0),
+  // );
 
   constructor() {
     authState(this.auth).subscribe((user) => {

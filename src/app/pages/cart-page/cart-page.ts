@@ -20,9 +20,7 @@ export class CartPage {
   total = this.cartService.totalPrice;
 
   getDiscountPrice(item: CartItem): number {
-    if (!item.discount) return item.price;
-
-    return item.price - (item.price * item.discount) / 100;
+    return this.cartService.getDiscountPrice(item);
   }
 
   remove(id: string) {
