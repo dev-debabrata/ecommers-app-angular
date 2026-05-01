@@ -10,31 +10,19 @@
   <div class="sidebar" [class.open]="isSidebarOpen">
     <div class="sidebar-header">
       <!-- <a href="" routerLink="/login"><mat-icon>person</mat-icon>Hello, sign In</a> -->
-      @if (authReady) {
-        @if (!isLoggedIn) {
-          <a routerLink="/login" class="btn secondary">
-            <mat-icon>person</mat-icon>Hello, sign In
-          </a>
-        } @else {
-          <div class="avatar-container">
-            <div class="name-box">
-              <img (click)="toggleMenu($event)" src="/avatar.png" alt="" class="avatar-img" />
-              <span>Hello, {{ userName }}</span>
-            </div>
-
-            @if (isMenuOpen) {
-              <div class="overlay" (click)="closeMenu()"></div>
-              <div class="dropdown-login">
-                <button (click)="logout()">Logout</button>
-              </div>
-            }
-          </div>
-        }
+      @if (!isLoggedIn) {
+        <a
+          [routerLink]="isLoggedIn ? '/' : '/login'"
+          routerLinkActive="active"
+          class="btn secondary"
+          ><mat-icon>person</mat-icon>Hello, sign In</a
+        >
       } @else {
         <div class="avatar-container">
           <div class="name-box">
             <img (click)="toggleMenu($event)" src="/avatar.png" alt="" class="avatar-img" />
-            <span>Hello, {{ userName }}</span>
+
+            <span>Hello, {{ user()?.firstName }} {{ user()?.lastName }}</span>
           </div>
 
           @if (isMenuOpen) {
@@ -55,7 +43,7 @@
       @for (menus of menu; track menus) {
         <h2>{{ menus.title }}</h2>
 
-        @for (item of menus.items; track $index) {
+        @for (item of menus.items; track item.name) {
           <li>
             {{ item.name }}
 

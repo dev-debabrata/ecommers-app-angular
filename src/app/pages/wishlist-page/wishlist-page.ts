@@ -58,6 +58,9 @@ export class WishlistPage {
   }
 }
 
+///////////////////////////////////////////////
+////////// JSON VERSION //////////////////////
+
 // import { Component, computed, inject } from '@angular/core';
 // import { CommonModule } from '@angular/common';
 // import { Router } from '@angular/router';

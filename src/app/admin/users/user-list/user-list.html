@@ -22,7 +22,7 @@
     </thead>
 
     <tbody>
-      @for (user of paginatedUsers; track user.id; let i = $index) {
+      @for (user of paginatedUsers(); track user.id; let i = $index) {
         <tr>
           <td>
             {{
@@ -50,7 +50,7 @@
         </tr>
       }
 
-      @if (paginatedUsers.length === 0) {
+      @if (paginatedUsers().length === 0) {
         <tr>
           <td colspan="6">No users found</td>
         </tr>

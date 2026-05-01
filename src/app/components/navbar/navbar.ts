@@ -1,10 +1,11 @@
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { AuthService } from '../../services/auth-service';
+import { User } from '../../models/user';
 
 interface MenuItem {
   name: string;
@@ -27,6 +28,9 @@ export class Navbar {
   private router = inject(Router);
   private authService = inject(AuthService);
   private snackBar = inject(MatSnackBar);
+  private destroyRef = inject(DestroyRef);
+
+  user = signal<User | null>(null);
 
   isSidebarOpen = false;
   isMenuOpen = false;
@@ -67,8 +71,21 @@ export class Navbar {
     return this.authService.isLoggedIn();
   }
 
-  get userName(): string {
-    return this.authService.getUserName();
+  // get userName(): string {
+  //   return this.authService.getUserName();
+  // }
+
+  ngOnInit() {
+    const sub = this.authService.getFullUser().subscribe({
+      next: (user) => {
+        this.user.set(user);
+      },
+      error: (err) => {
+        console.error(err);
+      },
+    });
+
+    this.destroyRef.onDestroy(() => sub.unsubscribe());
   }
 
   logout() {

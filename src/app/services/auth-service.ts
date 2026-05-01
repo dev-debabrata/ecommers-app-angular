@@ -19,7 +19,7 @@ import {
   updateDoc,
 } from '@angular/fire/firestore';
 
-import { Observable } from 'rxjs';
+import { from, Observable, of } from 'rxjs';
 
 import { User } from '../models/user';
 
@@ -82,184 +82,45 @@ export class AuthService {
     return res.user;
   }
 
-  // async login(email: string, password: string) {
-  //   const res = await signInWithEmailAndPassword(this.auth, email, password);
-
-  //   return res.user;
-  // }
-
   async logout() {
     return await signOut(this.auth);
   }
 
-  async getUserRole(uid: string): Promise<'user' | 'admin'> {
-    const userRef = doc(this.firestore, 'users/' + uid);
-    const snap = await getDoc(userRef);
+  // getUserRole(uid: string): Observable<'user' | 'admin'> {
+  //   const userRef = doc(this.firestore, 'users/' + uid);
 
-    if (!snap.exists()) return 'user';
+  //   return from(
+  //     getDoc(userRef).then((snap) => {
+  //       if (!snap.exists()) return 'user';
 
-    return snap.data()?.['role'] || 'user';
-  }
+  //       return (snap.data()?.['role'] as 'user' | 'admin') || 'user';
+  //     }),
+  //   );
+  // }
 
   isLoggedIn(): boolean {
     return this.isAuthReady() && !!this.auth.currentUser && navigator.onLine;
   }
 
-  // isLoggedIn(): boolean {
-  //   return this.isAuthReady() && !!this.auth.currentUser;
-  // }
-
-  getUserName(): string {
-    return this.auth.currentUser?.displayName || '';
-  }
-
-  getUser() {
+  getFullUser(): Observable<User | null> {
     const user = this.auth.currentUser;
 
-    if (!user) return null;
-
-    const parts = (user.displayName || '').split(' ');
-    const firstName = parts[0] || '';
-    const lastName = parts.slice(1).join(' ');
-
-    return {
-      uid: user.uid,
-      email: user.email || '',
-      firstName,
-      lastName,
-      displayName: user.displayName || '',
-      phoneNumber: user.phoneNumber || '',
-    };
-  }
-
-  async getFullUser() {
-    const user = this.auth.currentUser;
-
-    if (!user) return null;
+    if (!user) {
+      return of(null);
+    }
 
     const userRef = doc(this.firestore, 'users/' + user.uid);
-    const snap = await getDoc(userRef);
 
-    return snap.exists() ? snap.data() : null;
-  }
-
-  async updateUserAddress(uid: string, data: any) {
-    const userRef = doc(this.firestore, 'users/' + uid);
-
-    return await updateDoc(userRef, data);
-  }
-
-  async checkEmail(email: string): Promise<boolean> {
-    const methods = await fetchSignInMethodsForEmail(this.auth, email);
-    return methods.length > 0;
+    return from(
+      getDoc(userRef).then((snap) => {
+        return snap.exists() ? (snap.data() as User) : null;
+      }),
+    );
   }
 }
 
-///////////////////////////////////////////////////////////////////////
-
-// import { Injectable, inject } from '@angular/core';
-// import {
-//   Auth,
-//   createUserWithEmailAndPassword,
-//   signInWithEmailAndPassword,
-//   signOut,
-//   updateProfile,
-//   authState,
-//   User as FirebaseUser,
-//   fetchSignInMethodsForEmail,
-// } from '@angular/fire/auth';
-
-// import { Firestore, doc, getDoc, setDoc } from '@angular/fire/firestore';
-
-// import { Observable } from 'rxjs';
-
-// import { User } from '../models/user';
-
-// @Injectable({
-//   providedIn: 'root',
-// })
-// export class AuthService {
-//   private auth = inject(Auth);
-//   private firestore = inject(Firestore);
-
-//   firebaseUser$: Observable<FirebaseUser | null> = authState(this.auth);
-
-//   async signupUser(data: User, password: string) {
-//     const result = await createUserWithEmailAndPassword(this.auth, data.email, password);
-
-//     const uid = result.user.uid;
-
-//     await updateProfile(result.user, {
-//       displayName: `${data.firstName} ${data.lastName}`,
-//     });
-
-//     await setDoc(doc(this.firestore, 'users/' + uid), {
-//       ...data,
-//       uid,
-//       role: 'user',
-//     });
-
-//     return result.user;
-//   }
-
-//   async login(email: string, password: string) {
-//     const res = await signInWithEmailAndPassword(this.auth, email, password);
-
-//     return res.user;
-//   }
-
-//   async logout() {
-//     return await signOut(this.auth);
-//   }
-
-//   async getUserRole(uid: string): Promise<'user' | 'admin'> {
-//     const userRef = doc(this.firestore, 'users/' + uid);
-//     const snap = await getDoc(userRef);
-
-//     if (!snap.exists()) return 'user';
-
-//     return snap.data()?.['role'] || 'user';
-//   }
-
-//   isLoggedIn(): boolean {
-//     return !!this.auth.currentUser;
-//   }
-
-//   getUserName(): string {
-//     return this.auth.currentUser?.displayName || '';
-//   }
-
-//   getUser() {
-//     const user = this.auth.currentUser;
-
-//     if (!user) return null;
-
-//     const parts = (user.displayName || '').split(' ');
-//     const firstName = parts[0] || '';
-//     const lastName = parts.slice(1).join(' ');
-
-//     return {
-//       uid: user.uid,
-//       email: user.email || '',
-//       firstName,
-//       lastName,
-//       displayName: user.displayName || '',
-//       phoneNumber: [],
-//     };
-//   }
-
-//   async getFullUser() {
-//     const user = this.auth.currentUser;
-
-//     if (!user) return null;
-
-//     const userRef = doc(this.firestore, 'users/' + user.uid);
-//     const snap = await getDoc(userRef);
-
-//     return snap.exists() ? snap.data() : null;
-//   }
-// }
-
+//////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////   JSON VERSION //////////////////////////////
 // import { inject, Injectable } from '@angular/core';
 // import { HttpClient } from '@angular/common/http';
 // import { Observable } from 'rxjs';
@@ -315,17 +176,5 @@ export class AuthService {
 //   getUser(): User | null {
 //     const user = localStorage.getItem('user');
 //     return user ? JSON.parse(user) : null;
-//   }
-// }
-
-///////////////////////////////////////////////////
-//   getUser(): User | null {
-//   const user = localStorage.getItem('user');
-//   if (!user) return null;
-
-//   try {
-//     return JSON.parse(user);
-//   } catch {
-//     return null;
 //   }
 // }

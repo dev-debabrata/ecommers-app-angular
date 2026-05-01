@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, Input } from '@angular/core';
+import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatIcon } from '@angular/material/icon';
@@ -20,7 +20,7 @@ import { SnackbarService } from '../../../services/snackbar-service';
   templateUrl: './product-detail-page.html',
   styleUrl: './product-detail-page.css',
 })
-export class ProductDetailPage {
+export class ProductDetailPage implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private authService = inject(AuthService);

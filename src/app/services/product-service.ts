@@ -38,30 +38,12 @@ export class ProductService {
     }) as Observable<Product | null>;
   }
 
-  // async getProductById(id: string) {
-  //   const productRef = doc(this.firestore, 'products/' + id);
-  //   const snap = await getDoc(productRef);
-
-  //   return snap.exists() ? { id: snap.id, ...snap.data() } : null;
-  // }
-
-  // async getProductById(id: string) {
-  //   const productRef = doc(this.firestore, 'products/' + id);
-  //   const snap = await getDoc(productRef);
-
-  //   return snap.exists() ? snap.data() : null;
-  // }
-
   addProduct(product: Product) {
     return addDoc(this.productsRef, {
       ...product,
       createdAt: Date.now(),
     });
   }
-
-  // addProduct(product: Product) {
-  //   return addDoc(this.productsRef, product);
-  // }
 
   deleteProduct(id: string) {
     const productRef = doc(this.firestore, 'products/' + id);
@@ -74,6 +56,27 @@ export class ProductService {
   }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////
+// async getProductById(id: string) {
+//   const productRef = doc(this.firestore, 'products/' + id);
+//   const snap = await getDoc(productRef);
+
+//   return snap.exists() ? { id: snap.id, ...snap.data() } : null;
+// }
+
+// async getProductById(id: string) {
+//   const productRef = doc(this.firestore, 'products/' + id);
+//   const snap = await getDoc(productRef);
+
+//   return snap.exists() ? snap.data() : null;
+// }
+
+// addProduct(product: Product) {
+//   return addDoc(this.productsRef, product);
+// }
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////// JSON VERSION /////////////////////////////////////////
 // import { HttpClient } from '@angular/common/http';
 // import { inject, Injectable } from '@angular/core';
 // import { Observable } from 'rxjs';

@@ -17,28 +17,6 @@ import { Observable, from, map } from 'rxjs';
 export class OrderService {
   private firestore = inject(Firestore);
 
-  //   async createOrder(userId: string, order: any) {
-  //   const userOrdersRef = collection(this.firestore, `users/${userId}/orders`);
-
-  //   const fullOrder = {
-  //     ...order,
-  //     userId,
-  //     createdAt: Date.now(),
-  //   };
-
-  //   // user-level order
-  //   const userOrder = await addDoc(userOrdersRef, fullOrder);
-
-  //   // admin-level order
-  //   const globalOrdersRef = collection(this.firestore, 'orders');
-  //   await addDoc(globalOrdersRef, {
-  //     ...fullOrder,
-  //     userOrderId: userOrder.id,
-  //   });
-
-  //   return userOrder;
-  // }
-
   async createOrder(userId: string, order: any) {
     const fullOrder = {
       ...order,
@@ -57,15 +35,6 @@ export class OrderService {
 
     return userOrder;
   }
-
-  // async createOrder(userId: string, order: any) {
-  //   const ordersRef = collection(this.firestore, `users/${userId}/orders`);
-
-  //   return await addDoc(ordersRef, {
-  //     ...order,
-  //     createdAt: Date.now(),
-  //   });
-  // }
 
   getUserOrders(userId: string): Observable<any[]> {
     const ordersRef = collection(this.firestore, `users/${userId}/orders`);
@@ -98,3 +67,36 @@ export class OrderService {
     return collectionData(q, { idField: 'id' }) as Observable<any[]>;
   }
 }
+
+///////////////////////////////////////////////////////////////////////////
+//   async createOrder(userId: string, order: any) {
+//   const userOrdersRef = collection(this.firestore, `users/${userId}/orders`);
+
+//   const fullOrder = {
+//     ...order,
+//     userId,
+//     createdAt: Date.now(),
+//   };
+
+//   // user-level order
+//   const userOrder = await addDoc(userOrdersRef, fullOrder);
+
+//   // admin-level order
+//   const globalOrdersRef = collection(this.firestore, 'orders');
+//   await addDoc(globalOrdersRef, {
+//     ...fullOrder,
+//     userOrderId: userOrder.id,
+//   });
+
+//   return userOrder;
+// }
+
+////////////////////////////////////////////////////////////////////////
+// async createOrder(userId: string, order: any) {
+//   const ordersRef = collection(this.firestore, `users/${userId}/orders`);
+
+//   return await addDoc(ordersRef, {
+//     ...order,
+//     createdAt: Date.now(),
+//   });
+// }

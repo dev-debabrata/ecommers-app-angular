@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
@@ -15,7 +15,7 @@ import { OrderHistory } from '../order-history/order-history';
   templateUrl: './profile-page.html',
   styleUrl: './profile-page.css',
 })
-export class ProfilePage {
+export class ProfilePage implements OnInit {
   private authService = inject(AuthService);
   private orderService = inject(OrderService);
   private router = inject(Router);
@@ -26,21 +26,38 @@ export class ProfilePage {
 
   activeSection = 'orders';
 
-  async ngOnInit() {
-    this.user = await this.authService.getFullUser();
+  ngOnInit() {
+    const userSub = this.authService.getFullUser().subscribe({
+      next: (user) => {
+        this.user = user;
 
-    if (this.user?.uid) {
-      const orderSub = this.orderService.getUserOrders(this.user.uid).subscribe((orders) => {
-        this.orders = orders.map((o: any) => ({
-          ...o,
-          date: o.date?.toDate ? o.date.toDate() : o.date,
-        }));
-      });
+        if (!user?.uid) return;
 
-      this.destroyRef.onDestroy(() => {
-        orderSub.unsubscribe();
-      });
-    }
+        const orderSub = this.orderService.getUserOrders(user.uid).subscribe({
+          next: (orders) => {
+            this.orders = orders.map((o: any) => ({
+              ...o,
+              date: o.date?.toDate ? o.date.toDate() : o.date,
+            }));
+          },
+          error: (err) => {
+            console.error('Orders error:', err);
+          },
+        });
+
+        this.destroyRef.onDestroy(() => {
+          orderSub.unsubscribe();
+        });
+      },
+
+      error: (err) => {
+        console.error('User error:', err);
+      },
+    });
+
+    this.destroyRef.onDestroy(() => {
+      userSub.unsubscribe();
+    });
   }
 
   changeSection(section: string) {
@@ -52,77 +69,3 @@ export class ProfilePage {
     this.router.navigate(['/login']);
   }
 }
-
-// import { Component, DestroyRef, inject } from '@angular/core';
-// import { CommonModule } from '@angular/common';
-// import { Router } from '@angular/router';
-
-// import { AuthService } from '../../../services/auth-service';
-// import { OrderService } from '../../../services/order-service';
-
-// @Component({
-//   selector: 'app-profile-page',
-//   standalone: true,
-//   imports: [CommonModule],
-//   templateUrl: './profile-page.html',
-//   styleUrl: './profile-page.css',
-// })
-// export class ProfilePage {
-//   private authService = inject(AuthService);
-//   private orderService = inject(OrderService);
-//   private router = inject(Router);
-//   private destroyRef = inject(DestroyRef);
-
-//   user: any = null;
-//   orders: any[] = [];
-
-//   activeSection = 'orders';
-
-//   async ngOnInit() {
-//     this.user = await this.authService.getFullUser();
-
-//     if (this.user?.uid) {
-//       const orderSub = this.orderService.getUserOrders(this.user.uid).subscribe((orders) => {
-//         this.orders = orders.map((o: any) => ({
-//           ...o,
-//           date: o.date?.toDate ? o.date.toDate() : o.date,
-//         }));
-//       });
-
-//       this.destroyRef.onDestroy(() => {
-//         orderSub.unsubscribe();
-//       });
-//     }
-//   }
-
-//   changeSection(section: string) {
-//     this.activeSection = section;
-//   }
-
-//   logout() {
-//     this.authService.logout();
-//     this.router.navigate(['/login']);
-//   }
-
-//   viewProductDetails(productId: number) {
-//     this.router.navigate(['/products', productId]);
-//   }
-// }
-
-///////////////////////////////////////////////////////////////
-
-// async ngOnInit() {
-//   this.user = await this.authService.getFullUser();
-
-//   if (this.user?.uid) {
-//     this.orderService
-//       .getUserOrders(this.user.uid)
-//       .pipe(takeUntilDestroyed(this.destroyRef))
-//       .subscribe((orders) => {
-//         this.orders = orders.map((o: any) => ({
-//           ...o,
-//           date: o.date?.toDate ? o.date.toDate() : o.date,
-//         }));
-//       });
-//   }
-// }

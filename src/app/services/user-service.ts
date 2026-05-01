@@ -6,8 +6,10 @@ import {
   doc,
   deleteDoc,
   getDoc,
+  docData,
+  updateDoc,
 } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { from, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -20,15 +22,28 @@ export class UserService {
     return collectionData(usersRef, { idField: 'id' }) as Observable<any[]>;
   }
 
-  async getUserById(id: string) {
-    const userDoc = doc(this.firestore, `users/${id}`);
-    const snap = await getDoc(userDoc);
-
-    return snap.exists() ? { id: snap.id, ...snap.data() } : null;
+  getUserById(uid: string): Observable<any> {
+    const userRef = doc(this.firestore, `users/${uid}`);
+    return docData(userRef, { idField: 'uid' });
   }
 
-  deleteUser(id: string) {
-    const userDoc = doc(this.firestore, `users/${id}`);
-    return deleteDoc(userDoc);
+  updateUserAddress(uid: string, data: any): Observable<void> {
+    const userRef = doc(this.firestore, `users/${uid}`);
+    return from(updateDoc(userRef, data));
   }
+
+  deleteUser(id: string): Observable<void> {
+    const userDoc = doc(this.firestore, `users/${id}`);
+    return from(deleteDoc(userDoc));
+  }
+
+  // updateUserAddress(uid: string, data: any) {
+  //   const userRef = doc(this.firestore, `users/${uid}`);
+  //   return updateDoc(userRef, data);
+  // }
+
+  // deleteUser(id: string) {
+  //   const userDoc = doc(this.firestore, `users/${id}`);
+  //   return deleteDoc(userDoc);
+  // }
 }

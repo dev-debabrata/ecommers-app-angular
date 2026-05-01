@@ -5,8 +5,9 @@ import { Dashboard } from './dashboard/dashboard';
 import { AdminLogin } from './auth/admin-login/admin-login';
 import { adminAuthGuard } from '../guards/admin-auth-guard';
 import { ProductList } from './products/product-list/product-list';
-import { Users } from './users/users';
+
 import { Orders } from './orders/orders';
+import { UserList } from './users/user-list/user-list';
 
 export const adminRoutes: Routes = [
   {
@@ -28,7 +29,7 @@ export const adminRoutes: Routes = [
       {
         path: 'users',
         children: [
-          { path: '', component: Users },
+          { path: '', component: UserList },
           {
             path: ':id',
             loadComponent: () =>

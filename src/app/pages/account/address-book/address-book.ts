@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { SnackbarService } from '../../../services/snackbar-service';
 import { MatIconModule } from '@angular/material/icon';
+import { UserService } from '../../../services/user-service';
 
 @Component({
   selector: 'app-address-book',
@@ -13,7 +14,7 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrl: './address-book.css',
 })
 export class AddressBook {
-  private authService = inject(AuthService);
+  private userService = inject(UserService);
   private snackBar = inject(SnackbarService);
 
   user = input<any>();
@@ -103,7 +104,7 @@ export class AddressBook {
       addresses.push(cleanAddress);
     }
 
-    await this.authService.updateUserAddress(currentUser.uid, {
+    await this.userService.updateUserAddress(currentUser.uid, {
       addresses,
     });
 
@@ -154,7 +155,7 @@ export class AddressBook {
 
     addresses.splice(index, 1);
 
-    await this.authService.updateUserAddress(currentUser.uid, {
+    await this.userService.updateUserAddress(currentUser.uid, {
       addresses,
     });
 
