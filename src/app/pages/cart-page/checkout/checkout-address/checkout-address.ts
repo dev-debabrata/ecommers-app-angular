@@ -24,6 +24,7 @@ export class CheckoutAddress {
   showAll = signal(false);
   userData = signal<User | null>(null);
 
+  editingIndex = signal<number | null>(null);
   showAddressPopup = signal(false);
   selectedAddress = signal<AddressUser | null>(null);
 
@@ -104,6 +105,17 @@ export class CheckoutAddress {
   //     }
   //   });
   // }
+
+  editAddress(index: number) {
+    const user = this.userData();
+    if (!user?.addresses) return;
+
+    const addr = user.addresses[index];
+
+    this.newAddress.set({ ...addr });
+    this.editingIndex.set(index);
+    this.showAddressPopup.set(true);
+  }
 
   selectAddress(addr: AddressUser) {
     this.selectedAddress.set(addr);

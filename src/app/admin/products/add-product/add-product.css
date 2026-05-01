@@ -1,10 +1,6 @@
-.add-product {
-  padding: 1rem 2rem;
-}
-
 .add-product-container {
-  /* max-width: 1000px;
-  margin: 20px auto; */
+  max-width: 1000px;
+  margin: 20px auto;
   padding: 32px;
   background: #fff;
   border-radius: 14px;
@@ -19,28 +15,23 @@ h2 {
   color: #111827;
 }
 
-.form-row {
+.grid-form {
   display: flex;
   flex-wrap: wrap;
   gap: 22px;
-  margin-bottom: 1rem;
 }
 
-.input-box {
-  flex: 1;
+.form-group {
   display: flex;
   flex-direction: column;
-  /* display: flex;
-  flex-direction: column;
   gap: 8px;
-  width: 48%; */
+  width: 48%;
 }
 
-.input-box label {
+label {
   font-size: 15px;
   font-weight: 600;
   color: #374151;
-  margin-bottom: 4px;
 }
 
 input,
@@ -78,9 +69,10 @@ textarea {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
-  margin-top: 1rem;
+  margin-top: 10px;
 }
 
+/* CREATE (Add Product) → Green */
 .create-btn {
   background-color: #28a745;
   color: #fff;
@@ -162,10 +154,10 @@ small {
   font-size: 13px;
 }
 
-button:disabled {
+/* button:disabled {
   background: #9ca3af;
   cursor: not-allowed;
-}
+} */
 
 /* .add-product-container {
   max-width: 900px;
@@ -314,4 +306,44 @@ button {
 
 button:hover {
   opacity: 0.9;
+} */
+
+.dynamic-field {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  align-items: center;
+}
+
+.dynamic-field input {
+  flex: 1;
+}
+
+.dynamic-field button {
+  /* background: red; */
+  color: #f03e3e;
+  padding: 8px 10px;
+  border: none;
+  /* border-radius: 6px; */
+}
+
+.add-fields {
+  padding: 10px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1971c2;
+  background: white;
+  border: 1px solid #ced4da;
+}
+
+.add-fields:hover {
+  background: #eee;
+}
+
+/* Add field button */
+/* .form-group.full-width > button {
+  margin-top: 10px;
+  background: #28a745;
+  color: #fff;
 } */

@@ -7,11 +7,12 @@ import { FormsModule } from '@angular/forms';
 
 import { LoaderService } from '../../../services/loader-service';
 import { SnackbarService } from '../../../services/snackbar-service';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-add-product',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, MatIconModule],
   templateUrl: './add-product.html',
   styleUrl: './add-product.css',
 })
@@ -26,6 +27,8 @@ export class AddProduct implements OnInit {
 
   editId: string | null = null;
   isEdit = false;
+
+  extraFields = signal<{ label: string; value: string }[]>([]);
 
   product = signal<Product>({
     title: '',
@@ -75,6 +78,33 @@ export class AddProduct implements OnInit {
       sub.unsubscribe();
     });
   }
+
+  /////////////////////////////////////////////////////////////////////////////////////
+
+  addField() {
+    this.extraFields.update((fields) => [...fields, { label: '', value: '' }]);
+  }
+
+  removeField(index: number) {
+    this.extraFields.update((fields) => fields.filter((_, i) => i !== index));
+  }
+
+  updateExtraField(index: number, key: 'label' | 'value', value: string) {
+    this.extraFields.update((fields) => {
+      const updated = [...fields];
+      updated[index] = {
+        ...updated[index],
+        [key]: value,
+      };
+      return updated;
+    });
+  }
+
+  trackByIndex(index: number) {
+    return index;
+  }
+
+  /////////////////////////////////////////////////////////
 
   updateField(field: ProductField, value: any) {
     this.product.update((p) => ({

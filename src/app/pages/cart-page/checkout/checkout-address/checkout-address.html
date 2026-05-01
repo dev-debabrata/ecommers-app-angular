@@ -11,9 +11,14 @@
 
         <div class="address-details">
           <h4>{{ addr.fullName }}</h4>
-          <p>{{ addr.address }}, {{ addr.city }}</p>
-          <p>{{ addr.state }} - {{ addr.pinCode }}</p>
-          <small>{{ addr.phone }}</small>
+          <p>{{ addr.address }}, {{ addr.city }}, {{ addr.state }} - {{ addr.pinCode }}</p>
+          <p>Landmark: {{ addr.landmark }}</p>
+          <!-- <p>{{ addr.state }} - {{ addr.pinCode }}</p> -->
+          <small>Phone number: {{ addr.phone }}</small>
+        </div>
+
+        <div>
+          <button type="button" (click)="editAddress($index)" class="edit-btn">Edit address</button>
         </div>
       </label>
     }
@@ -36,7 +41,8 @@
   <div class="popup" (click)="showAddressPopup.set(false)">
     <div class="popup-box" (click)="$event.stopPropagation()">
       <div class="popup-header">
-        <h3>Add New Address</h3>
+        <!-- <h3>Add New Address</h3> -->
+        <h3>{{ editingIndex() !== null ? 'Edit Address' : 'Add New Address' }}</h3>
 
         <button (click)="showAddressPopup.set(false)">
           <mat-icon>close</mat-icon>
@@ -115,8 +121,10 @@
 
       <div class="popup-btn">
         <!-- <button (click)="showAddressPopup.set(false)">Cancel</button> -->
-
-        <button (click)="saveAddress()">Save Address</button>
+        <button (click)="saveAddress()">
+          {{ editingIndex() !== null ? 'Update Address' : 'Save Address' }}
+        </button>
+        <!-- <button (click)="saveAddress()">Save Address</button> -->
       </div>
     </div>
   </div>
