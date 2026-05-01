@@ -121,3 +121,10 @@ button[disabled] {
 .input-box:has(input.ng-invalid.ng-touched) input {
   color: #000;
 }
+
+.login-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}

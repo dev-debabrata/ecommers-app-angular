@@ -1,21 +1,25 @@
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { AdminAuthService } from '../../../services/admin-auth-service';
+import { SnackbarService } from '../../../services/snackbar-service';
 
 @Component({
   selector: 'app-admin-login',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, MatProgressSpinnerModule],
   templateUrl: './admin-login.html',
   styleUrl: './admin-login.css',
 })
-export class AdminLogin {
+export class AdminLogin implements OnInit {
   private router = inject(Router);
   private adminAuthService = inject(AdminAuthService);
-  private snackBar = inject(MatSnackBar);
+  private snackBar = inject(SnackbarService);
+  private destroyRef = inject(DestroyRef);
+
+  isLoading = false;
 
   loginForm = new FormGroup({
     email: new FormControl('', {
@@ -28,44 +32,93 @@ export class AdminLogin {
     }),
   });
 
-  async onSubmit() {
+  ngOnInit() {
+    const sub = this.adminAuthService.isAdmin$.subscribe((isAdmin) => {
+      if (isAdmin) {
+        this.router.navigate(['/admin']);
+      }
+    });
+
+    this.destroyRef.onDestroy(() => sub.unsubscribe());
+  }
+
+  onSubmit() {
     if (this.loginForm.invalid) return;
 
     const { email, password } = this.loginForm.getRawValue();
 
-    try {
-      await this.adminAuthService.loginAdmin(email, password);
+    this.isLoading = true;
 
-      this.snackBar.open('Admin login successfully!', 'Close', {
-        duration: 3000,
-        horizontalPosition: 'center',
-        verticalPosition: 'top',
-        panelClass: ['snackbar-success'],
-      });
+    this.adminAuthService.loginAdmin(email, password).subscribe({
+      next: () => {
+        this.snackBar.success('Admin login successfully!');
 
-      this.router.navigate(['/admin']);
-    } catch (error: any) {
-      let message = 'Login failed';
+        this.isLoading = false;
 
-      if (error.message === 'Unauthorized') {
-        message = 'Only admin can login';
-      }
+        this.router.navigate(['/admin']);
+      },
 
-      if (error.message === 'Admin not found') {
-        message = 'Admin not found';
-      }
+      error: (error: any) => {
+        let message = 'Login failed';
 
-      this.snackBar.open(message, 'Close', {
-        duration: 3000,
-        horizontalPosition: 'center',
-        verticalPosition: 'top',
-        panelClass: ['snackbar-error'],
-      });
+        if (error.message === 'Unauthorized') {
+          message = 'Only admin can login';
+        }
 
-      console.error(error);
-    }
+        if (error.message === 'Admin not found') {
+          message = 'Admin not found';
+        }
+
+        this.snackBar.error(message);
+
+        console.error(error);
+        this.isLoading = false;
+      },
+    });
   }
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+// async onSubmit() {
+//   if (this.loginForm.invalid) return;
+
+//   const { email, password } = this.loginForm.getRawValue();
+
+//   try {
+//     await this.adminAuthService.loginAdmin(email, password);
+
+//     this.snackBar.open('Admin login successfully!', 'Close', {
+//       duration: 3000,
+//       horizontalPosition: 'center',
+//       verticalPosition: 'top',
+//       panelClass: ['snackbar-success'],
+//     });
+
+//     this.router.navigate(['/admin']);
+//   } catch (error: any) {
+//     let message = 'Login failed';
+
+//     if (error.message === 'Unauthorized') {
+//       message = 'Only admin can login';
+//     }
+
+//     if (error.message === 'Admin not found') {
+//       message = 'Admin not found';
+//     }
+
+//     this.snackBar.open(message, 'Close', {
+//       duration: 3000,
+//       horizontalPosition: 'center',
+//       verticalPosition: 'top',
+//       panelClass: ['snackbar-error'],
+//     });
+
+//     console.error(error);
+//   }
+// }
+
+/////////////////////////////////////////////////////////////////////////////////////////////
 
 // import { Component, inject } from '@angular/core';
 // import { Router } from '@angular/router';

@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormControl,
@@ -29,7 +29,7 @@ export class CheckoutPage implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
   private orderService = inject(OrderService);
-
+  private destroyRef = inject(DestroyRef);
   private loaderService = inject(LoaderService);
   private snackbar = inject(SnackbarService);
 
@@ -64,7 +64,7 @@ export class CheckoutPage implements OnInit {
     return (this.submitted() || this.touchedFields()[field]) && !this.checkoutForm()[field];
   }
 
-  async ngOnInit(): Promise<void> {
+  ngOnInit(): void {
     const item = localStorage.getItem('buyNowItem');
 
     if (item) {
@@ -76,41 +76,27 @@ export class CheckoutPage implements OnInit {
       return;
     }
 
-    const user: any = await this.authService.getFullUser();
+    const sub = this.authService.getFullUser().subscribe({
+      next: (user: any) => {
+        if (user) {
+          this.checkoutForm.update((form) => ({
+            ...form,
+            fullName: user.firstName + ' ' + user.lastName,
+            email: user.email,
+            phone: user.phoneNumber || '',
+          }));
+        }
+      },
 
-    if (user) {
-      this.checkoutForm.update((form) => ({
-        ...form,
-        fullName: user.firstName + ' ' + user.lastName,
-        email: user.email,
-        phone: user.phoneNumber || '',
-      }));
-    }
+      error: (err) => {
+        console.error('User fetch error:', err);
+      },
+    });
+
+    this.destroyRef.onDestroy(() => {
+      sub.unsubscribe();
+    });
   }
-
-  // ngOnInit(): void {
-  //   const item = localStorage.getItem('buyNowItem');
-
-  //   if (item) {
-  //     this.buyNowItem = JSON.parse(item);
-  //   }
-
-  //   if (this.cartService.cart().length === 0 && !this.buyNowItem) {
-  //     this.router.navigate(['/']);
-  //     return;
-  //   }
-
-  //   const user = this.authService.getUser();
-
-  //   if (user) {
-  //     this.checkoutForm.update((form) => ({
-  //       ...form,
-  //       fullName: user.firstName + ' ' + user.lastName,
-  //       email: user.email,
-  //       phone: user.phoneNumber?.[0] || '',
-  //     }));
-  //   }
-  // }
 
   getDiscountPrice(item: CartItem): number {
     return this.cartService.getDiscountPrice(item);
@@ -145,115 +131,126 @@ export class CheckoutPage implements OnInit {
     );
   }
 
-  async submitOrder() {
+  submitOrder() {
     this.submitted.set(true);
 
     if (!this.isFormValid()) {
       this.snackbar.error('Please fill all required fields correctly!');
-
       document.querySelector('.checkout-left')?.scrollIntoView({ behavior: 'smooth' });
       return;
     }
 
-    const user: any = await this.authService.getFullUser();
-    if (!user?.uid) {
-      this.snackbar.error('User not logged in!');
-      return;
-    }
-
-    const items = [...this.cartService.cart(), ...(this.buyNowItem ? [this.buyNowItem] : [])];
-
-    const order = {
-      address: this.checkoutForm(),
-      items,
-      subTotal: this.subTotal(),
-      gst: this.gst(),
-      total: this.totalPrice(),
-      date: new Date(),
-      status: 'placed',
-    };
-
     this.loaderService.show();
 
-    try {
-      const docRef = await this.orderService.createOrder(user.uid, order);
+    const userSub = this.authService.getFullUser().subscribe({
+      next: (user: any) => {
+        if (!user?.uid) {
+          this.snackbar.error('User not logged in!');
+          this.loaderService.hide();
+          return;
+        }
 
-      this.buyNowItem = null;
-      localStorage.removeItem('buyNowItem');
-      await this.cartService.clearCart();
+        const items = [...this.cartService.cart(), ...(this.buyNowItem ? [this.buyNowItem] : [])];
 
-      this.snackbar.success('Order placed successfully!');
-      this.loaderService.hide();
+        const order = {
+          address: this.checkoutForm(),
+          items,
+          subTotal: this.subTotal(),
+          gst: this.gst(),
+          total: this.totalPrice(),
+          date: new Date(),
+          status: 'placed',
+        };
 
-      this.router.navigate(['/order-success', docRef.id]);
-    } catch (error) {
-      console.error(error);
-      this.snackbar.error('Failed to place order!');
-      this.loaderService.hide();
-    }
+        const orderSub = this.orderService.createOrder(user.uid, order).subscribe({
+          next: (docRef: any) => {
+            // clear cart
+            this.buyNowItem = null;
+            localStorage.removeItem('buyNowItem');
+            this.cartService.clearCart();
+
+            this.snackbar.success('Order placed successfully!');
+            this.loaderService.hide();
+
+            this.router.navigate(['/order-success', docRef.id]);
+          },
+
+          error: (err) => {
+            console.error(err);
+            this.snackbar.error('Failed to place order!');
+            this.loaderService.hide();
+          },
+        });
+
+        this.destroyRef.onDestroy(() => {
+          orderSub.unsubscribe();
+        });
+      },
+
+      error: (err) => {
+        console.error(err);
+        this.snackbar.error('User fetch failed!');
+        this.loaderService.hide();
+      },
+    });
+
+    this.destroyRef.onDestroy(() => {
+      userSub.unsubscribe();
+    });
   }
-
-  // submitOrder() {
-  //   this.submitted.set(true);
-
-  //   if (!this.isFormValid()) {
-  //     this.snackBar.open('Please fill all required fields correctly!', 'Close', {
-  //       duration: 3000,
-  //       horizontalPosition: 'center',
-  //       verticalPosition: 'top',
-  //       panelClass: ['snackbar-error'],
-  //     });
-
-  //     document.querySelector('.checkout-left')?.scrollIntoView({ behavior: 'smooth' });
-  //     return;
-  //   }
-
-  //   const items = [...this.cartService.cart(), ...(this.buyNowItem ? [this.buyNowItem] : [])];
-
-  //   const order = {
-  //     id: Date.now(),
-  //     address: this.checkoutForm(),
-  //     items,
-  //     subTotal: this.subTotal(),
-  //     gst: this.gst(),
-  //     total: this.totalPrice(),
-  //     date: new Date(),
-  //     status: 'Places',
-  //   };
-
-  //   const existingOrders = JSON.parse(localStorage.getItem('orders') || '[]');
-  //   existingOrders.push(order);
-  //   localStorage.setItem('orders', JSON.stringify(existingOrders));
-  //   localStorage.setItem('latestOrder', JSON.stringify(order));
-
-  //   this.buyNowItem = null;
-  //   localStorage.removeItem('buyNowItem');
-  //   this.cartService.clearCart();
-
-  //   this.checkoutForm.set({
-  //     fullName: '',
-  //     email: '',
-  //     phone: '',
-  //     address: '',
-  //     landmark: '',
-  //     city: '',
-  //     state: '',
-  //     pinCode: '',
-  //     shippingMethod: 'free',
-  //   });
-  //   this.submitted.set(false);
-  //   this.touchedFields.set({});
-
-  //   this.snackBar.open('Order placed successfully!', 'Close', {
-  //     duration: 2000,
-  //     horizontalPosition: 'center',
-  //     verticalPosition: 'top',
-  //     panelClass: ['snackbar-success'],
-  //   });
-
-  //   this.router.navigate(['/order-success', order.id]);
-  // }
 }
+
+///////////////////////////////////////////////////////////////////////////////////
+
+// async submitOrder() {
+//   this.submitted.set(true);
+
+//   if (!this.isFormValid()) {
+//     this.snackbar.error('Please fill all required fields correctly!');
+
+//     document.querySelector('.checkout-left')?.scrollIntoView({ behavior: 'smooth' });
+//     return;
+//   }
+
+//   const user: any = await this.authService.getFullUser();
+//   if (!user?.uid) {
+//     this.snackbar.error('User not logged in!');
+//     return;
+//   }
+
+//   const items = [...this.cartService.cart(), ...(this.buyNowItem ? [this.buyNowItem] : [])];
+
+//   const order = {
+//     address: this.checkoutForm(),
+//     items,
+//     subTotal: this.subTotal(),
+//     gst: this.gst(),
+//     total: this.totalPrice(),
+//     date: new Date(),
+//     status: 'placed',
+//   };
+
+//   this.loaderService.show();
+
+//   try {
+//     const docRef = await this.orderService.createOrder(user.uid, order);
+
+//     this.buyNowItem = null;
+//     localStorage.removeItem('buyNowItem');
+//     await this.cartService.clearCart();
+
+//     this.snackbar.success('Order placed successfully!');
+//     this.loaderService.hide();
+
+//     this.router.navigate(['/order-success', docRef.id]);
+//   } catch (error) {
+//     console.error(error);
+//     this.snackbar.error('Failed to place order!');
+//     this.loaderService.hide();
+//   }
+// }
+
+///////////////////////////////////////////////////////////////////////////////////
 
 // This is Reactive Form type
 //////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -7,17 +7,9 @@ import {
   updateProfile,
   authState,
   User as FirebaseUser,
-  fetchSignInMethodsForEmail,
 } from '@angular/fire/auth';
 
-import {
-  Firestore,
-  doc,
-  getDoc,
-  serverTimestamp,
-  setDoc,
-  updateDoc,
-} from '@angular/fire/firestore';
+import { Firestore, doc, getDoc, serverTimestamp, setDoc } from '@angular/fire/firestore';
 
 import { from, Observable, of } from 'rxjs';
 
@@ -40,63 +32,53 @@ export class AuthService {
     });
   }
 
-  async signupUser(data: User, password: string) {
-    const result = await createUserWithEmailAndPassword(this.auth, data.email, password);
+  signupUser(data: User, password: string): Observable<any> {
+    return from(
+      createUserWithEmailAndPassword(this.auth, data.email, password).then((result) => {
+        const uid = result.user.uid;
 
-    const uid = result.user.uid;
-
-    await updateProfile(result.user, {
-      displayName: `${data.firstName} ${data.lastName}`,
-    });
-
-    await setDoc(doc(this.firestore, 'users/' + uid), {
-      ...data,
-      uid,
-      role: 'user',
-      createdAt: serverTimestamp(),
-    });
-
-    return result.user;
+        return updateProfile(result.user, {
+          displayName: `${data.firstName} ${data.lastName}`,
+        }).then(() => {
+          return setDoc(doc(this.firestore, 'users/' + uid), {
+            ...data,
+            uid,
+            role: 'user',
+            createdAt: serverTimestamp(),
+          }).then(() => result.user);
+        });
+      }),
+    );
   }
 
-  async login(email: string, password: string) {
-    const res = await signInWithEmailAndPassword(this.auth, email, password);
+  login(email: string, password: string): Observable<any> {
+    return from(
+      signInWithEmailAndPassword(this.auth, email, password).then(async (res) => {
+        const uid = res.user.uid;
 
-    const uid = res.user.uid;
+        const userRef = doc(this.firestore, 'users/' + uid);
+        const snap = await getDoc(userRef);
 
-    const userRef = doc(this.firestore, 'users/' + uid);
-    const snap = await getDoc(userRef);
+        if (!snap.exists()) {
+          await signOut(this.auth);
+          throw new Error('User not found');
+        }
 
-    if (!snap.exists()) {
-      await signOut(this.auth);
-      throw new Error('User not found');
-    }
+        const role = snap.data()?.['role'];
 
-    const role = snap.data()?.['role'];
+        if (role !== 'user') {
+          await signOut(this.auth);
+          throw new Error('Unauthorized');
+        }
 
-    if (role !== 'user') {
-      await signOut(this.auth);
-      throw new Error('Unauthorized');
-    }
-
-    return res.user;
+        return res.user;
+      }),
+    );
   }
 
-  async logout() {
-    return await signOut(this.auth);
+  logout(): Observable<void> {
+    return from(signOut(this.auth));
   }
-
-  // getUserRole(uid: string): Observable<'user' | 'admin'> {
-  //   const userRef = doc(this.firestore, 'users/' + uid);
-
-  //   return from(
-  //     getDoc(userRef).then((snap) => {
-  //       if (!snap.exists()) return 'user';
-
-  //       return (snap.data()?.['role'] as 'user' | 'admin') || 'user';
-  //     }),
-  //   );
-  // }
 
   isLoggedIn(): boolean {
     return this.isAuthReady() && !!this.auth.currentUser && navigator.onLine;
@@ -118,6 +100,65 @@ export class AuthService {
     );
   }
 }
+
+//////////////////////////////////////////////////////////////////////////////
+// async signupUser(data: User, password: string) {
+//   const result = await createUserWithEmailAndPassword(this.auth, data.email, password);
+
+//   const uid = result.user.uid;
+
+//   await updateProfile(result.user, {
+//     displayName: `${data.firstName} ${data.lastName}`,
+//   });
+
+//   await setDoc(doc(this.firestore, 'users/' + uid), {
+//     ...data,
+//     uid,
+//     role: 'user',
+//     createdAt: serverTimestamp(),
+//   });
+
+//   return result.user;
+// }
+
+// async login(email: string, password: string) {
+//   const res = await signInWithEmailAndPassword(this.auth, email, password);
+
+//   const uid = res.user.uid;
+
+//   const userRef = doc(this.firestore, 'users/' + uid);
+//   const snap = await getDoc(userRef);
+
+//   if (!snap.exists()) {
+//     await signOut(this.auth);
+//     throw new Error('User not found');
+//   }
+
+//   const role = snap.data()?.['role'];
+
+//   if (role !== 'user') {
+//     await signOut(this.auth);
+//     throw new Error('Unauthorized');
+//   }
+
+//   return res.user;
+// }
+
+// async logout() {
+//   return await signOut(this.auth);
+// }
+
+// getUserRole(uid: string): Observable<'user' | 'admin'> {
+//   const userRef = doc(this.firestore, 'users/' + uid);
+
+//   return from(
+//     getDoc(userRef).then((snap) => {
+//       if (!snap.exists()) return 'user';
+
+//       return (snap.data()?.['role'] as 'user' | 'admin') || 'user';
+//     }),
+//   );
+// }
 
 //////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////   JSON VERSION //////////////////////////////

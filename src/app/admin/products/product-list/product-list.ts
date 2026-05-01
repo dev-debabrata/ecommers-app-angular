@@ -1,4 +1,4 @@
-import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { ProductService } from '../../../services/product-service';
@@ -7,6 +7,7 @@ import { TruncatePipe } from '../../../pipes/truncate-pipe';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { CommonModule } from '@angular/common';
 import { LoaderService } from '../../../services/loader-service';
+import { SnackbarService } from '../../../services/snackbar-service';
 
 @Component({
   selector: 'app-product-list',
@@ -15,15 +16,16 @@ import { LoaderService } from '../../../services/loader-service';
   templateUrl: './product-list.html',
   styleUrl: './product-list.css',
 })
-export class ProductList {
+export class ProductList implements OnInit {
   private productService = inject(ProductService);
   private destroyRef = inject(DestroyRef);
-
+  private snackBar = inject(SnackbarService);
   private loaderService = inject(LoaderService);
 
   products = signal<Product[]>([]);
   searchTerm = signal('');
-  sortDirection = signal<'asc' | 'desc'>('asc');
+  sortDirection = signal<'asc' | 'desc'>('desc');
+  // sortDirection = signal<'asc' | 'desc'>('asc');
 
   pageSize = 5;
   pageIndex = 0;
@@ -131,6 +133,17 @@ export class ProductList {
   }
 
   deleteProduct(id: string) {
-    this.productService.deleteProduct(id);
+    if (!confirm('Are you sure you want to delete this product?')) return;
+
+    this.productService.deleteProduct(id).subscribe(() => {
+      this.products.update((products) => products.filter((p) => p.id !== id));
+
+      this.snackBar.success('Product deleted successfully');
+    });
   }
 }
+
+//////////////////////////////////////////
+// deleteProduct(id: string) {
+//   this.productService.deleteProduct(id);
+// }

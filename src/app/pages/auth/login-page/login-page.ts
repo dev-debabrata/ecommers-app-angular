@@ -9,24 +9,31 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { AuthService } from '../../../services/auth-service';
 import { SnackbarService } from '../../../services/snackbar-service';
-import { LoaderService } from '../../../services/loader-service';
 
 @Component({
   selector: 'app-login-page',
   standalone: true,
-  imports: [FormsModule, RouterLink, ReactiveFormsModule, CommonModule, MatIconModule],
+  imports: [
+    FormsModule,
+    RouterLink,
+    ReactiveFormsModule,
+    CommonModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+  ],
   templateUrl: './login-page.html',
   styleUrl: './login-page.css',
 })
 export class LoginPage {
   private router = inject(Router);
   private authService = inject(AuthService);
-  private loaderService = inject(LoaderService);
   private snackBar = inject(SnackbarService);
+
+  isLoading = false;
 
   form = new FormGroup({
     email: new FormControl<string>('', {
@@ -47,7 +54,7 @@ export class LoginPage {
     return this.form.controls.password;
   }
 
-  async onSubmit() {
+  onSubmit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       this.snackBar.error('Please enter valid email and password');
@@ -56,50 +63,52 @@ export class LoginPage {
 
     const { email, password } = this.form.getRawValue();
 
-    this.loaderService.show();
+    this.isLoading = true;
 
-    try {
-      const user = await this.authService.login(email, password);
+    const sub = this.authService.login(email, password).subscribe({
+      next: (user) => {
+        console.log(user);
 
-      console.log(user);
+        this.snackBar.success('Login successful');
+        this.isLoading = false;
 
-      this.snackBar.success('Login successful');
-      console.log();
+        const redirectUrl = localStorage.getItem('redirectUrl');
 
-      this.loaderService.hide();
+        if (redirectUrl) {
+          localStorage.removeItem('redirectUrl');
+          this.router.navigate([redirectUrl]);
+        } else {
+          this.router.navigate(['/']);
+        }
+      },
 
-      const redirectUrl = localStorage.getItem('redirectUrl');
+      error: (err: any) => {
+        console.error(err);
 
-      if (redirectUrl) {
-        localStorage.removeItem('redirectUrl');
-        this.router.navigate([redirectUrl]);
-      } else {
-        this.router.navigate(['/']);
-      }
-    } catch (err: any) {
-      console.error(err);
+        let message = 'Login failed';
 
-      let message = 'Login failed';
+        if (err.code === 'auth/user-not-found') {
+          message = 'Email not registered';
+          this.email.setErrors({ emailNotRegistered: true });
+        }
 
-      if (err.code === 'auth/user-not-found') {
-        message = 'Email not registered';
-        this.email.setErrors({ emailNotRegistered: true });
-      }
+        if (err.code === 'auth/wrong-password') {
+          message = 'Invalid password';
+          this.password.setErrors({ invalidPassword: true });
+        }
 
-      if (err.code === 'auth/wrong-password') {
-        message = 'Invalid password';
-        this.password.setErrors({ invalidPassword: true });
-      }
+        if (err.code === 'auth/invalid-email') {
+          message = 'Invalid email format';
+        }
 
-      if (err.code === 'auth/invalid-email') {
-        message = 'Invalid email format';
-      }
-
-      this.snackBar.error(message);
-      this.loaderService.hide();
-    }
+        this.snackBar.error(message);
+        this.isLoading = false;
+      },
+    });
   }
 }
+
+/////////////////////////////////////////////////////////////////////////////
 
 // import { CommonModule } from '@angular/common';
 // import { Component, inject } from '@angular/core';
@@ -198,62 +207,55 @@ export class LoginPage {
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-// if (users.length === 0) {
-//   this.email.setErrors({ emailNotRegistered: true });
-//   this.showSnackbar('Email not registered', 'error');
-//   return;
-// }
-
-// if (users[0].password !== data.password) {
-//   this.password.setErrors({ invalidPassword: true });
-//   this.showSnackbar('Invalid password', 'error');
-//   return;
-// }
-
-// const user = users[0];
-
-// onSubmit() {
+// async onSubmit() {
 //   if (this.form.invalid) {
 //     this.form.markAllAsTouched();
-//     this.showSnackbar('Please enter valid email and password', 'error');
+//     this.snackBar.error('Please enter valid email and password');
 //     return;
 //   }
 
-//   const data = this.form.value;
+//   const { email, password } = this.form.getRawValue();
 
-//   this.authService.login(data.email!).subscribe({
-//     next: (users) => {
-//       if (users.length === 0) {
-//         this.email.setErrors({ emailNotRegistered: true });
-//         this.showSnackbar('Email not registered', 'error');
-//         return;
-//       }
+//   this.loaderService.show();
 
-//       if (users[0].password !== data.password) {
-//         this.password.setErrors({ invalidPassword: true });
-//         this.showSnackbar('Invalid password', 'error');
-//         return;
-//       }
+//   try {
+//     const user = await this.authService.login(email, password);
 
-//       const user = users[0];
+//     console.log(user);
 
-//       this.authService.setToken('fake-token');
-//       this.authService.setUser(user);
+//     this.snackBar.success('Login successful');
+//     console.log();
 
-//       this.showSnackbar('Login successful', 'success');
+//     this.loaderService.hide();
 
-//       const redirectUrl = localStorage.getItem('redirectUrl');
+//     const redirectUrl = localStorage.getItem('redirectUrl');
 
-//       if (redirectUrl) {
-//         localStorage.removeItem('redirectUrl');
-//         this.router.navigate([redirectUrl]);
-//       } else {
-//         this.router.navigate(['/']);
-//       }
-//     },
+//     if (redirectUrl) {
+//       localStorage.removeItem('redirectUrl');
+//       this.router.navigate([redirectUrl]);
+//     } else {
+//       this.router.navigate(['/']);
+//     }
+//   } catch (err: any) {
+//     console.error(err);
 
-//     error: () => {
-//       this.showSnackbar('Something went wrong', 'error');
-//     },
-//   });
+//     let message = 'Login failed';
+
+//     if (err.code === 'auth/user-not-found') {
+//       message = 'Email not registered';
+//       this.email.setErrors({ emailNotRegistered: true });
+//     }
+
+//     if (err.code === 'auth/wrong-password') {
+//       message = 'Invalid password';
+//       this.password.setErrors({ invalidPassword: true });
+//     }
+
+//     if (err.code === 'auth/invalid-email') {
+//       message = 'Invalid email format';
+//     }
+
+//     this.snackBar.error(message);
+//     this.loaderService.hide();
+//   }
 // }

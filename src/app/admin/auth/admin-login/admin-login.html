@@ -11,7 +11,17 @@
         <input type="password" placeholder="Password" formControlName="password" />
       </div>
 
-      <button type="submit">Login</button>
+      <button type="submit" class="admin-login-btn">
+        @if (isLoading) {
+          <mat-progress-spinner diameter="20" mode="indeterminate"></mat-progress-spinner>
+        } @else {
+          Login
+        }
+      </button>
+
+      <!-- <button [disabled]="loginForm.invalid || isLoading">
+        {{ isLoading ? 'Logging in...' : 'Login' }}
+      </button> -->
     </form>
 
     <!-- @if (errorMsg) {

@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { ProductService } from '../../../services/product-service';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -15,13 +15,14 @@ import { SnackbarService } from '../../../services/snackbar-service';
   templateUrl: './add-product.html',
   styleUrl: './add-product.css',
 })
-export class AddProduct {
+export class AddProduct implements OnInit {
   private productService = inject(ProductService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private location = inject(Location);
   private snackbar = inject(SnackbarService);
   private loaderService = inject(LoaderService);
+  private destroyRef = inject(DestroyRef);
 
   editId: string | null = null;
   isEdit = false;
@@ -55,23 +56,24 @@ export class AddProduct {
   ngOnInit() {
     this.editId = this.route.snapshot.paramMap.get('id');
 
-    if (this.editId) {
-      this.isEdit = true;
+    if (!this.editId) return;
 
-      this.productService.getProductById(this.editId).subscribe({
-        next: (data) => {
-          if (data) {
-            this.product.set(data);
-          }
-        },
-        error: (err) => console.error(err),
-      });
-      // this.productService.getProductById(this.editId).subscribe((data) => {
-      //   if (data) {
-      //     this.product.set(data);
-      //   }
-      // });
-    }
+    this.isEdit = true;
+
+    const sub = this.productService.getProductById(this.editId).subscribe({
+      next: (data) => {
+        if (data) {
+          this.product.set(data);
+        }
+      },
+      error: (err) => {
+        console.error('Product fetch error:', err);
+      },
+    });
+
+    this.destroyRef.onDestroy(() => {
+      sub.unsubscribe();
+    });
   }
 
   updateField(field: ProductField, value: any) {
@@ -122,7 +124,7 @@ export class AddProduct {
     );
   });
 
-  async onSubmit() {
+  onSubmit() {
     if (!this.isFormValid()) {
       this.snackbar.error('Please fill all required fields');
       return;
@@ -130,67 +132,114 @@ export class AddProduct {
 
     this.loaderService.show();
 
-    try {
-      if (this.isEdit && this.editId) {
-        await this.productService.updateProduct(this.editId, this.product());
-        this.snackbar.success('Product Updated Successfully');
-      } else {
-        await this.productService.addProduct(this.product());
-        this.snackbar.success('Product Added Successfully');
-      }
+    let sub;
 
-      this.loaderService.hide();
-      this.router.navigate(['/admin/products']);
-    } catch (err) {
-      this.loaderService.hide();
-      this.snackbar.error('Something went wrong');
-      console.error(err);
+    if (this.isEdit && this.editId) {
+      sub = this.productService.updateProduct(this.editId, this.product()).subscribe({
+        next: () => {
+          this.snackbar.success('Product Updated Successfully');
+          this.loaderService.hide();
+          this.router.navigate(['/admin/products']);
+        },
+        error: (err) => {
+          this.loaderService.hide();
+          this.snackbar.error('Something went wrong');
+          console.error(err);
+        },
+      });
+    } else {
+      sub = this.productService.addProduct(this.product()).subscribe({
+        next: () => {
+          this.snackbar.success('Product Added Successfully');
+          this.loaderService.hide();
+          this.router.navigate(['/admin/products']);
+        },
+        error: (err) => {
+          this.loaderService.hide();
+          this.snackbar.error('Something went wrong');
+          console.error(err);
+        },
+      });
     }
+
+    this.destroyRef.onDestroy(() => {
+      sub.unsubscribe();
+    });
   }
-  // async onSubmit() {
-  //   if (!this.isFormValid()) {
-  //     this.snackBar.open('Please fill all required fields', 'Close', {
-  //       duration: 3000,
-  //       horizontalPosition: 'center',
-  //       verticalPosition: 'top',
-  //       panelClass: ['snackbar-error'],
-  //     });
-  //     return;
-  //   }
-
-  //   this.loaderService.show();
-
-  //   if (this.isEdit && this.editId) {
-  //     await this.productService.updateProduct(this.editId, this.product());
-
-  //     this.snackBar.open('Product Updated Successfully', 'Close', {
-  //       duration: 3000,
-  //       horizontalPosition: 'center',
-  //       verticalPosition: 'top',
-  //       panelClass: ['snackbar-success'],
-  //     });
-  //   } else {
-  //     await this.productService.addProduct(this.product());
-
-  //     this.snackBar.open('Product Added Successfully', 'Close', {
-  //       duration: 3000,
-  //       horizontalPosition: 'center',
-  //       verticalPosition: 'top',
-  //       panelClass: ['snackbar-success'],
-  //     });
-  //   }
-
-  //   this.router.navigate(['/admin/products']);
-  // }
-
-  //   onCancel() {
-  //   this.router.navigate(['/admin/products']);
-  // }
 
   onCancel() {
     this.location.back();
   }
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+// async onSubmit() {
+//   if (!this.isFormValid()) {
+//     this.snackbar.error('Please fill all required fields');
+//     return;
+//   }
+
+//   this.loaderService.show();
+
+//   try {
+//     if (this.isEdit && this.editId) {
+//       await this.productService.updateProduct(this.editId, this.product());
+//       this.snackbar.success('Product Updated Successfully');
+//     } else {
+//       await this.productService.addProduct(this.product());
+//       this.snackbar.success('Product Added Successfully');
+//     }
+
+//     this.loaderService.hide();
+//     this.router.navigate(['/admin/products']);
+//   } catch (err) {
+//     this.loaderService.hide();
+//     this.snackbar.error('Something went wrong');
+//     console.error(err);
+//   }
+// }
+// async onSubmit() {
+//   if (!this.isFormValid()) {
+//     this.snackBar.open('Please fill all required fields', 'Close', {
+//       duration: 3000,
+//       horizontalPosition: 'center',
+//       verticalPosition: 'top',
+//       panelClass: ['snackbar-error'],
+//     });
+//     return;
+//   }
+
+//   this.loaderService.show();
+
+//   if (this.isEdit && this.editId) {
+//     await this.productService.updateProduct(this.editId, this.product());
+
+//     this.snackBar.open('Product Updated Successfully', 'Close', {
+//       duration: 3000,
+//       horizontalPosition: 'center',
+//       verticalPosition: 'top',
+//       panelClass: ['snackbar-success'],
+//     });
+//   } else {
+//     await this.productService.addProduct(this.product());
+
+//     this.snackBar.open('Product Added Successfully', 'Close', {
+//       duration: 3000,
+//       horizontalPosition: 'center',
+//       verticalPosition: 'top',
+//       panelClass: ['snackbar-success'],
+//     });
+//   }
+
+//   this.router.navigate(['/admin/products']);
+// }
+
+//   onCancel() {
+//   this.router.navigate(['/admin/products']);
+// }
+
+///////////////////////////////////////////////////////////////////////////////////////////////
 
 // import { Component, computed, inject, signal } from '@angular/core';
 // import { ProductService } from '../../../services/product-service';

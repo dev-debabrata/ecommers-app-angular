@@ -9,7 +9,7 @@ import {
   query,
   orderBy,
 } from '@angular/fire/firestore';
-import { Observable, from, map } from 'rxjs';
+import { Observable, from, map, switchMap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +17,7 @@ import { Observable, from, map } from 'rxjs';
 export class OrderService {
   private firestore = inject(Firestore);
 
-  async createOrder(userId: string, order: any) {
+  createOrder(userId: string, order: any) {
     const fullOrder = {
       ...order,
       userId,
@@ -25,16 +25,38 @@ export class OrderService {
     };
 
     const userOrdersRef = collection(this.firestore, `users/${userId}/orders`);
-    const userOrder = await addDoc(userOrdersRef, fullOrder);
-
     const globalOrdersRef = collection(this.firestore, 'orders');
-    await addDoc(globalOrdersRef, {
-      ...fullOrder,
-      userOrderId: userOrder.id,
-    });
 
-    return userOrder;
+    return from(addDoc(userOrdersRef, fullOrder)).pipe(
+      switchMap((userOrder) =>
+        from(
+          addDoc(globalOrdersRef, {
+            ...fullOrder,
+            userOrderId: userOrder.id,
+          }),
+        ).pipe(map(() => userOrder)),
+      ),
+    );
   }
+
+  // async createOrder(userId: string, order: any) {
+  //   const fullOrder = {
+  //     ...order,
+  //     userId,
+  //     createdAt: Date.now(),
+  //   };
+
+  //   const userOrdersRef = collection(this.firestore, `users/${userId}/orders`);
+  //   const userOrder = await addDoc(userOrdersRef, fullOrder);
+
+  //   const globalOrdersRef = collection(this.firestore, 'orders');
+  //   await addDoc(globalOrdersRef, {
+  //     ...fullOrder,
+  //     userOrderId: userOrder.id,
+  //   });
+
+  //   return userOrder;
+  // }
 
   getUserOrders(userId: string): Observable<any[]> {
     const ordersRef = collection(this.firestore, `users/${userId}/orders`);

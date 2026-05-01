@@ -12,7 +12,7 @@ import {
   docData,
 } from '@angular/fire/firestore';
 
-import { Observable } from 'rxjs';
+import { from, Observable } from 'rxjs';
 
 import { Product } from '../models/products';
 
@@ -38,22 +38,41 @@ export class ProductService {
     }) as Observable<Product | null>;
   }
 
-  addProduct(product: Product) {
-    return addDoc(this.productsRef, {
-      ...product,
-      createdAt: Date.now(),
-    });
+  addProduct(product: Product): Observable<any> {
+    return from(
+      addDoc(this.productsRef, {
+        ...product,
+        createdAt: Date.now(),
+      }),
+    );
   }
 
-  deleteProduct(id: string) {
+  deleteProduct(id: string): Observable<void> {
     const productRef = doc(this.firestore, 'products/' + id);
-    return deleteDoc(productRef);
+    return from(deleteDoc(productRef));
   }
 
-  updateProduct(id: string, data: Partial<Product>) {
+  updateProduct(id: string, data: Partial<Product>): Observable<void> {
     const productRef = doc(this.firestore, 'products/' + id);
-    return updateDoc(productRef, data);
+    return from(updateDoc(productRef, data));
   }
+
+  // addProduct(product: Product) {
+  //   return addDoc(this.productsRef, {
+  //     ...product,
+  //     createdAt: Date.now(),
+  //   });
+  // }
+
+  // deleteProduct(id: string) {
+  //   const productRef = doc(this.firestore, 'products/' + id);
+  //   return deleteDoc(productRef);
+  // }
+
+  // updateProduct(id: string, data: Partial<Product>) {
+  //   const productRef = doc(this.firestore, 'products/' + id);
+  //   return updateDoc(productRef, data);
+  // }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////

@@ -12,18 +12,24 @@ import {
 } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterLink } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { from, map, of } from 'rxjs';
 
 import { AuthService } from '../../../services/auth-service';
 import { User } from '../../../models/user';
 import { SnackbarService } from '../../../services/snackbar-service';
-import { LoaderService } from '../../../services/loader-service';
 
 @Component({
   selector: 'app-signup-page',
   standalone: true,
-  imports: [FormsModule, RouterLink, CommonModule, ReactiveFormsModule, MatIconModule],
+  imports: [
+    FormsModule,
+    RouterLink,
+    CommonModule,
+    ReactiveFormsModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+  ],
   templateUrl: './signup-page.html',
   styleUrl: './signup-page.css',
 })
@@ -31,7 +37,8 @@ export class SignupPage {
   private router = inject(Router);
   private authService = inject(AuthService);
   private snackBar = inject(SnackbarService);
-  private loaderService = inject(LoaderService);
+
+  isLoading = false;
 
   form = new FormGroup(
     {
@@ -98,7 +105,7 @@ export class SignupPage {
     this.phoneNumber.removeAt(index);
   }
 
-  async onSubmit() {
+  onSubmit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       this.snackBar.error('Please fill all fields correctly');
@@ -111,56 +118,31 @@ export class SignupPage {
       firstName: value.firstName.trim(),
       lastName: value.lastName.trim(),
       email: value.email.trim(),
-      phoneNumber: value.phoneNumber.map((p) => p.trim()),
+      phoneNumber: value.phoneNumber.map((p: string) => p.trim()),
     };
 
-    this.loaderService.show();
+    this.isLoading = true;
 
-    try {
-      await this.authService.signupUser(user, value.password);
+    this.authService.signupUser(user, value.password).subscribe({
+      next: () => {
+        this.snackBar.success('Signup successful');
+        this.form.reset();
+        this.isLoading = false;
+        this.router.navigate(['/']);
+      },
 
-      this.snackBar.success('Signup successful');
-      this.form.reset();
-      this.loaderService.hide();
-      this.router.navigate(['/']);
-    } catch (error: any) {
-      if (error.code === 'auth/email-already-in-use') {
-        this.snackBar.error('Email already exists');
-      } else {
-        this.snackBar.error('Signup failed');
-      }
+      error: (error: any) => {
+        if (error.code === 'auth/email-already-in-use') {
+          this.snackBar.error('Email already exists');
+        } else {
+          this.snackBar.error('Signup failed');
+        }
 
-      console.error(error);
-      this.loaderService.hide();
-    }
+        console.error(error);
+        this.isLoading = false;
+      },
+    });
   }
-
-  // async onSubmit() {
-  //   if (this.form.invalid) {
-  //     this.form.markAllAsTouched();
-  //     this.showSnackbar('Please fill all fields correctly', 'error');
-  //     return;
-  //   }
-
-  //   const value = this.form.getRawValue();
-
-  //   const user: User = {
-  //     firstName: value.firstName,
-  //     lastName: value.lastName,
-  //     email: value.email,
-  //     phoneNumber: value.phoneNumber,
-  //   };
-
-  //   try {
-  //     await this.authService.signupUser(user, value.password);
-
-  //     this.showSnackbar('Signup successful', 'success');
-  //     this.router.navigate(['/']);
-  //   } catch (error) {
-  //     this.showSnackbar('Signup failed', 'error');
-  //     console.error(error);
-  //   }
-  // }
 
   get firstName() {
     return this.form.controls.firstName;
@@ -182,6 +164,47 @@ export class SignupPage {
     return this.form.controls.confirmPassword;
   }
 }
+
+/////////////////////////////////////////////////////////////////////
+
+// async onSubmit() {
+//   if (this.form.invalid) {
+//     this.form.markAllAsTouched();
+//     this.snackBar.error('Please fill all fields correctly');
+//     return;
+//   }
+
+//   const value = this.form.getRawValue();
+
+//   const user: User = {
+//     firstName: value.firstName.trim(),
+//     lastName: value.lastName.trim(),
+//     email: value.email.trim(),
+//     phoneNumber: value.phoneNumber.map((p) => p.trim()),
+//   };
+
+//   this.loaderService.show();
+
+//   try {
+//     await this.authService.signupUser(user, value.password);
+
+//     this.snackBar.success('Signup successful');
+//     this.form.reset();
+//     this.loaderService.hide();
+//     this.router.navigate(['/']);
+//   } catch (error: any) {
+//     if (error.code === 'auth/email-already-in-use') {
+//       this.snackBar.error('Email already exists');
+//     } else {
+//       this.snackBar.error('Signup failed');
+//     }
+
+//     console.error(error);
+//     this.loaderService.hide();
+//   }
+// }
+
+/////////////////////////////////////////////////////////////////////
 
 // import { CommonModule } from '@angular/common';
 // import { Component, inject } from '@angular/core';

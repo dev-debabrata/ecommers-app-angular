@@ -36,14 +36,16 @@ export class UserService {
     const userDoc = doc(this.firestore, `users/${id}`);
     return from(deleteDoc(userDoc));
   }
-
-  // updateUserAddress(uid: string, data: any) {
-  //   const userRef = doc(this.firestore, `users/${uid}`);
-  //   return updateDoc(userRef, data);
-  // }
-
-  // deleteUser(id: string) {
-  //   const userDoc = doc(this.firestore, `users/${id}`);
-  //   return deleteDoc(userDoc);
-  // }
 }
+
+////////////////////////////////////////////////////////////////////
+
+// updateUserAddress(uid: string, data: any) {
+//   const userRef = doc(this.firestore, `users/${uid}`);
+//   return updateDoc(userRef, data);
+// }
+
+// deleteUser(id: string) {
+//   const userDoc = doc(this.firestore, `users/${id}`);
+//   return deleteDoc(userDoc);
+// }

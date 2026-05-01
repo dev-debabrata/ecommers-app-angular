@@ -36,16 +36,6 @@ export class WishlistService {
     });
   }
 
-  // constructor() {
-  //   this.auth.onAuthStateChanged((user) => {
-  //     if (user) {
-  //       this.loadWishlist();
-  //     } else {
-  //       this.wishlist.set([]);
-  //     }
-  //   });
-  // }
-
   loadWishlist() {
     const uid = this.auth.currentUser?.uid;
 
@@ -84,6 +74,18 @@ export class WishlistService {
     return this.wishlist().some((p) => p.id === id);
   }
 }
+
+///////////////////////////////////////////////////////////////////////////////
+
+// constructor() {
+//   this.auth.onAuthStateChanged((user) => {
+//     if (user) {
+//       this.loadWishlist();
+//     } else {
+//       this.wishlist.set([]);
+//     }
+//   });
+// }
 
 /////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////// JSON VERSION ////////////////////////////////

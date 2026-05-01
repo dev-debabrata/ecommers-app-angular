@@ -9,7 +9,7 @@ import {
 
 import { Firestore, doc, getDoc } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { from, map, Observable, of, switchMap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -21,40 +21,88 @@ export class AdminAuthService {
 
   firebaseUser$: Observable<FirebaseUser | null> = authState(this.auth);
 
-  async loginAdmin(email: string, password: string) {
-    const result = await signInWithEmailAndPassword(this.auth, email, password);
+  loginAdmin(email: string, password: string) {
+    return from(
+      signInWithEmailAndPassword(this.auth, email, password).then(async (result) => {
+        const uid = result.user.uid;
 
-    const uid = result.user.uid;
+        const adminRef = doc(this.firestore, 'users/' + uid);
+        const snap = await getDoc(adminRef);
 
-    const adminRef = doc(this.firestore, 'users/' + uid);
-    const snap = await getDoc(adminRef);
+        if (!snap.exists()) {
+          await signOut(this.auth);
+          throw new Error('Admin not found');
+        }
 
-    if (!snap.exists()) {
-      await signOut(this.auth);
-      throw new Error('Admin not found');
-    }
+        const role = snap.data()?.['role'];
 
-    const role = snap.data()?.['role'];
+        if (role !== 'admin') {
+          await signOut(this.auth);
+          throw new Error('Unauthorized');
+        }
 
-    if (role !== 'admin') {
-      await signOut(this.auth);
-      throw new Error('Unauthorized');
-    }
-
-    return result.user;
+        return result.user;
+      }),
+    );
   }
 
-  async logout() {
-    await signOut(this.auth);
-    this.router.navigateByUrl('/admin/login', { replaceUrl: true });
+  logout() {
+    return from(
+      signOut(this.auth).then(() => {
+        this.router.navigateByUrl('/admin/login', { replaceUrl: true });
+      }),
+    );
   }
 
-  // async logout() {
-  //   await signOut(this.auth);
-  // }
+  isAdmin$ = this.firebaseUser$.pipe(
+    switchMap((user) => {
+      if (!user) return of(false);
 
-  isAdmin$ = this.firebaseUser$;
+      const adminRef = doc(this.firestore, 'users/' + user.uid);
+
+      return from(getDoc(adminRef)).pipe(
+        map((snap) => {
+          if (!snap.exists()) return false;
+          return snap.data()?.['role'] === 'admin';
+        }),
+      );
+    }),
+  );
+
+  // isAdmin$ = this.firebaseUser$;
 }
+
+// async loginAdmin(email: string, password: string) {
+//   const result = await signInWithEmailAndPassword(this.auth, email, password);
+
+//   const uid = result.user.uid;
+
+//   const adminRef = doc(this.firestore, 'users/' + uid);
+//   const snap = await getDoc(adminRef);
+
+//   if (!snap.exists()) {
+//     await signOut(this.auth);
+//     throw new Error('Admin not found');
+//   }
+
+//   const role = snap.data()?.['role'];
+
+//   if (role !== 'admin') {
+//     await signOut(this.auth);
+//     throw new Error('Unauthorized');
+//   }
+
+//   return result.user;
+// }
+
+// async logout() {
+//   await signOut(this.auth);
+//   this.router.navigateByUrl('/admin/login', { replaceUrl: true });
+// }
+
+// async logout() {
+//   await signOut(this.auth);
+// }
 
 ////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////// JSON VERSION /////////////////////////////
