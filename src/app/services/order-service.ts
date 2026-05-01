@@ -8,8 +8,9 @@ import {
   getDoc,
   query,
   orderBy,
+  updateDoc,
 } from '@angular/fire/firestore';
-import { Observable, from, map, switchMap } from 'rxjs';
+import { Observable, forkJoin, from, map, switchMap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -22,6 +23,7 @@ export class OrderService {
       ...order,
       userId,
       createdAt: Date.now(),
+      status: 'pending',
     };
 
     const userOrdersRef = collection(this.firestore, `users/${userId}/orders`);
@@ -87,6 +89,17 @@ export class OrderService {
     const q = query(ordersRef, orderBy('createdAt', 'desc'));
 
     return collectionData(q, { idField: 'id' }) as Observable<any[]>;
+  }
+
+  updateOrderStatus(userId: string, userOrderId: string, globalOrderId: string, status: string) {
+    const userOrderRef = doc(this.firestore, `users/${userId}/orders/${userOrderId}`);
+
+    const globalOrderRef = doc(this.firestore, `orders/${globalOrderId}`);
+
+    return forkJoin([
+      from(updateDoc(userOrderRef, { status })),
+      from(updateDoc(globalOrderRef, { status })),
+    ]);
   }
 }
 

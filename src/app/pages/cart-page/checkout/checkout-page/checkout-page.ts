@@ -139,6 +139,8 @@ export class CheckoutPage implements OnInit {
       items: this.cartService.cart(),
       total: this.totalPrice(),
       date: new Date(),
+
+      userEmail: user.email,
     };
 
     const orderSub = this.orderService.createOrder(user.uid, order).subscribe({
