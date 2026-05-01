@@ -1,4 +1,6 @@
 export interface AddressUser {
+  id?: string;
+  createdAt?: number;
   fullName: string;
   email: string;
   phone: string;

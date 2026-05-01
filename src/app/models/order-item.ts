@@ -1,0 +1,37 @@
+export interface OrderItem {
+  productId: string;
+  title: string;
+  image: string;
+  price: number;
+  quantity: number;
+}
+
+export interface OrderAddress {
+  fullName: string;
+  email: string;
+  phone: string;
+  address: string;
+  landmark?: string;
+  city: string;
+  state: string;
+  pinCode: string;
+}
+
+export interface Order {
+  id?: string;
+  userId: string;
+
+  items: OrderItem[];
+
+  address: OrderAddress;
+
+  subTotal: number;
+  gst: number;
+  total: number;
+
+  shippingMethod: string;
+
+  status: 'placed' | 'shipped' | 'delivered';
+
+  createdAt: number;
+}

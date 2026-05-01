@@ -27,14 +27,19 @@ export class UserService {
     return docData(userRef, { idField: 'uid' });
   }
 
+  deleteUser(id: string): Observable<void> {
+    const userDoc = doc(this.firestore, `users/${id}`);
+    return from(deleteDoc(userDoc));
+  }
+
   updateUserAddress(uid: string, data: any): Observable<void> {
     const userRef = doc(this.firestore, `users/${uid}`);
     return from(updateDoc(userRef, data));
   }
 
-  deleteUser(id: string): Observable<void> {
-    const userDoc = doc(this.firestore, `users/${id}`);
-    return from(deleteDoc(userDoc));
+  deleteUserAddress(uid: string, addresses: any[]): Observable<void> {
+    const userRef = doc(this.firestore, `users/${uid}`);
+    return from(updateDoc(userRef, { addresses }));
   }
 }
 

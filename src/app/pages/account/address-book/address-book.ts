@@ -1,10 +1,11 @@
 import { Component, inject, input, signal } from '@angular/core';
-import { AuthService } from '../../../services/auth-service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { SnackbarService } from '../../../services/snackbar-service';
 import { MatIconModule } from '@angular/material/icon';
+
+import { SnackbarService } from '../../../services/snackbar-service';
 import { UserService } from '../../../services/user-service';
+import { User, AddressUser } from '../../../models/user';
 
 @Component({
   selector: 'app-address-book',
@@ -17,12 +18,12 @@ export class AddressBook {
   private userService = inject(UserService);
   private snackBar = inject(SnackbarService);
 
-  user = input<any>();
+  user = input<User | null>();
 
   showAddressPopup = signal(false);
   editAddressIndex = signal<number | null>(null);
 
-  newAddress = signal({
+  newAddress = signal<AddressUser>({
     fullName: '',
     email: '',
     phone: '',
@@ -33,7 +34,7 @@ export class AddressBook {
     pinCode: '',
   });
 
-  updateField(field: string, value: string) {
+  updateField(field: keyof AddressUser, value: string) {
     this.newAddress.update((a) => ({
       ...a,
       [field]: value,
@@ -42,13 +43,12 @@ export class AddressBook {
 
   openAddressPopup() {
     const currentUser = this.user();
+    if (!currentUser) return;
 
     this.newAddress.set({
       fullName: `${currentUser.firstName} ${currentUser.lastName}`,
       email: currentUser.email,
-      phone: Array.isArray(currentUser.phoneNumber)
-        ? currentUser.phoneNumber[0]
-        : currentUser.phoneNumber || '',
+      phone: currentUser.phoneNumber?.[0] || '',
       address: '',
       landmark: '',
       city: '',
@@ -61,15 +61,21 @@ export class AddressBook {
   }
 
   editAddress(index: number) {
-    const addr = this.user().addresses[index];
+    const currentUser = this.user();
+    if (!currentUser || !currentUser.addresses) return;
 
+    const addr = currentUser.addresses[index];
     this.newAddress.set({ ...addr });
+
     this.editAddressIndex.set(index);
     this.showAddressPopup.set(true);
   }
 
-  async saveAddress() {
+  saveAddress() {
     const addr = this.newAddress();
+    const currentUser = this.user();
+
+    if (!currentUser?.uid) return;
 
     if (
       !addr.fullName.trim() ||
@@ -84,15 +90,14 @@ export class AddressBook {
       return;
     }
 
-    const currentUser = this.user();
-    const addresses = [...(currentUser?.addresses || [])];
+    const addresses = [...(currentUser.addresses || [])];
 
-    const cleanAddress = {
+    const cleanAddress: AddressUser = {
       fullName: addr.fullName.trim(),
       email: addr.email.trim(),
       phone: addr.phone.trim(),
       address: addr.address.trim(),
-      landmark: addr.landmark.trim(),
+      landmark: addr.landmark?.trim(),
       city: addr.city.trim(),
       state: addr.state.trim(),
       pinCode: addr.pinCode.trim(),
@@ -101,80 +106,237 @@ export class AddressBook {
     if (this.editAddressIndex() !== null) {
       addresses[this.editAddressIndex()!] = cleanAddress;
     } else {
-      addresses.push(cleanAddress);
+      addresses.unshift(cleanAddress);
     }
 
-    await this.userService.updateUserAddress(currentUser.uid, {
-      addresses,
+    // if (this.editAddressIndex() !== null) {
+    //   addresses[this.editAddressIndex()!] = cleanAddress;
+    // } else {
+    //   addresses.push(cleanAddress);
+    // }
+
+    this.userService.updateUserAddress(currentUser.uid, { addresses }).subscribe({
+      next: () => {
+        currentUser.addresses = addresses;
+
+        this.snackBar.success(
+          this.editAddressIndex() !== null
+            ? 'Address updated successfully'
+            : 'Address saved successfully',
+        );
+
+        this.editAddressIndex.set(null);
+        this.showAddressPopup.set(false);
+      },
+      error: (err) => {
+        console.error(err);
+        this.snackBar.error('Failed to save address');
+      },
     });
-
-    currentUser.addresses = addresses;
-
-    this.snackBar.success(
-      this.editAddressIndex() !== null
-        ? 'Address updated successfully'
-        : 'Address saved successfully',
-    );
-
-    this.editAddressIndex.set(null);
-    this.showAddressPopup.set(false);
   }
 
-  // async saveAddress() {
-  //   const currentUser = this.user();
+  deleteAddress(index: number) {
+    if (!confirm('Delete this address?')) return;
 
-  //   if (!currentUser?.uid) return;
-
-  //   const addresses = currentUser.addresses || [];
-
-  //   const addressData = {
-  //     ...this.newAddress(),
-  //     phone: String(this.newAddress().phone),
-  //   };
-
-  //   if (this.editAddressIndex() !== null) {
-  //     addresses[this.editAddressIndex()!] = addressData;
-  //   } else {
-  //     addresses.push(addressData);
-  //   }
-
-  //   await this.authService.updateUserAddress(currentUser.uid, {
-  //     addresses,
-  //   });
-
-  //   currentUser.addresses = addresses;
-
-  //   this.showAddressPopup.set(false);
-  //   this.editAddressIndex.set(null);
-  // }
-
-  async deleteAddress(index: number) {
     const currentUser = this.user();
+    if (!currentUser?.uid) return;
 
     const addresses = [...(currentUser.addresses || [])];
-
     addresses.splice(index, 1);
 
-    await this.userService.updateUserAddress(currentUser.uid, {
-      addresses,
+    this.userService.deleteUserAddress(currentUser.uid, addresses).subscribe({
+      next: () => {
+        currentUser.addresses = addresses;
+        this.snackBar.success('Address deleted successfully');
+      },
+      error: () => {
+        this.snackBar.error('Delete failed');
+      },
     });
-
-    currentUser.addresses = addresses;
-
-    this.snackBar.success('Address deleted successfully');
   }
-
-  // async deleteAddress(index: number) {
-  //   const currentUser = this.user();
-
-  //   const addresses = currentUser.addresses || [];
-
-  //   addresses.splice(index, 1);
-
-  //   await this.authService.updateUserAddress(currentUser.uid, {
-  //     addresses,
-  //   });
-
-  //   currentUser.addresses = addresses;
-  // }
 }
+
+/////////////////////////////////////////////////////////////////////////////
+
+// import { Component, inject, input, signal } from '@angular/core';
+// import { AuthService } from '../../../services/auth-service';
+// import { FormsModule } from '@angular/forms';
+// import { CommonModule } from '@angular/common';
+// import { SnackbarService } from '../../../services/snackbar-service';
+// import { MatIconModule } from '@angular/material/icon';
+// import { UserService } from '../../../services/user-service';
+// import { User } from '../../../models/user';
+
+// @Component({
+//   selector: 'app-address-book',
+//   standalone: true,
+//   imports: [CommonModule, FormsModule, MatIconModule],
+//   templateUrl: './address-book.html',
+//   styleUrl: './address-book.css',
+// })
+// export class AddressBook {
+//   private userService = inject(UserService);
+//   private snackBar = inject(SnackbarService);
+
+//   user = input<User | null>();
+
+//   showAddressPopup = signal(false);
+//   editAddressIndex = signal<number | null>(null);
+
+//   newAddress = signal({
+//     fullName: '',
+//     email: '',
+//     phone: '',
+//     address: '',
+//     landmark: '',
+//     city: '',
+//     state: '',
+//     pinCode: '',
+//   });
+
+//   updateField(field: string, value: string) {
+//     this.newAddress.update((a) => ({
+//       ...a,
+//       [field]: value,
+//     }));
+//   }
+
+//   openAddressPopup() {
+//    const currentUser = this.user();
+//    if (!currentUser) return;
+
+//     this.newAddress.set({
+//       fullName: `${currentUser.firstName} ${currentUser.lastName}`,
+//       email: currentUser.email,
+//       phone: Array.isArray(currentUser.phoneNumber)
+//         ? currentUser.phoneNumber[0]
+//         : currentUser.phoneNumber || '',
+//       address: '',
+//       landmark: '',
+//       city: '',
+//       state: '',
+//       pinCode: '',
+//     });
+
+//     this.editAddressIndex.set(null);
+//     this.showAddressPopup.set(true);
+//   }
+
+//   editAddress(index: number) {
+//     const addr = this.user().addresses[index];
+
+//     this.newAddress.set({ ...addr });
+//     this.editAddressIndex.set(index);
+//     this.showAddressPopup.set(true);
+//   }
+
+//   async saveAddress() {
+//     const addr = this.newAddress();
+
+//     if (
+//       !addr.fullName.trim() ||
+//       !addr.email.trim() ||
+//       !addr.phone.trim() ||
+//       !addr.address.trim() ||
+//       !addr.city.trim() ||
+//       !addr.state.trim() ||
+//       !addr.pinCode.trim()
+//     ) {
+//       this.snackBar.error('Please fill all required fields');
+//       return;
+//     }
+
+//     const currentUser = this.user();
+//     const addresses = [...(currentUser?.addresses || [])];
+
+//     const cleanAddress = {
+//       fullName: addr.fullName.trim(),
+//       email: addr.email.trim(),
+//       phone: addr.phone.trim(),
+//       address: addr.address.trim(),
+//       landmark: addr.landmark.trim(),
+//       city: addr.city.trim(),
+//       state: addr.state.trim(),
+//       pinCode: addr.pinCode.trim(),
+//     };
+
+//     if (this.editAddressIndex() !== null) {
+//       addresses[this.editAddressIndex()!] = cleanAddress;
+//     } else {
+//       addresses.push(cleanAddress);
+//     }
+
+//     await this.userService.updateUserAddress(currentUser.uid, {
+//       addresses,
+//     });
+
+//     currentUser.addresses = addresses;
+
+//     this.snackBar.success(
+//       this.editAddressIndex() !== null
+//         ? 'Address updated successfully'
+//         : 'Address saved successfully',
+//     );
+
+//     this.editAddressIndex.set(null);
+//     this.showAddressPopup.set(false);
+//   }
+
+//   // async saveAddress() {
+//   //   const currentUser = this.user();
+
+//   //   if (!currentUser?.uid) return;
+
+//   //   const addresses = currentUser.addresses || [];
+
+//   //   const addressData = {
+//   //     ...this.newAddress(),
+//   //     phone: String(this.newAddress().phone),
+//   //   };
+
+//   //   if (this.editAddressIndex() !== null) {
+//   //     addresses[this.editAddressIndex()!] = addressData;
+//   //   } else {
+//   //     addresses.push(addressData);
+//   //   }
+
+//   //   await this.authService.updateUserAddress(currentUser.uid, {
+//   //     addresses,
+//   //   });
+
+//   //   currentUser.addresses = addresses;
+
+//   //   this.showAddressPopup.set(false);
+//   //   this.editAddressIndex.set(null);
+//   // }
+
+//   async deleteAddress(index: number) {
+//     const currentUser = this.user();
+
+//     const addresses = [...(currentUser.addresses || [])];
+
+//     addresses.splice(index, 1);
+
+//     await this.userService.updateUserAddress(currentUser.uid, {
+//       addresses,
+//     });
+
+//     currentUser.addresses = addresses;
+
+//     this.snackBar.success('Address deleted successfully');
+//   }
+
+//   // async deleteAddress(index: number) {
+//   //   const currentUser = this.user();
+
+//   //   const addresses = currentUser.addresses || [];
+
+//   //   addresses.splice(index, 1);
+
+//   //   await this.authService.updateUserAddress(currentUser.uid, {
+//   //     addresses,
+//   //   });
+
+//   //   currentUser.addresses = addresses;
+//   // }
+// }

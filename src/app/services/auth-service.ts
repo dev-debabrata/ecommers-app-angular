@@ -11,7 +11,7 @@ import {
 
 import { Firestore, doc, getDoc, serverTimestamp, setDoc } from '@angular/fire/firestore';
 
-import { from, Observable, of } from 'rxjs';
+import { from, Observable, of, switchMap } from 'rxjs';
 
 import { User } from '../models/user';
 
@@ -83,6 +83,22 @@ export class AuthService {
   isLoggedIn(): boolean {
     return this.isAuthReady() && !!this.auth.currentUser && navigator.onLine;
   }
+
+  // getFullUser(): Observable<User | null> {
+  //   return this.firebaseUser$.pipe(
+  //     switchMap((firebaseUser) => {
+  //       if (!firebaseUser) return of(null);
+
+  //       const userRef = doc(this.firestore, 'users/' + firebaseUser.uid);
+
+  //       return from(
+  //         getDoc(userRef).then((snap) => {
+  //           return snap.exists() ? (snap.data() as User) : null;
+  //         }),
+  //       );
+  //     }),
+  //   );
+  // }
 
   getFullUser(): Observable<User | null> {
     const user = this.auth.currentUser;

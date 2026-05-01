@@ -16,11 +16,12 @@ import { OrderService } from '../../../../services/order-service';
 import { LoaderService } from '../../../../services/loader-service';
 import { SnackbarService } from '../../../../services/snackbar-service';
 import { CartItem } from '../../../../models/cart-item';
+import { CheckoutAddress } from '../checkout-address/checkout-address';
 
 @Component({
   selector: 'app-checkout-page',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, CommonModule, TruncatePipe],
+  imports: [FormsModule, ReactiveFormsModule, CommonModule, TruncatePipe, CheckoutAddress],
   templateUrl: './checkout-page.html',
   styleUrl: './checkout-page.css',
 })
@@ -33,36 +34,14 @@ export class CheckoutPage implements OnInit {
   private loaderService = inject(LoaderService);
   private snackbar = inject(SnackbarService);
 
+  user = signal<any>(null);
+  selectedAddress = signal<any>(null);
+
   buyNowItem: any = null;
-  submitted = signal(false);
-  touchedFields = signal<Record<string, boolean>>({});
 
   checkoutForm = signal({
-    fullName: '',
-    email: '',
-    phone: '',
-    address: '',
-    landmark: '',
-    city: '',
-    state: '',
-    pinCode: '',
     shippingMethod: 'free',
   });
-
-  markTouched(field: string) {
-    this.touchedFields.update((touch) => ({
-      ...touch,
-      [field]: true,
-    }));
-  }
-
-  updateField(field: string, value: string) {
-    this.checkoutForm.update((form) => ({ ...form, [field]: value }));
-  }
-
-  isInvalid(field: keyof ReturnType<typeof this.checkoutForm>) {
-    return (this.submitted() || this.touchedFields()[field]) && !this.checkoutForm()[field];
-  }
 
   ngOnInit(): void {
     const item = localStorage.getItem('buyNowItem');
@@ -79,14 +58,26 @@ export class CheckoutPage implements OnInit {
     const sub = this.authService.getFullUser().subscribe({
       next: (user: any) => {
         if (user) {
+          this.user.set(user);
+
           this.checkoutForm.update((form) => ({
             ...form,
             fullName: user.firstName + ' ' + user.lastName,
             email: user.email,
-            phone: user.phoneNumber || '',
+            phone: user.phoneNumber?.[0] || '',
           }));
         }
       },
+      // next: (user: any) => {
+      //   if (user) {
+      //     this.checkoutForm.update((form) => ({
+      //       ...form,
+      //       fullName: user.firstName + ' ' + user.lastName,
+      //       email: user.email,
+      //       phone: user.phoneNumber || '',
+      //     }));
+      //   }
+      // },
 
       error: (err) => {
         console.error('User fetch error:', err);
@@ -96,6 +87,17 @@ export class CheckoutPage implements OnInit {
     this.destroyRef.onDestroy(() => {
       sub.unsubscribe();
     });
+  }
+
+  onAddressSelect(addr: any) {
+    this.selectedAddress.set(addr);
+  }
+
+  setShippingMethod(method: 'free' | 'express') {
+    this.checkoutForm.update((f) => ({
+      ...f,
+      shippingMethod: method,
+    }));
   }
 
   getDiscountPrice(item: CartItem): number {
@@ -117,88 +119,158 @@ export class CheckoutPage implements OnInit {
 
   totalPrice = computed(() => this.subTotal() + this.gst() + this.shippingPrice());
 
-  isFormValid() {
-    const form = this.checkoutForm();
-    return (
-      form.fullName &&
-      form.email &&
-      form.phone &&
-      form.address &&
-      form.landmark &&
-      form.city &&
-      form.state &&
-      form.pinCode
-    );
-  }
-
   submitOrder() {
-    this.submitted.set(true);
+    if (!this.selectedAddress()) {
+      this.snackbar.error('Select address first!');
+      return;
+    }
 
-    if (!this.isFormValid()) {
-      this.snackbar.error('Please fill all required fields correctly!');
-      document.querySelector('.checkout-left')?.scrollIntoView({ behavior: 'smooth' });
+    const user = this.user();
+    if (!user?.uid) {
+      this.snackbar.error('User not found!');
       return;
     }
 
     this.loaderService.show();
 
-    const userSub = this.authService.getFullUser().subscribe({
-      next: (user: any) => {
-        if (!user?.uid) {
-          this.snackbar.error('User not logged in!');
-          this.loaderService.hide();
-          return;
-        }
+    const order = {
+      address: this.selectedAddress(),
+      shippingMethod: this.checkoutForm().shippingMethod,
+      items: this.cartService.cart(),
+      total: this.totalPrice(),
+      date: new Date(),
+    };
 
-        const items = [...this.cartService.cart(), ...(this.buyNowItem ? [this.buyNowItem] : [])];
+    const orderSub = this.orderService.createOrder(user.uid, order).subscribe({
+      next: (res: any) => {
+        this.loaderService.hide();
 
-        const order = {
-          address: this.checkoutForm(),
-          items,
-          subTotal: this.subTotal(),
-          gst: this.gst(),
-          total: this.totalPrice(),
-          date: new Date(),
-          status: 'placed',
-        };
-
-        const orderSub = this.orderService.createOrder(user.uid, order).subscribe({
-          next: (docRef: any) => {
-            // clear cart
-            this.buyNowItem = null;
-            localStorage.removeItem('buyNowItem');
-            this.cartService.clearCart();
-
-            this.snackbar.success('Order placed successfully!');
-            this.loaderService.hide();
-
-            this.router.navigate(['/order-success', docRef.id]);
-          },
-
-          error: (err) => {
-            console.error(err);
-            this.snackbar.error('Failed to place order!');
-            this.loaderService.hide();
-          },
-        });
-
-        this.destroyRef.onDestroy(() => {
-          orderSub.unsubscribe();
-        });
+        this.cartService.clearCart();
+        this.snackbar.success('Order placed!');
+        this.router.navigate(['/order-success', res.id]);
       },
 
       error: (err) => {
-        console.error(err);
-        this.snackbar.error('User fetch failed!');
         this.loaderService.hide();
+        this.snackbar.error('Order failed!');
+        console.log(err);
       },
     });
 
     this.destroyRef.onDestroy(() => {
-      userSub.unsubscribe();
+      orderSub.unsubscribe();
     });
   }
 }
+
+// submitted = signal(false);
+// touchedFields = signal<Record<string, boolean>>({});
+
+// fullName: '',
+// email: '',
+// phone: '',
+// address: '',
+// landmark: '',
+// city: '',
+// state: '',
+// pinCode: '',
+
+// markTouched(field: string) {
+//   this.touchedFields.update((touch) => ({
+//     ...touch,
+//     [field]: true,
+//   }));
+// }
+
+// updateField(field: string, value: string) {
+//   this.checkoutForm.update((form) => ({ ...form, [field]: value }));
+// }
+
+// isInvalid(field: keyof ReturnType<typeof this.checkoutForm>) {
+//   return (this.submitted() || this.touchedFields()[field]) && !this.checkoutForm()[field];
+// }
+
+// isFormValid() {
+//   const form = this.checkoutForm();
+//   return (
+//     form.fullName &&
+//     form.email &&
+//     form.phone &&
+//     form.address &&
+//     form.landmark &&
+//     form.city &&
+//     form.state &&
+//     form.pinCode
+//   );
+// }
+
+// submitOrder() {
+//   this.submitted.set(true);
+
+//   if (!this.isFormValid()) {
+//     this.snackbar.error('Please fill all required fields correctly!');
+//     document.querySelector('.checkout-left')?.scrollIntoView({ behavior: 'smooth' });
+//     return;
+//   }
+
+//   this.loaderService.show();
+
+//   const userSub = this.authService.getFullUser().subscribe({
+//     next: (user: any) => {
+//       if (!user?.uid) {
+//         this.snackbar.error('User not logged in!');
+//         this.loaderService.hide();
+//         return;
+//       }
+
+//       const items = [...this.cartService.cart(), ...(this.buyNowItem ? [this.buyNowItem] : [])];
+
+//       const order = {
+//         address: this.checkoutForm(),
+//         items,
+//         subTotal: this.subTotal(),
+//         gst: this.gst(),
+//         total: this.totalPrice(),
+//         date: new Date(),
+//         status: 'placed',
+//       };
+
+//       const orderSub = this.orderService.createOrder(user.uid, order).subscribe({
+//         next: (docRef: any) => {
+//           // clear cart
+//           this.buyNowItem = null;
+//           localStorage.removeItem('buyNowItem');
+//           this.cartService.clearCart();
+
+//           this.snackbar.success('Order placed successfully!');
+//           this.loaderService.hide();
+
+//           this.router.navigate(['/order-success', docRef.id]);
+//         },
+
+//         error: (err) => {
+//           console.error(err);
+//           this.snackbar.error('Failed to place order!');
+//           this.loaderService.hide();
+//         },
+//       });
+
+//       this.destroyRef.onDestroy(() => {
+//         orderSub.unsubscribe();
+//       });
+//     },
+
+//     error: (err) => {
+//       console.error(err);
+//       this.snackbar.error('User fetch failed!');
+//       this.loaderService.hide();
+//     },
+//   });
+
+//   this.destroyRef.onDestroy(() => {
+//     userSub.unsubscribe();
+//   });
+// }
 
 ///////////////////////////////////////////////////////////////////////////////////
 

@@ -2,7 +2,7 @@
 
 <button (click)="openAddressPopup()">Add New Address</button>
 
-@if (user()?.addresses?.length > 0) {
+@if (user()?.addresses?.length) {
   @for (addr of user()?.addresses; track $index; let i = $index) {
     <div class="card-box">
       <p>
@@ -33,7 +33,7 @@
         </h3>
 
         <button (click)="showAddressPopup.set(false)">
-          <mat-icon>closeSidebar</mat-icon>
+          <mat-icon>close</mat-icon>
         </button>
       </div>
 

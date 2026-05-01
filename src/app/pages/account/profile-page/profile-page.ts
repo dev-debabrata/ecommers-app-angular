@@ -7,6 +7,7 @@ import { OrderService } from '../../../services/order-service';
 import { ProfileDetails } from '../profile-details/profile-details';
 import { AddressBook } from '../address-book/address-book';
 import { OrderHistory } from '../order-history/order-history';
+import { User } from '../../../models/user';
 
 @Component({
   selector: 'app-profile-page',
@@ -21,7 +22,7 @@ export class ProfilePage implements OnInit {
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
 
-  user: any = null;
+  user: User | null = null;
   orders: any[] = [];
 
   activeSection = 'orders';
