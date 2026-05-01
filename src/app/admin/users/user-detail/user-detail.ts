@@ -2,10 +2,11 @@ import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { UserService } from '../../../services/user-service';
 import { OrderService } from '../../../services/order-service';
 import { ActivatedRoute } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-user-detail',
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './user-detail.html',
   styleUrl: './user-detail.css',
 })
@@ -23,7 +24,7 @@ export class UserDetail implements OnInit {
   activeSection: string = 'profile';
 
   ngOnInit() {
-    const uid = this.route.snapshot.paramMap.get('uid');
+    const uid = this.route.snapshot.paramMap.get('id');
     if (!uid) return;
 
     const userSub = this.userService.getUserById(uid).subscribe({
