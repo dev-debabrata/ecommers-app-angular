@@ -152,7 +152,9 @@
           (input)="updateExtraField(i, 'value', $any($event.target).value)"
         />
 
-        <button type="button" (click)="removeField(i)"><mat-icon>delete</mat-icon></button>
+        <button type="button" (click)="removeField(i)" class="deleteField">
+          <mat-icon>delete</mat-icon>
+        </button>
       </div>
     </div>
 

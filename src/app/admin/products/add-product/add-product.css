@@ -319,13 +319,13 @@ button:hover {
   flex: 1;
 }
 
-.dynamic-field button {
-  /* background: red; */
-  color: #f03e3e;
+/* .dynamic-field button { */
+/* background: red; */
+/* color: #f03e3e;
   padding: 8px 10px;
-  border: none;
-  /* border-radius: 6px; */
-}
+  border: none; */
+/* border-radius: 6px; */
+/* } */
 
 .add-fields {
   padding: 10px 12px;
@@ -339,6 +339,18 @@ button:hover {
 
 .add-fields:hover {
   background: #eee;
+}
+
+.deleteField {
+  cursor: pointer;
+  background: white;
+  color: #fd2323;
+  padding: 8px 10px;
+  border: none;
+}
+
+.deleteField:hover {
+  color: #cf1b1b;
 }
 
 /* Add field button */
