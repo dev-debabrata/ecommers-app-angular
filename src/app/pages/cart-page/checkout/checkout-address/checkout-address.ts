@@ -155,7 +155,7 @@ export class CheckoutAddress {
       state: '',
       pinCode: '',
     });
-
+    this.editingIndex.set(null);
     this.showAddressPopup.set(true);
   }
 
@@ -181,15 +181,26 @@ export class CheckoutAddress {
       return;
     }
 
-    const addr: any = {
-      ...base,
-      id: crypto.randomUUID(),
-      createdAt: Date.now(),
-    };
+    let addresses = [...(u.addresses || [])];
 
-    const addresses = [addr, ...(u.addresses || [])].sort(
-      (a: any, b: any) => b.createdAt - a.createdAt,
-    );
+    if (this.editingIndex() !== null) {
+      const index = this.editingIndex()!;
+
+      addresses[index] = {
+        ...addresses[index],
+        ...base,
+      };
+    } else {
+      const addr: any = {
+        ...base,
+        id: crypto.randomUUID(),
+        createdAt: Date.now(),
+      };
+
+      addresses = [addr, ...addresses];
+    }
+
+    addresses = addresses.sort((a: any, b: any) => b.createdAt - a.createdAt);
 
     this.userService.updateUserAddress(u.uid, { addresses }).subscribe({
       next: () => {
@@ -198,12 +209,62 @@ export class CheckoutAddress {
           addresses,
         });
 
-        this.selectAddress(addr);
+        if (this.editingIndex() !== null) {
+          this.selectAddress(addresses[this.editingIndex()!]);
+        } else {
+          this.selectAddress(addresses[0]);
+        }
 
-        this.snackbar.success('Address added');
+        this.snackbar.success(this.editingIndex() !== null ? 'Address updated' : 'Address added');
+
+        this.editingIndex.set(null);
         this.showAddressPopup.set(false);
       },
       error: () => this.snackbar.error('Failed to save address'),
     });
   }
+
+  // saveAddress() {
+  //   const u = this.userData();
+  //   if (!u?.uid) return;
+
+  //   const base = this.newAddress();
+
+  //   if (
+  //     !base.fullName ||
+  //     !base.phone ||
+  //     !base.address ||
+  //     !base.city ||
+  //     !base.state ||
+  //     !base.pinCode
+  //   ) {
+  //     this.snackbar.error('Fill all required fields');
+  //     return;
+  //   }
+
+  //   const addr: any = {
+  //     ...base,
+  //     id: crypto.randomUUID(),
+  //     createdAt: Date.now(),
+  //   };
+
+  //   const addresses = [addr, ...(u.addresses || [])].sort(
+  //     (a: any, b: any) => b.createdAt - a.createdAt,
+  //   );
+
+  //   this.userService.updateUserAddress(u.uid, { addresses }).subscribe({
+  //     next: () => {
+  //       this.userData.set({
+  //         ...u,
+  //         addresses,
+  //       });
+
+  //       this.selectAddress(addr);
+
+  //       this.snackbar.success('Address added');
+  //       this.showAddressPopup.set(false);
+  //     },
+  //     error: () => this.snackbar.error('Failed to save address'),
+  //   });
+  // }
 }
