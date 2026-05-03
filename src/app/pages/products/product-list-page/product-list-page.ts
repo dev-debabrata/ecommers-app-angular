@@ -9,11 +9,9 @@ import { Product } from '../../../models/products';
 import { Rating } from '../../../utils/rating.util';
 import { Error } from '../../../components/error/error';
 import { TruncatePipe } from '../../../pipes/truncate-pipe';
-import { Loader } from '../../../components/loader/loader';
 import { Highlight } from '../../../directives/highlight';
 import { WishlistService } from '../../../services/wishlist-service';
 import { AuthService } from '../../../services/auth-service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { LoaderService } from '../../../services/loader-service';
 import { SnackbarService } from '../../../services/snackbar-service';
 
@@ -34,11 +32,9 @@ export class ProductListPage implements OnInit {
   private snackBar = inject(SnackbarService);
 
   @Input() showCategories = true;
-  @Input() limit: number | null = null;
   @Input() showWishlistIcon = true;
 
   products: Product[] = [];
-  // isLoading = true;
   errorMsg = false;
 
   searchTerm = '';
@@ -52,15 +48,7 @@ export class ProductListPage implements OnInit {
       next: (res: Product[]) => {
         const sorted = [...res].sort((a: any, b: any) => (b.createdAt || 0) - (a.createdAt || 0));
 
-        // this.isLoading = false;
-
-        let products = sorted;
-
-        if (this.limit) {
-          products = products.slice(0, this.limit);
-        }
-
-        this.products = products;
+        this.products = sorted;
 
         if (this.showCategories) {
           const cats = this.products.map((p) => p.category);
@@ -73,7 +61,6 @@ export class ProductListPage implements OnInit {
 
       error: () => {
         this.loaderService.hide();
-        // this.isLoading = false;
         this.errorMsg = true;
       },
     });
