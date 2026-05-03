@@ -13,6 +13,7 @@ import { Auth, authState } from '@angular/fire/auth';
 
 import { Product } from '../models/products';
 import { CartItem } from '../models/cart-item';
+import { from } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -24,12 +25,6 @@ export class CartService {
   cart = signal<CartItem[]>([]);
 
   itemCount = computed(() => this.cart().length);
-
-  getDiscountPrice(item: CartItem): number {
-    if (!item.discount) return item.price;
-
-    return item.price - (item.price * item.discount) / 100;
-  }
 
   totalPrice = computed(() =>
     this.cart().reduce((acc, item) => acc + this.getDiscountPrice(item) * item.quantity, 0),
@@ -48,16 +43,6 @@ export class CartService {
       }
     });
   }
-
-  // constructor() {
-  //   this.auth.onAuthStateChanged((user) => {
-  //     if (user) {
-  //       this.loadCart();
-  //     } else {
-  //       this.cart.set([]);
-  //     }
-  //   });
-  // }
 
   loadCart() {
     const uid = this.auth.currentUser?.uid;
@@ -81,25 +66,13 @@ export class CartService {
     });
   }
 
-  // loadCart() {
-  //   const uid = this.auth.currentUser?.uid;
+  getDiscountPrice(item: CartItem): number {
+    if (!item.discount) return item.price;
 
-  //   if (!uid) return;
+    return item.price - (item.price * item.discount) / 100;
+  }
 
-  //   const cartRef = collection(this.firestore, `users/${uid}/cart`);
-
-  //   collectionData(cartRef).subscribe((items: any) => {
-  //     this.cart.set(
-  //       items.map((item: any) => ({
-  //         ...item,
-  //         quantity: item.quantity ?? 1,
-  //         discount: item.discount ?? 0,
-  //       })),
-  //     );
-  //   });
-  // }
-
-  async addToCart(product: Product) {
+  addToCart(product: Product) {
     const uid = this.auth.currentUser?.uid;
     if (!uid) return;
 
@@ -109,7 +82,6 @@ export class CartService {
       const updatedItem = {
         ...existing,
         quantity: existing.quantity + 1,
-
         price: product.price,
         name: product.title,
         discount: product.discount || 0,
@@ -120,7 +92,7 @@ export class CartService {
 
       this.cart.update((items) => items.map((i) => (i.id === product.id ? updatedItem : i)));
 
-      await setDoc(doc(this.firestore, `users/${uid}/cart/${product.id}`), updatedItem);
+      from(setDoc(doc(this.firestore, `users/${uid}/cart/${product.id}`), updatedItem)).subscribe();
 
       return;
     }
@@ -139,15 +111,34 @@ export class CartService {
 
     this.cart.update((items) => [...items, cartItem]);
 
-    await setDoc(doc(this.firestore, `users/${uid}/cart/${product.id}`), cartItem);
+    from(setDoc(doc(this.firestore, `users/${uid}/cart/${product.id}`), cartItem)).subscribe();
   }
 
   // async addToCart(product: Product) {
   //   const uid = this.auth.currentUser?.uid;
-
   //   if (!uid) return;
 
   //   const existing = this.cart().find((i) => i.id === product.id);
+
+  //   if (existing) {
+  //     const updatedItem = {
+  //       ...existing,
+  //       quantity: existing.quantity + 1,
+
+  //       price: product.price,
+  //       name: product.title,
+  //       discount: product.discount || 0,
+  //       image: product.image,
+  //       category: product.category,
+  //       stock: product.stock,
+  //     };
+
+  //     this.cart.update((items) => items.map((i) => (i.id === product.id ? updatedItem : i)));
+
+  //     await setDoc(doc(this.firestore, `users/${uid}/cart/${product.id}`), updatedItem);
+
+  //     return;
+  //   }
 
   //   const cartItem: CartItem = {
   //     id: product.id!,
@@ -156,66 +147,161 @@ export class CartService {
   //     discount: product.discount || 0,
   //     image: product.image,
   //     category: product.category,
-  //     stock: product.stock,
   //     brand: product.brand,
-  //     quantity: existing ? existing.quantity + 1 : 1,
+  //     stock: product.stock,
+  //     quantity: 1,
   //   };
 
-  //   this.cart.update((items) => {
-  //     if (existing) {
-  //       return items.map((i) => (i.id === product.id ? { ...i, quantity: i.quantity + 1 } : i));
-  //     }
-
-  //     return [...items, cartItem];
-  //   });
+  //   this.cart.update((items) => [...items, cartItem]);
 
   //   await setDoc(doc(this.firestore, `users/${uid}/cart/${product.id}`), cartItem);
   // }
 
-  async removeItem(id: string) {
+  removeItem(id: string) {
     const uid = this.auth.currentUser?.uid;
-
     if (!uid) return;
 
     this.cart.update((items) => items.filter((i) => i.id !== id));
 
-    await deleteDoc(doc(this.firestore, `users/${uid}/cart/${id}`));
+    from(deleteDoc(doc(this.firestore, `users/${uid}/cart/${id}`))).subscribe();
   }
 
-  async updateQuantity(id: string, qty: number) {
-    const uid = this.auth.currentUser?.uid;
+  // async removeItem(id: string) {
+  //   const uid = this.auth.currentUser?.uid;
 
+  //   if (!uid) return;
+
+  //   this.cart.update((items) => items.filter((i) => i.id !== id));
+
+  //   await deleteDoc(doc(this.firestore, `users/${uid}/cart/${id}`));
+  // }
+
+  updateQuantity(id: string, qty: number) {
+    const uid = this.auth.currentUser?.uid;
     if (!uid) return;
 
     if (qty <= 0) {
-      await this.removeItem(id);
+      this.removeItem(id);
       return;
     }
 
     const item = this.cart().find((i) => i.id === id);
-
     if (!item) return;
 
-    this.cart.update((items) => items.map((i) => (i.id === id ? { ...i, quantity: qty } : i)));
+    const updatedItem = { ...item, quantity: qty };
 
-    await setDoc(doc(this.firestore, `users/${uid}/cart/${id}`), {
-      ...item,
-      quantity: qty,
-    });
+    this.cart.update((items) => items.map((i) => (i.id === id ? updatedItem : i)));
+
+    from(setDoc(doc(this.firestore, `users/${uid}/cart/${id}`), updatedItem)).subscribe();
   }
 
-  async clearCart() {
-    const uid = this.auth.currentUser?.uid;
+  // async updateQuantity(id: string, qty: number) {
+  //   const uid = this.auth.currentUser?.uid;
 
+  //   if (!uid) return;
+
+  //   if (qty <= 0) {
+  //     await this.removeItem(id);
+  //     return;
+  //   }
+
+  //   const item = this.cart().find((i) => i.id === id);
+
+  //   if (!item) return;
+
+  //   this.cart.update((items) => items.map((i) => (i.id === id ? { ...i, quantity: qty } : i)));
+
+  //   await setDoc(doc(this.firestore, `users/${uid}/cart/${id}`), {
+  //     ...item,
+  //     quantity: qty,
+  //   });
+  // }
+
+  clearCart() {
+    const uid = this.auth.currentUser?.uid;
     if (!uid) return;
 
-    for (const item of this.cart()) {
-      await deleteDoc(doc(this.firestore, `users/${uid}/cart/${item.id}`));
-    }
+    const items = this.cart();
+
+    items.forEach((item) => {
+      from(deleteDoc(doc(this.firestore, `users/${uid}/cart/${item.id}`))).subscribe();
+    });
 
     this.cart.set([]);
   }
+
+  // async clearCart() {
+  //   const uid = this.auth.currentUser?.uid;
+
+  //   if (!uid) return;
+
+  //   for (const item of this.cart()) {
+  //     await deleteDoc(doc(this.firestore, `users/${uid}/cart/${item.id}`));
+  //   }
+
+  //   this.cart.set([]);
+  // }
 }
+
+//////////////////////////////////////////////////////////////////////////////
+
+// constructor() {
+//   this.auth.onAuthStateChanged((user) => {
+//     if (user) {
+//       this.loadCart();
+//     } else {
+//       this.cart.set([]);
+//     }
+//   });
+// }
+
+// loadCart() {
+//   const uid = this.auth.currentUser?.uid;
+
+//   if (!uid) return;
+
+//   const cartRef = collection(this.firestore, `users/${uid}/cart`);
+
+//   collectionData(cartRef).subscribe((items: any) => {
+//     this.cart.set(
+//       items.map((item: any) => ({
+//         ...item,
+//         quantity: item.quantity ?? 1,
+//         discount: item.discount ?? 0,
+//       })),
+//     );
+//   });
+// }
+
+// async addToCart(product: Product) {
+//   const uid = this.auth.currentUser?.uid;
+
+//   if (!uid) return;
+
+//   const existing = this.cart().find((i) => i.id === product.id);
+
+//   const cartItem: CartItem = {
+//     id: product.id!,
+//     name: product.title,
+//     price: product.price,
+//     discount: product.discount || 0,
+//     image: product.image,
+//     category: product.category,
+//     stock: product.stock,
+//     brand: product.brand,
+//     quantity: existing ? existing.quantity + 1 : 1,
+//   };
+
+//   this.cart.update((items) => {
+//     if (existing) {
+//       return items.map((i) => (i.id === product.id ? { ...i, quantity: i.quantity + 1 } : i));
+//     }
+
+//     return [...items, cartItem];
+//   });
+
+//   await setDoc(doc(this.firestore, `users/${uid}/cart/${product.id}`), cartItem);
+// }
 
 //////////////////////////////////////////////////////////////////////////////
 ///////////////////////////// JSON VERSION //////////////////////////////////

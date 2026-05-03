@@ -37,23 +37,26 @@ export class CheckoutPage implements OnInit {
   user = signal<any>(null);
   selectedAddress = signal<any>(null);
 
-  buyNowItem: any = null;
-
   checkoutForm = signal({
     shippingMethod: 'free',
   });
 
   ngOnInit(): void {
-    const item = localStorage.getItem('buyNowItem');
-
-    if (item) {
-      this.buyNowItem = JSON.parse(item);
-    }
-
-    if (this.cartService.cart().length === 0 && !this.buyNowItem) {
+    if (this.cartService.cart().length === 0) {
       this.router.navigate(['/']);
       return;
     }
+
+    // const item = localStorage.getItem('buyNowItem');
+
+    // if (item) {
+    //   this.buyNowItem = JSON.parse(item);
+    // }
+
+    // if (this.cartService.cart().length === 0 && !this.buyNowItem) {
+    //   this.router.navigate(['/']);
+    //   return;
+    // }
 
     const sub = this.authService.getFullUser().subscribe({
       next: (user: any) => {
@@ -104,15 +107,10 @@ export class CheckoutPage implements OnInit {
     return this.cartService.getDiscountPrice(item);
   }
 
-  shippingPrice = computed(() => (this.checkoutForm().shippingMethod === 'express' ? 110 : 20));
+  shippingPrice = computed(() => (this.checkoutForm().shippingMethod === 'express' ? 90 : 0));
 
   subTotal = computed(() => {
-    let total = this.cartService.totalPrice();
-
-    if (this.buyNowItem) {
-      total += this.buyNowItem.price * (this.buyNowItem.quantity || 1);
-    }
-    return total;
+    return this.cartService.totalPrice();
   });
 
   gst = computed(() => this.subTotal() * 0.18);
@@ -136,10 +134,11 @@ export class CheckoutPage implements OnInit {
     const order = {
       address: this.selectedAddress(),
       shippingMethod: this.checkoutForm().shippingMethod,
-      items: this.cartService.cart(),
+      items: [...this.cartService.cart()],
+      // items: this.cartService.cart(),
       total: this.totalPrice(),
-      date: new Date(),
-
+      // date: new Date(),
+      createdAt: Date.now(),
       userEmail: user.email,
     };
 

@@ -11,16 +11,16 @@
 
       <div class="cart-items">
         @for (item of cart(); track item.id) {
-          <div (click)="viewDetails(item.id!)" class="cart-item">
+          <div class="cart-item">
             <!-- IMAGE -->
-            <div class="cart-image">
+            <div (click)="viewDetails(item.id!)" class="cart-image">
               <img [src]="item.image" [alt]="item.name" />
             </div>
 
             <!-- DETAILS -->
             <div class="cart-details">
               <!-- TITLE -->
-              <p class="cart-title">
+              <p (click)="viewDetails(item.id!)" class="cart-title">
                 {{ item.name }}
               </p>
 

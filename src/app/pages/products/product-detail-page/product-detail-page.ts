@@ -148,10 +148,15 @@ export class ProductDetailPage implements OnInit {
   }
 
   buyNow(product: Product) {
-    const item = { ...product, quantity: 1 };
-    localStorage.setItem('buyNowItem', JSON.stringify(item));
+    this.cartService.addToCart(product);
     this.router.navigate(['/cart/checkout']);
   }
+
+  // buyNow(product: Product) {
+  //   const item = { ...product, quantity: 1 };
+  //   localStorage.setItem('buyNowItem', JSON.stringify(item));
+  //   this.router.navigate(['/cart/checkout']);
+  // }
 }
 
 // import { Component, DestroyRef, inject, Input } from '@angular/core';

@@ -27,22 +27,6 @@ export class WishlistPage {
   wishlistItems = this.wishlistService.getWishlistSignal;
   wishlistCount = computed(() => this.wishlistItems().length);
 
-  // ngOnInit() {
-  //   const wishlistSub = this.wishlistService.loadWishlist().subscribe({
-  //     next: (items) => {
-  //       console.log('Wishlist loaded:', items);
-  //     },
-  //     error: (err) => {
-  //       console.error('Wishlist load error:', err);
-  //       this.snackBar.error('Failed to load wishlist');
-  //     },
-  //   });
-
-  //   this.destroyRef.onDestroy(() => {
-  //     wishlistSub.unsubscribe();
-  //   });
-  // }
-
   getRating() {
     return Rating;
   }
@@ -70,6 +54,24 @@ export class WishlistPage {
     this.router.navigate(['/products', id]);
   }
 }
+
+///////////////////////////////////////////////
+
+// ngOnInit() {
+//   const wishlistSub = this.wishlistService.loadWishlist().subscribe({
+//     next: (items) => {
+//       console.log('Wishlist loaded:', items);
+//     },
+//     error: (err) => {
+//       console.error('Wishlist load error:', err);
+//       this.snackBar.error('Failed to load wishlist');
+//     },
+//   });
+
+//   this.destroyRef.onDestroy(() => {
+//     wishlistSub.unsubscribe();
+//   });
+// }
 
 ///////////////////////////////////////////////
 ////////// JSON VERSION //////////////////////

@@ -53,7 +53,7 @@
   <div class="checkout-right">
     <h2>Order Summary</h2>
 
-    @if (buyNowItem) {
+    <!-- @if (buyNowItem) {
       <div class="cart-item">
         <img [src]="buyNowItem.images" alt="" />
 
@@ -66,7 +66,7 @@
           ₹ {{ buyNowItem.price * (buyNowItem.quantity || 1) | number: '1.0-0' }}.00
         </p>
       </div>
-    }
+    } -->
 
     @for (item of cartService.cart(); track item.id) {
       <div class="cart-item">
