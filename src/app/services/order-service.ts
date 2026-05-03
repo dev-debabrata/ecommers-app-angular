@@ -9,6 +9,7 @@ import {
   query,
   orderBy,
   updateDoc,
+  setDoc,
 } from '@angular/fire/firestore';
 import { Observable, forkJoin, from, map, switchMap } from 'rxjs';
 
@@ -19,46 +20,24 @@ export class OrderService {
   private firestore = inject(Firestore);
 
   createOrder(userId: string, order: any) {
+    const orderId = doc(collection(this.firestore, 'orders')).id;
+
     const fullOrder = {
       ...order,
+      id: orderId,
       userId,
       createdAt: Date.now(),
       status: 'pending',
     };
 
-    const userOrdersRef = collection(this.firestore, `users/${userId}/orders`);
-    const globalOrdersRef = collection(this.firestore, 'orders');
+    const userOrderRef = doc(this.firestore, `users/${userId}/orders/${orderId}`);
+    const globalOrderRef = doc(this.firestore, `orders/${orderId}`);
 
-    return from(addDoc(userOrdersRef, fullOrder)).pipe(
-      switchMap((userOrder) =>
-        from(
-          addDoc(globalOrdersRef, {
-            ...fullOrder,
-            userOrderId: userOrder.id,
-          }),
-        ).pipe(map(() => userOrder)),
-      ),
+    return from(setDoc(userOrderRef, fullOrder)).pipe(
+      switchMap(() => from(setDoc(globalOrderRef, fullOrder))),
+      map(() => fullOrder),
     );
   }
-
-  // async createOrder(userId: string, order: any) {
-  //   const fullOrder = {
-  //     ...order,
-  //     userId,
-  //     createdAt: Date.now(),
-  //   };
-
-  //   const userOrdersRef = collection(this.firestore, `users/${userId}/orders`);
-  //   const userOrder = await addDoc(userOrdersRef, fullOrder);
-
-  //   const globalOrdersRef = collection(this.firestore, 'orders');
-  //   await addDoc(globalOrdersRef, {
-  //     ...fullOrder,
-  //     userOrderId: userOrder.id,
-  //   });
-
-  //   return userOrder;
-  // }
 
   getUserOrders(userId: string): Observable<any[]> {
     const ordersRef = collection(this.firestore, `users/${userId}/orders`);
@@ -102,6 +81,50 @@ export class OrderService {
     ]);
   }
 }
+
+////////////////////////////////////////////////////////////////////////////
+
+// createOrder(userId: string, order: any) {
+//   const fullOrder = {
+//     ...order,
+//     userId,
+//     createdAt: Date.now(),
+//     status: 'pending',
+//   };
+
+//   const userOrdersRef = collection(this.firestore, `users/${userId}/orders`);
+//   const globalOrdersRef = collection(this.firestore, 'orders');
+
+//   return from(addDoc(userOrdersRef, fullOrder)).pipe(
+//     switchMap((userOrder) =>
+//       from(
+//         addDoc(globalOrdersRef, {
+//           ...fullOrder,
+//           userOrderId: userOrder.id,
+//         }),
+//       ).pipe(map(() => userOrder)),
+//     ),
+//   );
+// }
+
+// async createOrder(userId: string, order: any) {
+//   const fullOrder = {
+//     ...order,
+//     userId,
+//     createdAt: Date.now(),
+//   };
+
+//   const userOrdersRef = collection(this.firestore, `users/${userId}/orders`);
+//   const userOrder = await addDoc(userOrdersRef, fullOrder);
+
+//   const globalOrdersRef = collection(this.firestore, 'orders');
+//   await addDoc(globalOrdersRef, {
+//     ...fullOrder,
+//     userOrderId: userOrder.id,
+//   });
+
+//   return userOrder;
+// }
 
 ///////////////////////////////////////////////////////////////////////////
 //   async createOrder(userId: string, order: any) {
