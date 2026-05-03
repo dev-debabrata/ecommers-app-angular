@@ -16,7 +16,7 @@ import { ProductService } from '../../services/product-service';
   templateUrl: './wishlist-page.html',
   styleUrl: './wishlist-page.css',
 })
-export class WishlistPage implements OnInit {
+export class WishlistPage {
   private router = inject(Router);
   private cartService = inject(CartService);
   private productService = inject(ProductService);
@@ -27,21 +27,21 @@ export class WishlistPage implements OnInit {
   wishlistItems = this.wishlistService.getWishlistSignal;
   wishlistCount = computed(() => this.wishlistItems().length);
 
-  ngOnInit() {
-    const wishlistSub = this.wishlistService.getWishlist().subscribe({
-      next: (items) => {
-        console.log('Wishlist loaded:', items);
-      },
-      error: (err) => {
-        console.error('Wishlist load error:', err);
-        this.snackBar.error('Failed to load wishlist');
-      },
-    });
+  // ngOnInit() {
+  //   const wishlistSub = this.wishlistService.loadWishlist().subscribe({
+  //     next: (items) => {
+  //       console.log('Wishlist loaded:', items);
+  //     },
+  //     error: (err) => {
+  //       console.error('Wishlist load error:', err);
+  //       this.snackBar.error('Failed to load wishlist');
+  //     },
+  //   });
 
-    this.destroyRef.onDestroy(() => {
-      wishlistSub.unsubscribe();
-    });
-  }
+  //   this.destroyRef.onDestroy(() => {
+  //     wishlistSub.unsubscribe();
+  //   });
+  // }
 
   getRating() {
     return Rating;
@@ -55,14 +55,14 @@ export class WishlistPage implements OnInit {
     event.stopPropagation();
 
     this.cartService.addToCart(product);
-    this.wishlistService.removeFromWishlist(product.id!).subscribe();
+    this.wishlistService.removeFromWishlist(product.id!);
 
     this.snackBar.success('Moved to cart');
   }
 
   removeFromWishlist(productId: string, event: Event) {
     event.stopPropagation();
-    this.wishlistService.removeFromWishlist(productId).subscribe();
+    this.wishlistService.removeFromWishlist(productId);
     this.snackBar.success('Remove to wishlist');
   }
 
