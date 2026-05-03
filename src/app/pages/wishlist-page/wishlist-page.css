@@ -25,6 +25,7 @@
 
 .wishlist-card {
   display: flex;
+  justify-content: space-between;
   gap: 16px;
   padding: 1.5rem;
   /* border-bottom: 1px solid #ddd; */
@@ -149,4 +150,11 @@
 .brand {
   margin: 0 0 5px 0;
   color: #555;
+}
+
+.wishlist-card-details {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
 }

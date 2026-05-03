@@ -1,12 +1,12 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, DestroyRef, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { WishlistService } from '../../services/wishlist-service';
 import { CartService } from '../../services/cart-service';
 import { Rating } from '../../utils/rating.util';
 import { Product } from '../../models/products';
+import { SnackbarService } from '../../services/snackbar-service';
 
 @Component({
   selector: 'app-wishlist-page',
@@ -15,14 +15,31 @@ import { Product } from '../../models/products';
   templateUrl: './wishlist-page.html',
   styleUrl: './wishlist-page.css',
 })
-export class WishlistPage {
+export class WishlistPage implements OnInit {
   private router = inject(Router);
   private cartService = inject(CartService);
   private wishlistService = inject(WishlistService);
-  private snackBar = inject(MatSnackBar);
+  private snackBar = inject(SnackbarService);
+  private destroyRef = inject(DestroyRef);
 
-  wishlistItems = this.wishlistService.getWishlist;
+  wishlistItems = this.wishlistService.getWishlistSignal;
   wishlistCount = computed(() => this.wishlistItems().length);
+
+  ngOnInit() {
+    const wishlistSub = this.wishlistService.getWishlist().subscribe({
+      next: (items) => {
+        console.log('Wishlist loaded:', items);
+      },
+      error: (err) => {
+        console.error('Wishlist load error:', err);
+        this.snackBar.error('Failed to load wishlist');
+      },
+    });
+
+    this.destroyRef.onDestroy(() => {
+      wishlistSub.unsubscribe();
+    });
+  }
 
   getRating() {
     return Rating;
@@ -38,19 +55,15 @@ export class WishlistPage {
     event.stopPropagation();
 
     this.cartService.addToCart(product);
-    this.wishlistService.removeFromWishlist(product.id!);
+    this.wishlistService.removeFromWishlist(product.id!).subscribe();
 
-    this.snackBar.open('Moved to cart', 'Close', {
-      duration: 2000,
-      horizontalPosition: 'center',
-      verticalPosition: 'top',
-      panelClass: ['snackbar-success'],
-    });
+    this.snackBar.success('Moved to cart');
   }
 
   removeFromWishlist(productId: string, event: Event) {
     event.stopPropagation();
-    this.wishlistService.removeFromWishlist(productId);
+    this.wishlistService.removeFromWishlist(productId).subscribe();
+    this.snackBar.success('Remove to wishlist');
   }
 
   viewDetails(id: string) {

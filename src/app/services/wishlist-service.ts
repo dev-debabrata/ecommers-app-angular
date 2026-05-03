@@ -12,6 +12,7 @@ import {
 import { Auth, authState } from '@angular/fire/auth';
 
 import { Product } from '../models/products';
+import { from, map, Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -24,51 +25,107 @@ export class WishlistService {
 
   itemCount = computed(() => this.wishlist().length);
 
-  getWishlist = this.wishlist.asReadonly();
+  getWishlistSignal = this.wishlist.asReadonly();
 
   constructor() {
     authState(this.auth).subscribe((user) => {
       if (user) {
-        this.loadWishlist();
+        this.getWishlist();
       } else {
         this.wishlist.set([]);
       }
     });
   }
 
-  loadWishlist() {
+  getWishlist(): Observable<Product[]> {
     const uid = this.auth.currentUser?.uid;
 
-    if (!uid) return;
+    if (!uid) {
+      this.wishlist.set([]);
+      return of([]);
+    }
 
     const wishlistRef = collection(this.firestore, `users/${uid}/wishlist`);
 
-    collectionData(wishlistRef).subscribe((items: any) => {
-      this.wishlist.set(items);
-    });
+    return collectionData(wishlistRef, { idField: 'id' }).pipe(
+      map((items: any[]) => {
+        const sorted = (items || []).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+        this.wishlist.set(sorted);
+
+        return sorted;
+      }),
+    );
   }
 
-  async addToWishlist(product: Product) {
+  // getWishlist() {
+  //   const uid = this.auth.currentUser?.uid;
+  //   if (!uid) return;
+
+  //   const wishlistRef = collection(this.firestore, `users/${uid}/wishlist`);
+
+  //   collectionData(wishlistRef, { idField: 'id' }).subscribe((items: any) => {
+  //     const sorted = (items || []).sort(
+  //       (a: any, b: any) => (b.createdAt || 0) - (a.createdAt || 0),
+  //     );
+
+  //     this.wishlist.set(sorted);
+  //   });
+  // }
+
+  addToWishlist(product: Product): Observable<void> {
     const uid = this.auth.currentUser?.uid;
+    if (!uid) return of(void 0);
 
-    if (!uid) return;
+    const exists = this.isInWishlist(product.id);
+    if (exists) return of(void 0);
 
-    if (!this.wishlist().find((p) => p.id === product.id)) {
-      this.wishlist.update((items) => [...items, product]);
+    const item = {
+      ...product,
+      createdAt: Date.now(),
+    };
 
-      await setDoc(doc(this.firestore, `users/${uid}/wishlist/${product.id}`), product);
-    }
+    this.wishlist.update((items) => [item, ...items]);
+
+    return from(setDoc(doc(this.firestore, `users/${uid}/wishlist/${product.id}`), item));
   }
 
-  async removeFromWishlist(id: string) {
+  // addToWishlist(product: Product) {
+  //   const uid = this.auth.currentUser?.uid;
+  //   if (!uid) return;
+
+  //   const item = {
+  //     ...product,
+  //     createdAt: Date.now(),
+  //   };
+
+  //   const exists = this.wishlist().find((p) => p.id === product.id);
+  //   if (exists) return;
+
+  //   this.wishlist.update((items) => [item, ...items]);
+
+  //   return from(setDoc(doc(this.firestore, `users/${uid}/wishlist/${product.id}`), item));
+  // }
+
+  removeFromWishlist(id: string): Observable<void> {
     const uid = this.auth.currentUser?.uid;
 
-    if (!uid) return;
+    if (!uid) return from(Promise.resolve());
 
     this.wishlist.update((items) => items.filter((p) => p.id !== id));
 
-    await deleteDoc(doc(this.firestore, `users/${uid}/wishlist/${id}`));
+    return from(deleteDoc(doc(this.firestore, `users/${uid}/wishlist/${id}`)));
   }
+
+  // async removeFromWishlist(id: string) {
+  //   const uid = this.auth.currentUser?.uid;
+
+  //   if (!uid) return;
+
+  //   this.wishlist.update((items) => items.filter((p) => p.id !== id));
+
+  //   await deleteDoc(doc(this.firestore, `users/${uid}/wishlist/${id}`));
+  // }
 
   isInWishlist(id: string): boolean {
     return this.wishlist().some((p) => p.id === id);
@@ -85,6 +142,30 @@ export class WishlistService {
 //       this.wishlist.set([]);
 //     }
 //   });
+// }
+
+// loadWishlist() {
+//   const uid = this.auth.currentUser?.uid;
+
+//   if (!uid) return;
+
+//   const wishlistRef = collection(this.firestore, `users/${uid}/wishlist`);
+
+//   collectionData(wishlistRef).subscribe((items: any) => {
+//     this.wishlist.set(items);
+//   });
+// }
+
+// async addToWishlist(product: Product) {
+//   const uid = this.auth.currentUser?.uid;
+
+//   if (!uid) return;
+
+//   if (!this.wishlist().find((p) => p.id === product.id)) {
+//     this.wishlist.update((items) => [...items, product]);
+
+//     await setDoc(doc(this.firestore, `users/${uid}/wishlist/${product.id}`), product);
+//   }
 // }
 
 /////////////////////////////////////////////////////////////////////////////////

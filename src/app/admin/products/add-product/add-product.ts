@@ -30,7 +30,7 @@ export class AddProduct implements OnInit {
 
   extraFields = signal<{ label: string; value: string }[]>([]);
 
-  product = signal<Product>({
+  product = signal<Partial<Product>>({
     title: '',
     price: 0,
     discount: 0,
@@ -129,6 +129,24 @@ export class AddProduct implements OnInit {
     return touched[field] && (value === '' || value === null || value === undefined);
   }
 
+  isFormValid = computed(() => {
+    const p = this.product();
+
+    return (
+      !!p.title &&
+      (p.price ?? 0) > 0 &&
+      (p.discount ?? 0) >= 0 &&
+      (p.stock ?? 0) >= 0 &&
+      !!p.brand &&
+      !!p.color &&
+      !!p.category &&
+      !!p.image &&
+      !!p.description &&
+      (p.rating ?? 0) >= 0 &&
+      (p.rating ?? 0) <= 5
+    );
+  });
+
   // isInvalid(field: ProductField): boolean {
   //   const product = this.product();
   //   const touched = this.touched();
@@ -136,23 +154,23 @@ export class AddProduct implements OnInit {
   //   return !product[field] && touched[field];
   // }
 
-  isFormValid = computed(() => {
-    const p = this.product();
+  // isFormValid = computed(() => {
+  //   const p = this.product();
 
-    return (
-      p.title &&
-      p.price > 0 &&
-      (p.discount ?? 0) >= 0 &&
-      p.stock >= 0 &&
-      p.brand &&
-      p.color &&
-      p.category &&
-      p.image &&
-      p.description &&
-      (p.rating ?? 0) >= 0 &&
-      (p.rating ?? 0) <= 5
-    );
-  });
+  //   return (
+  //     p.title &&
+  //     p.price > 0 &&
+  //     (p.discount ?? 0) >= 0 &&
+  //     p.stock >= 0 &&
+  //     p.brand &&
+  //     p.color &&
+  //     p.category &&
+  //     p.image &&
+  //     p.description &&
+  //     (p.rating ?? 0) >= 0 &&
+  //     (p.rating ?? 0) <= 5
+  //   );
+  // });
 
   onSubmit() {
     if (!this.isFormValid()) {
@@ -162,10 +180,27 @@ export class AddProduct implements OnInit {
 
     this.loaderService.show();
 
+    const p = this.product();
+
+    const finalProduct: Product = {
+      id: this.editId ?? '',
+      title: p.title!,
+      price: p.price!,
+      discount: p.discount,
+      stock: p.stock!,
+      brand: p.brand!,
+      color: p.color!,
+      category: p.category!,
+      image: p.image!,
+      description: p.description!,
+      rating: p.rating,
+      createdAt: Date.now(),
+    };
+
     let sub;
 
     if (this.isEdit && this.editId) {
-      sub = this.productService.updateProduct(this.editId, this.product()).subscribe({
+      sub = this.productService.updateProduct(this.editId, finalProduct).subscribe({
         next: () => {
           this.snackbar.success('Product Updated Successfully');
           this.loaderService.hide();
@@ -178,7 +213,7 @@ export class AddProduct implements OnInit {
         },
       });
     } else {
-      sub = this.productService.addProduct(this.product()).subscribe({
+      sub = this.productService.addProduct(finalProduct).subscribe({
         next: () => {
           this.snackbar.success('Product Added Successfully');
           this.loaderService.hide();
@@ -201,6 +236,64 @@ export class AddProduct implements OnInit {
     this.location.back();
   }
 }
+
+// onSubmit() {
+//   if (!this.isFormValid()) {
+//     this.snackbar.error('Please fill all required fields');
+//     return;
+//   }
+
+//   this.loaderService.show();
+
+//   const p = this.product();
+
+//   const finalProduct: Product = {
+//     id: this.editId ?? '', // temp for update (ignored in add)
+//     title: p.title!,
+//     price: p.price!,
+//     discount: p.discount,
+//     stock: p.stock!,
+//     brand: p.brand!,
+//     color: p.color!,
+//     category: p.category!,
+//     image: p.image!,
+//     description: p.description!,
+//     rating: p.rating,
+//     createdAt: Date.now(),
+//   };
+
+//   let sub;
+
+//   if (this.isEdit && this.editId) {
+//     sub = this.productService.updateProduct(this.editId, finalProduct).subscribe({
+//       next: () => {
+//         this.snackbar.success('Product Updated Successfully');
+//         this.loaderService.hide();
+//         this.router.navigate(['/admin/products']);
+//       },
+//       error: (err) => {
+//         this.loaderService.hide();
+//         this.snackbar.error('Something went wrong');
+//         console.error(err);
+//       },
+//     });
+//   } else {
+//     sub = this.productService.addProduct(finalProduct).subscribe({
+//       next: () => {
+//         this.snackbar.success('Product Added Successfully');
+//         this.loaderService.hide();
+//         this.router.navigate(['/admin/products']);
+//       },
+//       error: (err) => {
+//         this.loaderService.hide();
+//         this.snackbar.error('Something went wrong');
+//         console.error(err);
+//       },
+//     });
+//   }
+
+//   this.destroyRef.onDestroy(() => sub.unsubscribe());
+// }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 
