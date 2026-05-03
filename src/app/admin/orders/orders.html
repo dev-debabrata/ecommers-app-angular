@@ -5,6 +5,14 @@
     <table>
       <thead>
         <tr>
+          <th (click)="toggleSort()">
+            <div class="id-arrow">
+              ID
+              <mat-icon>
+                {{ sortDirection() === 'desc' ? 'arrow_upward' : 'arrow_downward' }}
+              </mat-icon>
+            </div>
+          </th>
           <th>Order ID</th>
           <th>User ID</th>
           <th>Total</th>
@@ -15,11 +23,19 @@
       </thead>
 
       <tbody>
-        @for (order of orders(); track order.id) {
+        @for (order of paginatedOrders(); track order.id; let i = $index) {
           <tr>
+            <td>
+              {{
+                sortDirection() === 'asc'
+                  ? pageIndex() * pageSize() + i + 1
+                  : totalItems() - (pageIndex() * pageSize() + i)
+              }}
+            </td>
+            <!-- <td>{{ i + 1 }}</td> -->
             <td>{{ order.id }}</td>
             <td>{{ order.userEmail }}</td>
-            <td>₹{{ order.total }}</td>
+            <td>₹{{ order.total | number: '1.0-0' }}.00</td>
 
             <td>{{ order.createdAt | date: 'medium' }}</td>
 
@@ -60,5 +76,13 @@
         }
       </tbody>
     </table>
+
+    <mat-paginator
+      [length]="totalItems()"
+      [pageSize]="pageSize()"
+      [pageSizeOptions]="[5, 10, 20]"
+      (page)="onPageChange($event)"
+    >
+    </mat-paginator>
   </div>
 </div>
