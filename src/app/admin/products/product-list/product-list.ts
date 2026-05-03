@@ -27,8 +27,8 @@ export class ProductList implements OnInit {
   sortDirection = signal<'asc' | 'desc'>('desc');
   // sortDirection = signal<'asc' | 'desc'>('asc');
 
-  pageSize = 5;
-  pageIndex = 0;
+  pageSize = signal(5);
+  pageIndex = signal(0);
 
   totalItems = computed(() => this.filteredProducts().length);
 
@@ -104,15 +104,15 @@ export class ProductList implements OnInit {
   });
 
   get paginatedProducts() {
-    const start = this.pageIndex * this.pageSize;
-    const end = start + this.pageSize;
+    const start = this.pageIndex() * this.pageSize();
+    const end = start + this.pageSize();
 
     return this.sortedProducts().slice(start, end);
   }
 
   updateSearch(value: string) {
     this.searchTerm.set(value);
-    this.pageIndex = 0;
+    this.pageIndex.set(0);
   }
 
   toggleSort() {
@@ -120,8 +120,8 @@ export class ProductList implements OnInit {
   }
 
   onPageChange(event: PageEvent) {
-    this.pageIndex = event.pageIndex;
-    this.pageSize = event.pageSize;
+    this.pageIndex.set(event.pageIndex);
+    this.pageSize.set(event.pageSize);
   }
 
   getDiscountPrice(product: Product): number {

@@ -39,4 +39,8 @@ export class CartPage {
 
     this.router.navigate(['/cart/checkout']);
   }
+
+  viewDetails(id: string) {
+    this.router.navigate(['/products', id]);
+  }
 }

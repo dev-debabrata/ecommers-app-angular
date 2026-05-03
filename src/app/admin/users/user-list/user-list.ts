@@ -19,10 +19,12 @@ export class UserList {
   private destroyRef = inject(DestroyRef);
 
   users = signal<any[]>([]);
-  sortDirection = signal<'asc' | 'desc'>('asc');
 
-  pageSize = 10;
-  pageIndex = 0;
+  sortDirection = signal<'asc' | 'desc'>('desc');
+  // sortDirection = signal<'asc' | 'desc'>('asc');
+
+  pageSize = signal(10);
+  pageIndex = signal(0);
 
   ngOnInit() {
     this.loaderService.show();
@@ -65,8 +67,8 @@ export class UserList {
   });
 
   paginatedUsers = computed(() => {
-    const start = this.pageIndex * this.pageSize;
-    const end = start + this.pageSize;
+    const start = this.pageIndex() * this.pageSize();
+    const end = start + this.pageSize();
 
     return this.sortedUsers().slice(start, end);
   });
@@ -74,8 +76,8 @@ export class UserList {
   totalItems = computed(() => this.users().length);
 
   onPageChange(event: PageEvent) {
-    this.pageIndex = event.pageIndex;
-    this.pageSize = event.pageSize;
+    this.pageIndex.set(event.pageIndex);
+    this.pageSize.set(event.pageSize);
   }
 
   deleteUser(id: string) {

@@ -1,18 +1,20 @@
 import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
-import { OrderService } from '../../services/order-service';
 import { CommonModule } from '@angular/common';
-import { LoaderService } from '../../services/loader-service';
+import { RouterLink } from '@angular/router';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatIcon } from '@angular/material/icon';
 
+import { OrderService } from '../../../services/order-service';
+import { LoaderService } from '../../../services/loader-service';
+
 @Component({
-  selector: 'app-orders',
+  selector: 'app-order-list',
   standalone: true,
-  imports: [CommonModule, MatIcon, MatPaginatorModule],
-  templateUrl: './orders.html',
-  styleUrl: './orders.css',
+  imports: [CommonModule, RouterLink, MatIcon, MatPaginatorModule],
+  templateUrl: './order-list.html',
+  styleUrl: './order-list.css',
 })
-export class Orders {
+export class OrderList {
   private orderService = inject(OrderService);
   private loaderService = inject(LoaderService);
   private destroyRef = inject(DestroyRef);

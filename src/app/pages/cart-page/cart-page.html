@@ -11,7 +11,7 @@
 
       <div class="cart-items">
         @for (item of cart(); track item.id) {
-          <div class="cart-item">
+          <div (click)="viewDetails(item.id!)" class="cart-item">
             <!-- IMAGE -->
             <div class="cart-image">
               <img [src]="item.image" [alt]="item.name" />

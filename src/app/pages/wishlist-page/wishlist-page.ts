@@ -7,6 +7,7 @@ import { CartService } from '../../services/cart-service';
 import { Rating } from '../../utils/rating.util';
 import { Product } from '../../models/products';
 import { SnackbarService } from '../../services/snackbar-service';
+import { ProductService } from '../../services/product-service';
 
 @Component({
   selector: 'app-wishlist-page',
@@ -18,6 +19,7 @@ import { SnackbarService } from '../../services/snackbar-service';
 export class WishlistPage implements OnInit {
   private router = inject(Router);
   private cartService = inject(CartService);
+  private productService = inject(ProductService);
   private wishlistService = inject(WishlistService);
   private snackBar = inject(SnackbarService);
   private destroyRef = inject(DestroyRef);
@@ -45,10 +47,8 @@ export class WishlistPage implements OnInit {
     return Rating;
   }
 
-  getDiscountPrice(product: Product): number {
-    if (!product.discount) return product.price;
-
-    return product.price - (product.price * product.discount) / 100;
+  getDiscountPrice(item: Product): number {
+    return this.productService.getDiscountPrice(item);
   }
 
   addToCart(product: Product, event: Event) {

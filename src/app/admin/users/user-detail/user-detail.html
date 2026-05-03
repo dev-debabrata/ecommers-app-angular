@@ -22,7 +22,23 @@
         <div class="user-detail">
           <h2>User Details</h2>
 
-          @if (user(); as u) {
+          @if (user()) {
+            <div class="card">
+              <h3>Profile Info</h3>
+
+              <p><b>Name:</b> {{ user()?.firstName }} {{ user()?.lastName }}</p>
+              <p><b>Email:</b> {{ user()?.email }}</p>
+
+              <p>
+                <b>Phone:</b>
+                {{ user()?.phoneNumber?.length ? user()?.phoneNumber[0] : 'N/A' }}
+              </p>
+
+              <p><b>Joined:</b> {{ user()?.createdAt?.toDate() | date }}</p>
+            </div>
+          }
+
+          <!-- @if (user(); as u) {
             <div class="card">
               <h3>Profile Info</h3>
 
@@ -36,7 +52,7 @@
 
               <p><b>Joined:</b> {{ u.createdAt?.toDate() | date }}</p>
             </div>
-          }
+          } -->
         </div>
       </div>
     }
@@ -57,6 +73,7 @@
               <th>Date</th>
               <th>Total</th>
               <th>Status</th>
+              <th>Action</th>
             </tr>
           </thead>
 
@@ -66,6 +83,16 @@
               <td>{{ order.createdAt | date }}</td>
               <td>₹{{ order.total | number: '1.0-0' }}.00</td>
               <td>{{ order.status || 'Placed' }}</td>
+
+              <td>
+                <!-- <button [routerLink]="['/admin/orders/:id']">View</button> -->
+                <button
+                  [routerLink]="['/admin/orders', order.id]"
+                  [queryParams]="{ userId: order.userId }"
+                >
+                  View
+                </button>
+              </td>
             </tr>
           }
         </table>

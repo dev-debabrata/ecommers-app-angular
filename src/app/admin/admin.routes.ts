@@ -6,8 +6,8 @@ import { AdminLogin } from './auth/admin-login/admin-login';
 import { adminAuthGuard } from '../guards/admin-auth-guard';
 import { ProductList } from './products/product-list/product-list';
 
-import { Orders } from './orders/orders';
 import { UserList } from './users/user-list/user-list';
+import { OrderList } from './orders/order-list/order-list';
 
 export const adminRoutes: Routes = [
   {
@@ -58,7 +58,15 @@ export const adminRoutes: Routes = [
 
       {
         path: 'orders',
-        component: Orders,
+        // component: Orders,
+        children: [
+          { path: '', component: OrderList },
+          {
+            path: ':id',
+            loadComponent: () =>
+              import('./orders/order-details/order-details').then((m) => m.OrderDetails),
+          },
+        ],
       },
     ],
   },

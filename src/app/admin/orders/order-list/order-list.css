@@ -39,7 +39,7 @@
 }
 
 .orders tbody tr:hover {
-  background: #f9fbfd;
+  background: #eee;
 }
 
 .orders td:nth-child(4) {
@@ -117,7 +117,7 @@
 }
 
 .orders tbody tr:hover {
-  background: #f9fbfd;
+  background: #eee;
 }
 
 th:nth-child(1),
@@ -162,6 +162,10 @@ td:nth-child(1) {
   gap: 1rem;
 }
 
+.status-section select {
+  padding: 4px;
+}
+
 .status.pending {
   color: orange;
 }
@@ -192,4 +196,23 @@ select {
   vertical-align: middle;
   margin-top: 8px;
   margin-left: 4px;
+}
+
+button {
+  border: none;
+  padding: 6px 10px;
+  font-size: 13px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+/* View button */
+button {
+  background: #2563eb;
+  color: white;
+}
+
+button:hover {
+  background: #1d4ed8;
 }

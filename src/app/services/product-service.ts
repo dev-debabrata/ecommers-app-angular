@@ -24,6 +24,12 @@ export class ProductService {
 
   private productsRef = collection(this.firestore, 'products');
 
+  getDiscountPrice(product: Product): number {
+    if (!product.discount) return product.price;
+
+    return product.price - (product.price * product.discount) / 100;
+  }
+
   getProducts(): Observable<Product[]> {
     return collectionData(this.productsRef, {
       idField: 'id',

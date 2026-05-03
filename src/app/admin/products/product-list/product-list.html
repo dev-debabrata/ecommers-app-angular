@@ -49,8 +49,8 @@
             <td>
               {{
                 sortDirection() === 'asc'
-                  ? pageIndex * pageSize + i + 1
-                  : totalItems() - (pageIndex * pageSize + i)
+                  ? pageIndex() * pageSize() + i + 1
+                  : totalItems() - (pageIndex() * pageSize() + i)
               }}
             </td>
             <!-- <td>{{ product.id }}</td> -->

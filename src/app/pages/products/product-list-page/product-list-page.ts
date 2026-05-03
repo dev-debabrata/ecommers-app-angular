@@ -83,10 +83,8 @@ export class ProductListPage implements OnInit {
     });
   }
 
-  getDiscountPrice(product: Product): number {
-    if (!product.discount) return product.price;
-
-    return product.price - (product.price * product.discount) / 100;
+  getDiscountPrice(item: Product): number {
+    return this.productService.getDiscountPrice(item);
   }
 
   getFilteredProducts(): Product[] {

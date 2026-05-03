@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
+import { Product } from '../../../models/products';
+import { ProductService } from '../../../services/product-service';
 
 @Component({
   selector: 'app-order-history',
@@ -11,8 +13,13 @@ import { Router } from '@angular/router';
 })
 export class OrderHistory {
   private router = inject(Router);
+  private productService = inject(ProductService);
 
   orders = input<any[]>([]);
+
+  getDiscountPrice(item: Product): number {
+    return this.productService.getDiscountPrice(item);
+  }
 
   viewProductDetails(productId: string) {
     this.router.navigate(['/products', productId]);
