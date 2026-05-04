@@ -8,6 +8,7 @@ export interface CartItem {
   brand: string;
   stock: number;
   quantity: number;
+  createdAt?: number;
 }
 
 // export interface CartItem {

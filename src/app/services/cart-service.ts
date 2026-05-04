@@ -52,11 +52,13 @@ export class CartService {
     const cartRef = collection(this.firestore, `users/${uid}/cart`);
 
     collectionData(cartRef).subscribe((items: any) => {
-      const updated = items.map((item: any) => ({
-        ...item,
-        quantity: item.quantity ?? 1,
-        discount: item.discount ?? 0,
-      }));
+      const updated = items
+        .map((item: any) => ({
+          ...item,
+          quantity: item.quantity ?? 1,
+          discount: item.discount ?? 0,
+        }))
+        .sort((a: CartItem, b: CartItem) => (b.createdAt ?? 0) - (a.createdAt ?? 0));
 
       this.cart.set(updated);
       //  const current = this.cart();
@@ -88,6 +90,7 @@ export class CartService {
         image: product.image,
         category: product.category,
         stock: product.stock,
+        createdAt: existing.createdAt || Date.now(),
       };
 
       this.cart.update((items) => items.map((i) => (i.id === product.id ? updatedItem : i)));
@@ -107,6 +110,7 @@ export class CartService {
       brand: product.brand,
       stock: product.stock,
       quantity: 1,
+      createdAt: Date.now(),
     };
 
     this.cart.update((items) => [...items, cartItem]);
