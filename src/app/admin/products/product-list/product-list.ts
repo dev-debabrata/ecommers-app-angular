@@ -133,14 +133,29 @@ export class ProductList implements OnInit {
   }
 
   deleteProduct(id: string) {
-    if (!confirm('Are you sure you want to delete this product?')) return;
+    const confirmDelete = confirm('Are you sure you want to delete this product?');
+    if (!confirmDelete) return;
 
-    this.productService.deleteProduct(id).subscribe(() => {
-      this.products.update((products) => products.filter((p) => p.id !== id));
-
-      this.snackBar.success('Product deleted successfully');
+    this.productService.deleteProduct(id).subscribe({
+      next: () => {
+        console.log('Product deleted');
+        this.snackBar.success('Product deleted successfully');
+      },
+      error: (err) => {
+        console.error('Delete failed', err);
+      },
     });
   }
+
+  // deleteProduct(id: string) {
+  //   if (!confirm('Are you sure you want to delete this product?')) return;
+
+  //   this.productService.deleteProduct(id).subscribe(() => {
+  //     this.products.update((products) => products.filter((p) => p.id !== id));
+
+  //     this.snackBar.success('Product deleted successfully');
+  //   });
+  // }
 }
 
 //////////////////////////////////////////
