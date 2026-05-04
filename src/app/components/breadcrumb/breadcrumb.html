@@ -2,7 +2,12 @@
   <div class="breadcrumb-container" aria-label="breadcrumb">
     @for (crumb of breadcrumbs; track $index; let last = $last) {
       @if (!last) {
-        <a [routerLink]="crumb.url" class="breadcrumb-link">{{ crumb.label }}</a>
+        <a
+          [routerLink]="crumb.url"
+          [queryParams]="crumb.queryParams ?? {}"
+          class="breadcrumb-link"
+          >{{ crumb.label }}</a
+        >
       }
       @if (last) {
         <span class="breadcrumb-current">{{ crumb.label }}</span>
@@ -13,3 +18,19 @@
     }
   </div>
 }
+
+<!-- @if (breadcrumbs.length > 0) {
+  <div class="breadcrumb-container" aria-label="breadcrumb">
+    @for (crumb of breadcrumbs; track $index; let last = $last) {
+      @if (!last) {
+        <a [routerLink]="crumb.url" class="breadcrumb-link">{{ crumb.label }}</a>
+      }
+      @if (last) {
+        <span class="breadcrumb-current">{{ crumb.label }}</span>
+      }
+      @if (!last) {
+        <span class="breadcrumb-separator">/</span>
+      }
+    }
+  </div>
+} -->

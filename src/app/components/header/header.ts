@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, inject, Input } from '@angular/core';
+import { Component, DestroyRef, ElementRef, HostListener, inject, Input } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -37,6 +37,14 @@ export class Header {
   private el = inject(ElementRef);
   private snackBar = inject(MatSnackBar);
 
+  private destroyRef = inject(DestroyRef);
+  private onOnline = () => {
+    this.isOnline = true;
+  };
+  private onOffline = () => {
+    this.isOnline = false;
+  };
+
   isOnline = navigator.onLine;
 
   itemCount = this.cartService.itemCount;
@@ -46,7 +54,7 @@ export class Header {
   suggestions: Product[] = [];
   activeIndex = 0;
   showDropdown = false;
-
+  allProducts: Product[] = [];
   showMenu = false;
   openDropdownIndex: number | null = null;
 
@@ -62,16 +70,6 @@ export class Header {
     //   this.suggestions = [];
     //   this.activeIndex = 0;
     // }
-  }
-
-  ngOnInit() {
-    window.addEventListener('online', () => {
-      this.isOnline = true;
-    });
-
-    window.addEventListener('offline', () => {
-      this.isOnline = false;
-    });
   }
 
   get authReady() {
@@ -114,9 +112,23 @@ export class Header {
     this.router.navigate(['/account']);
   }
 
+  ngOnInit() {
+    const sub = this.productService.getProducts().subscribe((products) => {
+      this.allProducts = products;
+    });
+
+    window.addEventListener('online', this.onOnline);
+    window.addEventListener('offline', this.onOffline);
+
+    this.destroyRef.onDestroy(() => {
+      sub.unsubscribe();
+      window.removeEventListener('online', this.onOnline);
+      window.removeEventListener('offline', this.onOffline);
+    });
+  }
+
   onInputChange() {
     this.activeIndex = 0;
-
     const term = this.searchTerm.toLowerCase().trim();
 
     if (!term) {
@@ -126,80 +138,141 @@ export class Header {
     }
 
     this.showDropdown = true;
-
-    this.productService.getProducts().subscribe((products: Product[]) => {
-      this.suggestions = products.filter((p) => p.title.toLowerCase().includes(term)).slice(0, 5);
-    });
-
-    // this.productService.getProducts().subscribe((res: any) => {
-    //   const products = res.products;
-
-    //   this.suggestions = products
-    //     .filter((p: Product) => p.title.toLowerCase().includes(term))
-    //     .slice(0, 5);
-    // });
+    this.suggestions = this.allProducts
+      .filter((p) => p.title.toLowerCase().includes(term))
+      .slice(0, 5);
   }
 
   onKeyDown(event: KeyboardEvent) {
     if (!this.suggestions.length) return;
 
     if (event.key === 'ArrowDown') {
-      this.activeIndex++;
-      if (this.activeIndex >= this.suggestions.length) {
-        this.activeIndex = 0;
-      }
+      this.activeIndex = (this.activeIndex + 1) % this.suggestions.length;
     }
 
     if (event.key === 'ArrowUp') {
-      this.activeIndex--;
-      if (this.activeIndex < 0) {
-        this.activeIndex = 0;
-      }
+      this.activeIndex = this.activeIndex <= 0 ? this.suggestions.length - 1 : this.activeIndex - 1;
     }
 
     if (event.key === 'Enter') {
-      if (this.suggestions.length > 0) {
-        const product = this.suggestions[this.activeIndex];
-        if (product) {
-          this.selectProduct(product);
-          return;
-        }
+      const product = this.suggestions[this.activeIndex];
+      if (product) {
+        this.selectProduct(product);
+      } else {
+        this.searchProduct();
       }
-
-      this.searchProduct();
     }
   }
 
   selectProduct(product: Product) {
-    // this.searchTerm = product.title;
     this.searchTerm = '';
     this.suggestions = [];
-
+    this.showDropdown = false;
     this.router.navigate(['/products', product.id]);
   }
 
   searchProduct() {
     const term = this.searchTerm.toLowerCase().trim();
-
     if (!term) return;
 
-    this.productService.getProducts().subscribe((products: Product[]) => {
-      const match = products.find((p) => p.title.toLowerCase().includes(term));
+    const match = this.allProducts.find((p) => p.title.toLowerCase().includes(term));
 
-      // this.productService.getProducts().subscribe((res: any) => {
-      //   const products = res.products;
-
-      //   const match = products.find((p: Product) => p.title.toLowerCase().includes(term));
-
-      if (match) {
-        this.router.navigate(['/products', match.id]);
-      } else {
-        this.snackBar.open('Product not found', 'Close', {
-          duration: 3000,
-        });
-      }
-    });
+    if (match) {
+      this.searchTerm = '';
+      this.suggestions = [];
+      this.showDropdown = false;
+      this.router.navigate(['/products', match.id]);
+    } else {
+      this.snackBar.open('Product not found', 'Close', { duration: 3000 });
+    }
   }
+
+  // onInputChange() {
+  //   this.activeIndex = 0;
+
+  //   const term = this.searchTerm.toLowerCase().trim();
+
+  //   if (!term) {
+  //     this.suggestions = [];
+  //     this.showDropdown = false;
+  //     return;
+  //   }
+
+  //   this.showDropdown = true;
+
+  //   this.productService.getProducts().subscribe((products: Product[]) => {
+  //     this.suggestions = products.filter((p) => p.title.toLowerCase().includes(term)).slice(0, 5);
+  //   });
+
+  //   // this.productService.getProducts().subscribe((res: any) => {
+  //   //   const products = res.products;
+
+  //   //   this.suggestions = products
+  //   //     .filter((p: Product) => p.title.toLowerCase().includes(term))
+  //   //     .slice(0, 5);
+  //   // });
+  // }
+
+  // onKeyDown(event: KeyboardEvent) {
+  //   if (!this.suggestions.length) return;
+
+  //   if (event.key === 'ArrowDown') {
+  //     this.activeIndex++;
+  //     if (this.activeIndex >= this.suggestions.length) {
+  //       this.activeIndex = 0;
+  //     }
+  //   }
+
+  //   if (event.key === 'ArrowUp') {
+  //     this.activeIndex--;
+  //     if (this.activeIndex < 0) {
+  //       this.activeIndex = 0;
+  //     }
+  //   }
+
+  //   if (event.key === 'Enter') {
+  //     if (this.suggestions.length > 0) {
+  //       const product = this.suggestions[this.activeIndex];
+  //       if (product) {
+  //         this.selectProduct(product);
+  //         return;
+  //       }
+  //     }
+
+  //     this.searchProduct();
+  //   }
+  // }
+
+  // selectProduct(product: Product) {
+  //   // this.searchTerm = product.title;
+  //   this.searchTerm = '';
+  //   this.suggestions = [];
+
+  //   this.router.navigate(['/products', product.id]);
+  // }
+
+  // searchProduct() {
+  //   const term = this.searchTerm.toLowerCase().trim();
+
+  //   if (!term) return;
+
+  //   this.productService.getProducts().subscribe((products: Product[]) => {
+  //     const match = products.find((p) => p.title.toLowerCase().includes(term));
+
+  //     // this.productService.getProducts().subscribe((res: any) => {
+  //     //   const products = res.products;
+
+  //     //   const match = products.find((p: Product) => p.title.toLowerCase().includes(term));
+
+  //     if (match) {
+  //       this.router.navigate(['/products', match.id]);
+  //     } else {
+  //       this.snackBar.open('Product not found', 'Close', {
+  //         duration: 3000,
+  //       });
+  //     }
+  //   });
+  // }
 }
 
 // logout() {

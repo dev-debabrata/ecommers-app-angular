@@ -6,7 +6,7 @@
   <div class="slider-viewport">
     <div
       class="slider-track"
-      [style.transform]="'translateX(-' + currentIndex() * (100 / pageSize) + '%)'"
+      [style.transform]="'translateX(-' + (currentIndex() / pageSize) * 100 + '%)'"
     >
       @for (product of fullProducts(); track product.id) {
         <div class="product-card">
