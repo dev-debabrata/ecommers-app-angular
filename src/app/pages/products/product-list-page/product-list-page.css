@@ -224,8 +224,18 @@ button:hover {
 
 .filters select:focus {
   outline: none;
-  border-color: #111827;
-  box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.1);
+  border-color: #ff9900;
+  box-shadow: 0 0 0 2px rgba(255, 153, 0, 0.2);
+}
+
+.dropdown-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  color: #666;
+  pointer-events: none;
 }
 
 /* .category {
