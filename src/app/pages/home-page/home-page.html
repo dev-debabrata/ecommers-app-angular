@@ -1,132 +1,43 @@
 <app-hero />
 
 <div class="home-container">
-  <section class="home-posts">
+  <section class="product-container">
     <h2 class="section-title">
       More items to consider
       <span class="view-all-posts"><a routerLink="/products">See more items</a></span>
     </h2>
-    <app-home-product />
-    <!-- <app-product-list-page
-      [showCategories]="false"
-      [limit]="8"
-      [showWishlistIcon]="false"
-      [imageOnly]="true"
-    /> -->
-
-    <!-- <div class="view-all-posts">
-      <a routerLink="/products">View All Products</a>
-    </div> -->
+    <app-more-items />
   </section>
 
-  <div class="product-container">
-    <h2 class="section-title">Trending Products</h2>
-    <div class="product-grid">
-      <div class="product-card">
-        <!-- <img src="assets/products/p1.jpg" /> -->
-        <h4>Smart Watch</h4>
-        <p>₹1,999</p>
-        <button>Add to Cart</button>
-      </div>
+  <section class="product-container">
+    <h2 class="section-title">
+      Related to items you've viewed
+      <span class="view-all-posts">
+        <a [routerLink]="['/products']" [queryParams]="{ category: 'phone' }"> See more items </a>
+      </span>
+    </h2>
 
-      <div class="product-card">
-        <!-- <img src="assets/products/p2.jpg" /> -->
-        <h4>Headphones</h4>
-        <p>₹999</p>
-        <button>Add to Cart</button>
-      </div>
-      <div class="product-card">
-        <!-- <img src="assets/products/p2.jpg" /> -->
-        <h4>Headphones</h4>
-        <p>₹999</p>
-        <button>Add to Cart</button>
-      </div>
-      <div class="product-card">
-        <!-- <img src="assets/products/p2.jpg" /> -->
-        <h4>Headphones</h4>
-        <p>₹999</p>
-        <button>Add to Cart</button>
-      </div>
-    </div>
-  </div>
+    <app-phones [category]="'phone'" />
+  </section>
 
-  <div class="product-container">
-    <h2 class="section-title">Discount Products</h2>
-    <div class="product-grid">
-      <div class="product-card discount">
-        <span class="badge">-50%</span>
-        <!-- <img src="assets/products/p4.jpg" /> -->
-        <h4>Mobile Phone</h4>
-        <p>
-          <span class="old-price">₹15,000</span>
-          ₹7,500
-        </p>
-        <button>Add to Cart</button>
-      </div>
-      <div class="product-card discount">
-        <span class="badge">-50%</span>
-        <!-- <img src="assets/products/p4.jpg" /> -->
-        <h4>Mobile Phone</h4>
-        <p>
-          <span class="old-price">₹15,000</span>
-          ₹7,500
-        </p>
-        <button>Add to Cart</button>
-      </div>
-      <div class="product-card discount">
-        <span class="badge">-50%</span>
-        <!-- <img src="assets/products/p4.jpg" /> -->
-        <h4>Mobile Phone</h4>
-        <p>
-          <span class="old-price">₹15,000</span>
-          ₹7,500
-        </p>
-        <button>Add to Cart</button>
-      </div>
-      <div class="product-card discount">
-        <span class="badge">-50%</span>
-        <!-- <img src="assets/products/p4.jpg" /> -->
-        <h4>Mobile Phone</h4>
-        <p>
-          <span class="old-price">₹15,000</span>
-          ₹7,500
-        </p>
-        <button>Add to Cart</button>
-      </div>
-    </div>
-  </div>
+  <section class="product-container">
+    <h2 class="section-title">
+      Up to 80% off | Best offers
+      <span class="view-all-posts">
+        <a [routerLink]="['/products']" [queryParams]="{ discount: 50 }">See more items</a>
+      </span>
+    </h2>
+    <app-discount />
+  </section>
 
-  <div class="product-container">
-    <h2 class="section-title">Today Deals</h2>
-    <div class="product-grid">
-      <div class="product-card deal">
-        <span class="deal-tag">Limited Offer</span>
-        <!-- <img src="assets/products/p6.jpg" /> -->
-        <h4>Smart LED Bulb</h4>
-        <p>₹299</p>
-        <button>Add to Cart</button>
-      </div>
-      <div class="product-card deal">
-        <span class="deal-tag">Limited Offer</span>
-        <!-- <img src="assets/products/p6.jpg" /> -->
-        <h4>Smart LED Bulb</h4>
-        <p>₹299</p>
-        <button>Add to Cart</button>
-      </div>
-      <div class="product-card deal">
-        <span class="deal-tag">Limited Offer</span>
-        <!-- <img src="assets/products/p6.jpg" /> -->
-        <h4>Smart LED Bulb</h4>
-        <p>₹299</p>
-        <button>Add to Cart</button>
-      </div>
-      <div class="product-card deal">
-        <span class="deal-tag">Limited Offer</span>
-        <!-- <img src="assets/products/p6.jpg" /> -->
-        <h4>Smart LED Bulb</h4>
-        <p>₹299</p>
-        <button>Add to Cart</button>
-      </div>
-    </div>
-  </div>
+  <section class="product-container">
+    <h2 class="section-title">
+      Today Deals | Limited offers
+      <span class="view-all-posts">
+        <a routerLink="/products">See more items</a>
+      </span>
+    </h2>
+
+    <app-today-deals />
+  </section>
 </div>

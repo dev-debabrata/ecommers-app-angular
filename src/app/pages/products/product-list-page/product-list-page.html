@@ -7,13 +7,27 @@
 
       <select [(ngModel)]="selectedCategory" (change)="onCategoryChange()">
         @for (cat of categories; track $index) {
+          <option [value]="cat.toLowerCase()">
+            {{ cat === 'all' ? 'All' : cat.charAt(0).toUpperCase() + cat.slice(1) }}
+          </option>
+        }
+      </select>
+    </div>
+  }
+
+  <!-- @if (showCategories) {
+    <div class="filters">
+      <label class="filter-label">Category:</label>
+
+      <select [(ngModel)]="selectedCategory" (change)="onCategoryChange()">
+        @for (cat of categories; track $index) {
           <option [value]="cat">
             {{ cat }}
           </option>
         }
       </select>
     </div>
-  }
+  } -->
 
   <!-- @if (showCategories) {
     <div class="category-list">

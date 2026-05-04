@@ -12,7 +12,7 @@ import {
   docData,
 } from '@angular/fire/firestore';
 
-import { from, Observable } from 'rxjs';
+import { from, map, Observable } from 'rxjs';
 
 import { Product } from '../models/products';
 
@@ -63,23 +63,68 @@ export class ProductService {
     return from(updateDoc(productRef, data));
   }
 
-  // addProduct(product: Product) {
-  //   return addDoc(this.productsRef, {
-  //     ...product,
-  //     createdAt: Date.now(),
-  //   });
-  // }
+  /////////////////////////// Home Product Category Fetch //////////////////////////////////
+  getProductsByCategory(category: string): Observable<Product[]> {
+    return this.getProducts().pipe(
+      map((products) => {
+        const cat = category.toLowerCase().trim();
 
-  // deleteProduct(id: string) {
-  //   const productRef = doc(this.firestore, 'products/' + id);
-  //   return deleteDoc(productRef);
-  // }
+        return products
+          .filter((p) => {
+            if (cat === 'all') return true;
 
-  // updateProduct(id: string, data: Partial<Product>) {
-  //   const productRef = doc(this.firestore, 'products/' + id);
-  //   return updateDoc(productRef, data);
-  // }
+            return p.category?.toLowerCase().trim() === cat;
+          })
+          .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+      }),
+    );
+  }
+
+  getTrendingProducts(): Observable<Product[]> {
+    return this.getProducts().pipe(
+      map((products) =>
+        products.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)).slice(0, 10),
+      ),
+    );
+  }
+
+  getTodayDeals(): Observable<Product[]> {
+    return this.getProducts().pipe(
+      map((products) =>
+        products
+          .filter((p) => (p.discount || 0) > 0)
+          .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)),
+      ),
+    );
+  }
+
+  getDiscountProducts(): Observable<Product[]> {
+    return this.getProducts().pipe(
+      map((products) =>
+        products
+          .filter((p) => (p.discount || 0) >= 50)
+          .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)),
+      ),
+    );
+  }
 }
+
+// addProduct(product: Product) {
+//   return addDoc(this.productsRef, {
+//     ...product,
+//     createdAt: Date.now(),
+//   });
+// }
+
+// deleteProduct(id: string) {
+//   const productRef = doc(this.firestore, 'products/' + id);
+//   return deleteDoc(productRef);
+// }
+
+// updateProduct(id: string, data: Partial<Product>) {
+//   const productRef = doc(this.firestore, 'products/' + id);
+//   return updateDoc(productRef, data);
+// }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 // async getProductById(id: string) {

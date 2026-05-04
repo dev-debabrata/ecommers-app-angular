@@ -1,7 +1,7 @@
 import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatIcon } from '@angular/material/icon';
 
 import { ProductService } from '../../../services/product-service';
@@ -25,6 +25,7 @@ import { SnackbarService } from '../../../services/snackbar-service';
 export class ProductListPage implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private productService = inject(ProductService);
   private wishlistService = inject(WishlistService);
   private destroyRef = inject(DestroyRef);
@@ -36,6 +37,7 @@ export class ProductListPage implements OnInit {
 
   products: Product[] = [];
   errorMsg = false;
+  minDiscount = 0;
 
   searchTerm = '';
   selectedCategory = 'All';
@@ -44,6 +46,18 @@ export class ProductListPage implements OnInit {
   ngOnInit(): void {
     this.loaderService.show();
 
+    const paramSub = this.route.queryParams.subscribe((params) => {
+      const category = params['category'];
+      const discount = params['discount'];
+
+      this.selectedCategory = (category || 'all').toLowerCase().trim();
+      this.minDiscount = discount ? Number(discount) : 0;
+    });
+
+    this.destroyRef.onDestroy(() => {
+      paramSub.unsubscribe();
+    });
+
     const productSub = this.productService.getProducts().subscribe({
       next: (res: Product[]) => {
         const sorted = [...res].sort((a: any, b: any) => (b.createdAt || 0) - (a.createdAt || 0));
@@ -51,17 +65,24 @@ export class ProductListPage implements OnInit {
         this.products = sorted;
 
         if (this.showCategories) {
-          const cats = this.products.map((p) => p.category);
+          const cats = this.products.map((p) => p.category?.toLowerCase().trim()).filter(Boolean);
+
           const uniqueCats = Array.from(new Set(cats));
-          this.categories = ['All', ...uniqueCats];
+
+          this.categories = ['all', ...uniqueCats];
+          // const cats = this.products.map((p) => p.category);
+          // const uniqueCats = Array.from(new Set(cats));
+          // this.categories = ['All', ...uniqueCats];
         }
-        this.loaderService.hide();
+
         console.log(res);
+        this.loaderService.hide();
       },
 
-      error: () => {
+      error: (err) => {
         this.loaderService.hide();
         this.errorMsg = true;
+        console.log(err);
       },
     });
 
@@ -69,6 +90,35 @@ export class ProductListPage implements OnInit {
       productSub.unsubscribe();
     });
   }
+
+  // ngOnInit(): void {
+  //   this.loaderService.show();
+
+  //   const productSub = this.productService.getProducts().subscribe({
+  //     next: (res: Product[]) => {
+  //       const sorted = [...res].sort((a: any, b: any) => (b.createdAt || 0) - (a.createdAt || 0));
+
+  //       this.products = sorted;
+
+  //       if (this.showCategories) {
+  //         const cats = this.products.map((p) => p.category);
+  //         const uniqueCats = Array.from(new Set(cats));
+  //         this.categories = ['All', ...uniqueCats];
+  //       }
+  //       this.loaderService.hide();
+  //       console.log(res);
+  //     },
+
+  //     error: () => {
+  //       this.loaderService.hide();
+  //       this.errorMsg = true;
+  //     },
+  //   });
+
+  //   this.destroyRef.onDestroy(() => {
+  //     productSub.unsubscribe();
+  //   });
+  // }
 
   getDiscountPrice(item: Product): number {
     return this.productService.getDiscountPrice(item);
@@ -81,11 +131,27 @@ export class ProductListPage implements OnInit {
       const matchesSearch = product.title.toLowerCase().includes(search);
 
       const matchesCategory =
-        this.selectedCategory === 'All' || product.category === this.selectedCategory;
+        this.selectedCategory === 'all' ||
+        product.category?.toLowerCase() === this.selectedCategory;
 
-      return matchesSearch && matchesCategory;
+      const matchesDiscount = (product.discount || 0) >= this.minDiscount;
+
+      return matchesSearch && matchesCategory && matchesDiscount;
     });
   }
+
+  // getFilteredProducts(): Product[] {
+  //   const search = this.searchTerm.toLowerCase();
+
+  //   return this.products.filter((product) => {
+  //     const matchesSearch = product.title.toLowerCase().includes(search);
+
+  //     const matchesCategory =
+  //       this.selectedCategory === 'All' || product.category === this.selectedCategory;
+
+  //     return matchesSearch && matchesCategory;
+  //   });
+  // }
 
   isWishlisted(productId: string): boolean {
     return this.authService.isLoggedIn() && this.wishlistService.isInWishlist(productId);
@@ -111,8 +177,19 @@ export class ProductListPage implements OnInit {
   }
 
   onCategoryChange() {
-    this.getFilteredProducts(); // only if you implemented optimized version
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        category: this.selectedCategory,
+        discount: this.minDiscount || null,
+      },
+      queryParamsHandling: 'merge',
+    });
   }
+
+  // onCategoryChange() {
+  //   this.getFilteredProducts();
+  // }
 
   getRating() {
     return Rating;
