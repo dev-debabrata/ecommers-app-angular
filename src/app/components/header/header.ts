@@ -1,4 +1,4 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, Input } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -34,7 +34,7 @@ export class Header {
   private productService = inject(ProductService);
   private cartService = inject(CartService);
   private wishlistService = inject(WishlistService);
-
+  private el = inject(ElementRef);
   private snackBar = inject(MatSnackBar);
 
   isOnline = navigator.onLine;
@@ -45,9 +45,24 @@ export class Header {
   searchTerm = '';
   suggestions: Product[] = [];
   activeIndex = 0;
+  showDropdown = false;
 
   showMenu = false;
   openDropdownIndex: number | null = null;
+
+  @HostListener('document:click', ['$event'])
+  handleOutsideClick(event: Event) {
+    const clickedInside = this.el.nativeElement.contains(event.target);
+
+    if (!clickedInside) {
+      this.showDropdown = false;
+    }
+
+    // if (!clickedInside) {
+    //   this.suggestions = [];
+    //   this.activeIndex = 0;
+    // }
+  }
 
   ngOnInit() {
     window.addEventListener('online', () => {
@@ -94,21 +109,6 @@ export class Header {
     this.router.navigate(['/']);
   }
 
-  // logout() {
-  //   this.authService.removeToken();
-  //   this.wishlistService.clearWishlist();
-  //   this.showMenu = false;
-  //   // this.cartService.clearCart();
-  //   this.snackBar.open('Logged out successfully', 'Close', {
-  //     duration: 3000,
-  //     horizontalPosition: 'center',
-  //     verticalPosition: 'top',
-  //     panelClass: ['snackbar-success'],
-  //   });
-
-  //   this.router.navigate(['/']);
-  // }
-
   viewProfile() {
     this.showMenu = false;
     this.router.navigate(['/account']);
@@ -121,16 +121,23 @@ export class Header {
 
     if (!term) {
       this.suggestions = [];
+      this.showDropdown = false;
       return;
     }
 
-    this.productService.getProducts().subscribe((res: any) => {
-      const products = res.products;
+    this.showDropdown = true;
 
-      this.suggestions = products
-        .filter((p: Product) => p.title.toLowerCase().includes(term))
-        .slice(0, 5);
+    this.productService.getProducts().subscribe((products: Product[]) => {
+      this.suggestions = products.filter((p) => p.title.toLowerCase().includes(term)).slice(0, 5);
     });
+
+    // this.productService.getProducts().subscribe((res: any) => {
+    //   const products = res.products;
+
+    //   this.suggestions = products
+    //     .filter((p: Product) => p.title.toLowerCase().includes(term))
+    //     .slice(0, 5);
+    // });
   }
 
   onKeyDown(event: KeyboardEvent) {
@@ -176,10 +183,13 @@ export class Header {
 
     if (!term) return;
 
-    this.productService.getProducts().subscribe((res: any) => {
-      const products = res.products;
+    this.productService.getProducts().subscribe((products: Product[]) => {
+      const match = products.find((p) => p.title.toLowerCase().includes(term));
 
-      const match = products.find((p: Product) => p.title.toLowerCase().includes(term));
+      // this.productService.getProducts().subscribe((res: any) => {
+      //   const products = res.products;
+
+      //   const match = products.find((p: Product) => p.title.toLowerCase().includes(term));
 
       if (match) {
         this.router.navigate(['/products', match.id]);
@@ -191,6 +201,21 @@ export class Header {
     });
   }
 }
+
+// logout() {
+//   this.authService.removeToken();
+//   this.wishlistService.clearWishlist();
+//   this.showMenu = false;
+//   // this.cartService.clearCart();
+//   this.snackBar.open('Logged out successfully', 'Close', {
+//     duration: 3000,
+//     horizontalPosition: 'center',
+//     verticalPosition: 'top',
+//     panelClass: ['snackbar-success'],
+//   });
+
+//   this.router.navigate(['/']);
+// }
 
 /////////////////////////////////////////////////////////////////////
 

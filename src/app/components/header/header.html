@@ -12,12 +12,33 @@
         [(ngModel)]="searchTerm"
         (input)="onInputChange()"
         (keydown)="onKeyDown($event)"
+        (click)="$event.stopPropagation()"
       />
       <button (click)="searchProduct()">
         <mat-icon class="material-icons-outlined">search</mat-icon>
       </button>
 
-      @if (suggestions.length > 0) {
+      @if (showDropdown) {
+        <div class="search-dropdown" (click)="$event.stopPropagation()">
+          @if (suggestions.length > 0) {
+            @for (item of suggestions; track item.id; let i = $index) {
+              <div
+                class="dropdown-item"
+                (click)="selectProduct(item)"
+                [class.active]="i === activeIndex"
+              >
+                {{ item.title }}
+              </div>
+            }
+          }
+
+          @if (searchTerm.length > 1 && suggestions.length === 0) {
+            <div class="dropdown-item">No results found</div>
+          }
+        </div>
+      }
+
+      <!-- @if (suggestions.length > 0) {
         <div class="search-dropdown">
           @for (item of suggestions; track item.id; let i = $index) {
             <div
@@ -30,6 +51,12 @@
           }
         </div>
       }
+
+      @if (searchTerm && suggestions.length === 0) {
+        <div class="search-dropdown" (click)="$event.stopPropagation()">
+          <div class="dropdown-item">No results found</div>
+        </div>
+      } -->
     </div>
 
     <div class="header-icons">
