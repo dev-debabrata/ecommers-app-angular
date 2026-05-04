@@ -110,6 +110,10 @@ export class ProductListPage implements OnInit {
     this.router.navigate(['/products', id]);
   }
 
+  onCategoryChange() {
+    this.getFilteredProducts(); // only if you implemented optimized version
+  }
+
   getRating() {
     return Rating;
   }

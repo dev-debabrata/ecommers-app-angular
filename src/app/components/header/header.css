@@ -5,17 +5,17 @@
 .top-header {
   width: 100%;
   background: white;
-  border-bottom: 1px solid #eee;
   font-family: Arial, sans-serif;
   padding: 18px 5rem;
-  padding-bottom: 0;
+  padding-bottom: 8px;
 }
 
 .header-top {
   display: flex;
   justify-content: space-between;
+  border-bottom: 1px solid #dee2e6;
   align-items: center;
-  margin-bottom: 1rem;
+  padding-bottom: 10px;
   gap: 20px;
 }
 

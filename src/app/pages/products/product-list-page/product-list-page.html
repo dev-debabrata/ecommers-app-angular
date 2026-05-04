@@ -2,6 +2,20 @@
   <app-error />
 } @else {
   @if (showCategories) {
+    <div class="filters">
+      <label class="filter-label">Category:</label>
+
+      <select [(ngModel)]="selectedCategory" (change)="onCategoryChange()">
+        @for (cat of categories; track $index) {
+          <option [value]="cat">
+            {{ cat }}
+          </option>
+        }
+      </select>
+    </div>
+  }
+
+  <!-- @if (showCategories) {
     <div class="category-list">
       @for (cat of categories; track $index) {
         <div
@@ -13,7 +27,7 @@
         </div>
       }
     </div>
-  }
+  } -->
 
   <div class="product-list">
     @for (product of getFilteredProducts(); track product.id) {
