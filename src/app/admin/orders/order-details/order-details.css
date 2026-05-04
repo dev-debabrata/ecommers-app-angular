@@ -21,7 +21,7 @@
 
 .order-product {
   display: flex;
-  /* align-items: center; */
+  align-items: center;
   gap: 15px;
   margin-top: 15px;
   border: 1px solid #ccc;

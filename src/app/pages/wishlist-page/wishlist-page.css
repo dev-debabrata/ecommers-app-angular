@@ -159,7 +159,7 @@
 
 .wishlist-card-details {
   display: flex;
-  /* align-items: center; */
+  align-items: center;
   /* justify-content: center; */
-  gap: 1rem;
+  gap: 22px;
 }
