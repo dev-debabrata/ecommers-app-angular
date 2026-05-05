@@ -58,7 +58,7 @@ export const routes: Routes = [
 
       {
         path: 'products',
-        data: { breadcrumb: 'Products' },
+        // data: { breadcrumb: 'Products' },
         children: [
           {
             path: '',

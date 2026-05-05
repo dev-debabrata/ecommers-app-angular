@@ -28,7 +28,6 @@ import { WishlistService } from '../../services/wishlist-service';
   styleUrl: './header.css',
 })
 export class Header {
-  @Input() hideBreadcrumb = false;
   private router = inject(Router);
   private authService = inject(AuthService);
   private productService = inject(ProductService);
@@ -44,6 +43,8 @@ export class Header {
   private onOffline = () => {
     this.isOnline = false;
   };
+
+  @Input() hideBreadcrumb = false;
 
   isOnline = navigator.onLine;
 
@@ -139,8 +140,13 @@ export class Header {
 
     this.showDropdown = true;
     this.suggestions = this.allProducts
-      .filter((p) => p.title.toLowerCase().includes(term))
+      .filter((p) => {
+        return p.searchName?.toLowerCase().includes(term) || p.title.toLowerCase().includes(term);
+      })
       .slice(0, 5);
+    // this.suggestions = this.allProducts
+    //   .filter((p) => p.title.toLowerCase().includes(term))
+    //   .slice(0, 5);
   }
 
   onKeyDown(event: KeyboardEvent) {
@@ -175,7 +181,11 @@ export class Header {
     const term = this.searchTerm.toLowerCase().trim();
     if (!term) return;
 
-    const match = this.allProducts.find((p) => p.title.toLowerCase().includes(term));
+    const match = this.allProducts.find((p) => {
+      return p.searchName?.toLowerCase().includes(term) || p.title.toLowerCase().includes(term);
+    });
+
+    // const match = this.allProducts.find((p) => p.title.toLowerCase().includes(term));
 
     if (match) {
       this.searchTerm = '';

@@ -5,15 +5,13 @@
     <div class="filters">
       <label class="filter-label">Category:</label>
 
-      <select [(ngModel)]="selectedCategory" (change)="onCategoryChange()">
-        @for (cat of categories; track $index) {
+      <select [(ngModel)]="selectedCategory" (ngModelChange)="goToSubCategory($event)">
+        @for (cat of getCategories(); track $index) {
           <option [value]="cat.toLowerCase()">
             {{ cat === 'all' ? 'All' : cat.charAt(0).toUpperCase() + cat.slice(1) }}
           </option>
         }
       </select>
-
-      <mat-icon class="dropdown-icon">expand_more</mat-icon>
     </div>
   }
 

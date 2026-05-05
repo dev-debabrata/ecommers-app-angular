@@ -27,7 +27,8 @@
                 (click)="selectProduct(item)"
                 [class.active]="i === activeIndex"
               >
-                {{ item.title }}
+                {{ item.searchName || (item.title | slice: 0 : 40) + '...' }}
+                <!-- {{ item.title }} -->
               </div>
             }
           }
