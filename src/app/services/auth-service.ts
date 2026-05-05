@@ -9,7 +9,7 @@ import {
   User as FirebaseUser,
 } from '@angular/fire/auth';
 
-import { Firestore, doc, getDoc, serverTimestamp, setDoc } from '@angular/fire/firestore';
+import { Firestore, doc, docData, getDoc, serverTimestamp, setDoc } from '@angular/fire/firestore';
 
 import { from, Observable, of, switchMap } from 'rxjs';
 
@@ -84,22 +84,6 @@ export class AuthService {
     return this.isAuthReady() && !!this.auth.currentUser && navigator.onLine;
   }
 
-  // getFullUser(): Observable<User | null> {
-  //   return this.firebaseUser$.pipe(
-  //     switchMap((firebaseUser) => {
-  //       if (!firebaseUser) return of(null);
-
-  //       const userRef = doc(this.firestore, 'users/' + firebaseUser.uid);
-
-  //       return from(
-  //         getDoc(userRef).then((snap) => {
-  //           return snap.exists() ? (snap.data() as User) : null;
-  //         }),
-  //       );
-  //     }),
-  //   );
-  // }
-
   getFullUser(): Observable<User | null> {
     const user = this.auth.currentUser;
 
@@ -109,13 +93,31 @@ export class AuthService {
 
     const userRef = doc(this.firestore, 'users/' + user.uid);
 
-    return from(
-      getDoc(userRef).then((snap) => {
-        return snap.exists() ? (snap.data() as User) : null;
-      }),
-    );
+    return docData(userRef, { idField: 'uid' }) as Observable<User | null>;
+
+    // return from(
+    //   getDoc(userRef).then((snap) => {
+    //     return snap.exists() ? (snap.data() as User) : null;
+    //   }),
+    // );
   }
 }
+
+// getFullUser(): Observable<User | null> {
+//   return this.firebaseUser$.pipe(
+//     switchMap((firebaseUser) => {
+//       if (!firebaseUser) return of(null);
+
+//       const userRef = doc(this.firestore, 'users/' + firebaseUser.uid);
+
+//       return from(
+//         getDoc(userRef).then((snap) => {
+//           return snap.exists() ? (snap.data() as User) : null;
+//         }),
+//       );
+//     }),
+//   );
+// }
 
 //////////////////////////////////////////////////////////////////////////////
 // async signupUser(data: User, password: string) {

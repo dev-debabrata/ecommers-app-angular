@@ -1,5 +1,4 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-
 import {
   Firestore,
   collection,
@@ -8,11 +7,10 @@ import {
   setDoc,
   deleteDoc,
 } from '@angular/fire/firestore';
-
 import { Auth, authState } from '@angular/fire/auth';
+import { from, Observable, of } from 'rxjs';
 
 import { Product } from '../models/products';
-import { from, map, Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -20,7 +18,7 @@ import { from, map, Observable, of } from 'rxjs';
 export class WishlistService {
   private firestore = inject(Firestore);
   private auth = inject(Auth);
-
+  private wishlistSub: any = null;
   private wishlist = signal<Product[]>([]);
 
   itemCount = computed(() => this.wishlist().length);
@@ -40,6 +38,10 @@ export class WishlistService {
   loadWishlist() {
     const uid = this.auth.currentUser?.uid;
     if (!uid) return;
+
+    if (this.wishlistSub) {
+      this.wishlistSub.unsubscribe();
+    }
 
     const wishlistRef = collection(this.firestore, `users/${uid}/wishlist`);
 
@@ -78,7 +80,8 @@ export class WishlistService {
     });
   }
 
-  isInWishlist(id: string): boolean {
+  isInWishlist(id: string | undefined): boolean {
+    if (!id) return false;
     return this.wishlist().some((p) => p.id === id);
   }
 }

@@ -20,18 +20,13 @@ export interface OrderAddress {
 export interface Order {
   id?: string;
   userId: string;
-
+  userEmail?: string;
   items: OrderItem[];
-
   address: OrderAddress;
-
   subTotal: number;
   gst: number;
   total: number;
-
   shippingMethod: string;
-
-  status: 'placed' | 'shipped' | 'delivered';
-
+  status: 'pending' | 'shipped' | 'delivered';
   createdAt: number;
 }

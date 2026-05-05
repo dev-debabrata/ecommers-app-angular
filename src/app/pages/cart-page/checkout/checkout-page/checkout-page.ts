@@ -1,12 +1,6 @@
 import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { CartService } from '../../../../services/cart-service';
@@ -17,6 +11,9 @@ import { LoaderService } from '../../../../services/loader-service';
 import { SnackbarService } from '../../../../services/snackbar-service';
 import { CartItem } from '../../../../models/cart-item';
 import { CheckoutAddress } from '../checkout-address/checkout-address';
+import { Order, OrderAddress } from '../../../../models/order-item';
+
+import { User } from '../../../../models/user';
 
 @Component({
   selector: 'app-checkout-page',
@@ -34,10 +31,10 @@ export class CheckoutPage implements OnInit {
   private loaderService = inject(LoaderService);
   private snackbar = inject(SnackbarService);
 
-  user = signal<any>(null);
-  selectedAddress = signal<any>(null);
+  user = signal<User | null>(null);
+  selectedAddress = signal<OrderAddress | null>(null);
 
-  checkoutForm = signal({
+  checkoutForm = signal<{ shippingMethod: 'free' | 'express' }>({
     shippingMethod: 'free',
   });
 
@@ -47,60 +44,26 @@ export class CheckoutPage implements OnInit {
       return;
     }
 
-    // const item = localStorage.getItem('buyNowItem');
-
-    // if (item) {
-    //   this.buyNowItem = JSON.parse(item);
-    // }
-
-    // if (this.cartService.cart().length === 0 && !this.buyNowItem) {
-    //   this.router.navigate(['/']);
-    //   return;
-    // }
-
     const sub = this.authService.getFullUser().subscribe({
-      next: (user: any) => {
-        if (user) {
-          this.user.set(user);
+      next: (user) => {
+        if (!user) return;
 
-          this.checkoutForm.update((form) => ({
-            ...form,
-            fullName: user.firstName + ' ' + user.lastName,
-            email: user.email,
-            phone: user.phoneNumber?.[0] || '',
-          }));
-        }
+        this.user.set(user);
       },
-      // next: (user: any) => {
-      //   if (user) {
-      //     this.checkoutForm.update((form) => ({
-      //       ...form,
-      //       fullName: user.firstName + ' ' + user.lastName,
-      //       email: user.email,
-      //       phone: user.phoneNumber || '',
-      //     }));
-      //   }
-      // },
-
       error: (err) => {
         console.error('User fetch error:', err);
       },
     });
 
-    this.destroyRef.onDestroy(() => {
-      sub.unsubscribe();
-    });
+    this.destroyRef.onDestroy(() => sub.unsubscribe());
   }
 
-  onAddressSelect(addr: any) {
+  onAddressSelect(addr: OrderAddress) {
     this.selectedAddress.set(addr);
   }
 
   setShippingMethod(method: 'free' | 'express') {
-    this.checkoutForm.update((f) => ({
-      ...f,
-      shippingMethod: method,
-    }));
+    this.checkoutForm.update((f) => ({ ...f, shippingMethod: method }));
   }
 
   getDiscountPrice(item: CartItem): number {
@@ -109,60 +72,244 @@ export class CheckoutPage implements OnInit {
 
   shippingPrice = computed(() => (this.checkoutForm().shippingMethod === 'express' ? 90 : 0));
 
-  subTotal = computed(() => {
-    return this.cartService.totalPrice();
-  });
+  subTotal = computed(() => this.cartService.totalPrice());
 
-  gst = computed(() => this.subTotal() * 0.18);
+  gst = computed(() => Math.round(this.subTotal() * 0.18));
 
   totalPrice = computed(() => this.subTotal() + this.gst() + this.shippingPrice());
 
   submitOrder() {
-    if (!this.selectedAddress()) {
-      this.snackbar.error('Select address first!');
+    const address = this.selectedAddress();
+    const user = this.user();
+
+    if (!address) {
+      this.snackbar.error('Please select a delivery address!');
       return;
     }
 
-    const user = this.user();
     if (!user?.uid) {
-      this.snackbar.error('User not found!');
+      this.snackbar.error('User not found. Please login again!');
       return;
     }
 
     this.loaderService.show();
 
-    const order = {
-      address: this.selectedAddress(),
-      shippingMethod: this.checkoutForm().shippingMethod,
-      items: [...this.cartService.cart()],
-      // items: this.cartService.cart(),
-      total: this.totalPrice(),
-      // date: new Date(),
-      createdAt: Date.now(),
+    const uid = user.uid as string;
+
+    const order: Omit<Order, 'id' | 'status'> = {
+      userId: uid,
       userEmail: user.email,
+      address,
+      shippingMethod: this.checkoutForm().shippingMethod,
+      items: this.cartService.cart().map((item) => ({
+        productId: item.id,
+        title: item.name,
+        image: item.image,
+        price: item.price,
+        quantity: item.quantity,
+      })),
+      subTotal: this.subTotal(),
+      gst: this.gst(),
+      total: this.totalPrice(),
+      createdAt: Date.now(),
     };
 
-    const orderSub = this.orderService.createOrder(user.uid, order).subscribe({
-      next: (res: any) => {
+    const orderSub = this.orderService.createOrder(uid, order as Order).subscribe({
+      next: (res: Order) => {
         this.loaderService.hide();
-
         this.cartService.clearCart();
-        this.snackbar.success('Order placed!');
+        this.snackbar.success('Order placed successfully!');
         this.router.navigate(['/order-success', res.id]);
       },
-
       error: (err) => {
         this.loaderService.hide();
-        this.snackbar.error('Order failed!');
-        console.log(err);
+        this.snackbar.error('Order failed! Please try again.');
+        console.error(err);
       },
     });
 
-    this.destroyRef.onDestroy(() => {
-      orderSub.unsubscribe();
-    });
+    this.destroyRef.onDestroy(() => orderSub.unsubscribe());
   }
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+// import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
+// import { CommonModule } from '@angular/common';
+// import {
+//   FormControl,
+//   FormGroup,
+//   FormsModule,
+//   ReactiveFormsModule,
+//   Validators,
+// } from '@angular/forms';
+// import { Router } from '@angular/router';
+
+// import { CartService } from '../../../../services/cart-service';
+// import { AuthService } from '../../../../services/auth-service';
+// import { TruncatePipe } from '../../../../pipes/truncate-pipe';
+// import { OrderService } from '../../../../services/order-service';
+// import { LoaderService } from '../../../../services/loader-service';
+// import { SnackbarService } from '../../../../services/snackbar-service';
+// import { CartItem } from '../../../../models/cart-item';
+// import { CheckoutAddress } from '../checkout-address/checkout-address';
+// import { Order } from '../../../../models/order-item';
+
+// @Component({
+//   selector: 'app-checkout-page',
+//   standalone: true,
+//   imports: [FormsModule, ReactiveFormsModule, CommonModule, TruncatePipe, CheckoutAddress],
+//   templateUrl: './checkout-page.html',
+//   styleUrl: './checkout-page.css',
+// })
+// export class CheckoutPage implements OnInit {
+//   public cartService = inject(CartService);
+//   private authService = inject(AuthService);
+//   private router = inject(Router);
+//   private orderService = inject(OrderService);
+//   private destroyRef = inject(DestroyRef);
+//   private loaderService = inject(LoaderService);
+//   private snackbar = inject(SnackbarService);
+
+//   user = signal<any>(null);
+//   selectedAddress = signal<any>(null);
+
+//   checkoutForm = signal({
+//     shippingMethod: 'free',
+//   });
+
+//   ngOnInit(): void {
+//     if (this.cartService.cart().length === 0) {
+//       this.router.navigate(['/']);
+//       return;
+//     }
+
+//     // const item = localStorage.getItem('buyNowItem');
+
+//     // if (item) {
+//     //   this.buyNowItem = JSON.parse(item);
+//     // }
+
+//     // if (this.cartService.cart().length === 0 && !this.buyNowItem) {
+//     //   this.router.navigate(['/']);
+//     //   return;
+//     // }
+
+//     const sub = this.authService.getFullUser().subscribe({
+//       next: (user: any) => {
+//         if (user) {
+//           this.user.set(user);
+
+//           this.checkoutForm.update((form) => ({
+//             ...form,
+//             fullName: user.firstName + ' ' + user.lastName,
+//             email: user.email,
+//             phone: user.phoneNumber?.[0] || '',
+//           }));
+//         }
+//       },
+//       // next: (user: any) => {
+//       //   if (user) {
+//       //     this.checkoutForm.update((form) => ({
+//       //       ...form,
+//       //       fullName: user.firstName + ' ' + user.lastName,
+//       //       email: user.email,
+//       //       phone: user.phoneNumber || '',
+//       //     }));
+//       //   }
+//       // },
+
+//       error: (err) => {
+//         console.error('User fetch error:', err);
+//       },
+//     });
+
+//     this.destroyRef.onDestroy(() => {
+//       sub.unsubscribe();
+//     });
+//   }
+
+//   onAddressSelect(addr: any) {
+//     this.selectedAddress.set(addr);
+//   }
+
+//   setShippingMethod(method: 'free' | 'express') {
+//     this.checkoutForm.update((f) => ({
+//       ...f,
+//       shippingMethod: method,
+//     }));
+//   }
+
+//   getDiscountPrice(item: CartItem): number {
+//     return this.cartService.getDiscountPrice(item);
+//   }
+
+//   shippingPrice = computed(() => (this.checkoutForm().shippingMethod === 'express' ? 90 : 0));
+
+//   subTotal = computed(() => {
+//     return this.cartService.totalPrice();
+//   });
+
+//   gst = computed(() => Math.round(this.subTotal() * 0.18));
+
+//   // gst = computed(() => this.subTotal() * 0.18);
+
+//   totalPrice = computed(() => this.subTotal() + this.gst() + this.shippingPrice());
+
+//   submitOrder() {
+//     if (!this.selectedAddress()) {
+//       this.snackbar.error('Select address first!');
+//       return;
+//     }
+
+//     const user = this.user();
+//     if (!user?.uid) {
+//       this.snackbar.error('User not found!');
+//       return;
+//     }
+
+//     this.loaderService.show();
+
+//     const order: Order = {
+//       userEmail: user.email,
+//       userId: user.uid,
+//       address: this.selectedAddress(),
+//       shippingMethod: this.checkoutForm().shippingMethod,
+//       items: this.cartService.cart().map((item) => ({
+//         productId: item.id,
+//         title: item.name,
+//         image: item.image,
+//         price: item.price,
+//         quantity: item.quantity,
+//       })),
+//       subTotal: this.subTotal(),
+//       gst: this.gst(),
+//       total: this.totalPrice(),
+//       status: 'pending',
+//       createdAt: Date.now(),
+//     };
+
+//     const orderSub = this.orderService.createOrder(user.uid, order).subscribe({
+//       next: (res: any) => {
+//         this.loaderService.hide();
+
+//         this.cartService.clearCart();
+//         this.snackbar.success('Order placed!');
+//         this.router.navigate(['/order-success', res.id]);
+//       },
+
+//       error: (err) => {
+//         this.loaderService.hide();
+//         this.snackbar.error('Order failed!');
+//         console.log(err);
+//       },
+//     });
+
+//     this.destroyRef.onDestroy(() => {
+//       orderSub.unsubscribe();
+//     });
+//   }
+// }
 
 // submitted = signal(false);
 // touchedFields = signal<Record<string, boolean>>({});

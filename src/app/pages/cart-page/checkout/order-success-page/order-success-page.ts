@@ -3,6 +3,7 @@ import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../../services/auth-service';
 import { OrderService } from '../../../../services/order-service';
+import { Order } from '../../../../models/order-item';
 
 @Component({
   selector: 'app-order-success-page',
@@ -18,7 +19,7 @@ export class OrderSuccessPage implements OnInit {
   private orderService = inject(OrderService);
   private destroyRef = inject(DestroyRef);
 
-  order: any = null;
+  order: Order | null = null;
 
   errorMsg = false;
 
@@ -36,7 +37,7 @@ export class OrderSuccessPage implements OnInit {
 
             this.order = {
               ...data,
-              date: data.date?.toDate ? data.date.toDate() : data.date,
+              createdAt: data.createdAt ?? null,
             };
           },
 

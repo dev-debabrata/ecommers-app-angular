@@ -6,6 +6,7 @@ import { MatIcon } from '@angular/material/icon';
 
 import { OrderService } from '../../../services/order-service';
 import { LoaderService } from '../../../services/loader-service';
+import { Order } from '../../../models/order-item';
 
 @Component({
   selector: 'app-order-list',
@@ -22,7 +23,7 @@ export class OrderList {
   sortDirection = signal<'asc' | 'desc'>('desc');
   // sortDirection = signal<'asc' | 'desc'>('asc');
 
-  orders = signal<any[]>([]);
+  orders = signal<Order[]>([]);
 
   pageIndex = signal(0);
   pageSize = signal(10);
@@ -31,9 +32,10 @@ export class OrderList {
     this.loaderService.show();
 
     const orderSub = this.orderService.getAllOrders().subscribe({
-      next: (res) => {
-        const sorted = (res || []).sort((a: any, b: any) => b.createdAt - a.createdAt);
-        this.orders.set(sorted);
+      next: (res: Order[]) => {
+        // const sorted = (res || []).sort((a: any, b: any) => b.createdAt - a.createdAt);
+        // this.orders.set(sorted);
+        this.orders.set(res || []);
         this.loaderService.hide();
       },
 
@@ -54,19 +56,16 @@ export class OrderList {
     //   // this.orders.set(res || []);
     // });
   }
+  changeStatus(order: Order, event: Event) {
+    const status = (event.target as HTMLSelectElement).value as Order['status'];
 
-  changeStatus(order: any, event: Event) {
-    const status = (event.target as HTMLSelectElement).value;
-
-    this.orderService
-      .updateOrderStatus(order.userId, order.userOrderId, order.id, status)
-      .subscribe({
-        next: () => {
-          const updated = this.orders().map((o) => (o.id === order.id ? { ...o, status } : o));
-          this.orders.set(updated);
-        },
-        error: (err) => console.log(err),
-      });
+    this.orderService.updateOrderStatus(order.userId, order.id!, order.id!, status).subscribe({
+      next: () => {
+        const updated = this.orders().map((o) => (o.id === order.id ? { ...o, status } : o));
+        this.orders.set(updated);
+      },
+      error: (err) => console.error(err),
+    });
   }
 
   sortedOrders = computed(() => {

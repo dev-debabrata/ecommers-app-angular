@@ -12,6 +12,7 @@ import {
   setDoc,
 } from '@angular/fire/firestore';
 import { Observable, forkJoin, from, map, switchMap } from 'rxjs';
+import { Order } from '../models/order-item';
 
 @Injectable({
   providedIn: 'root',
@@ -19,10 +20,10 @@ import { Observable, forkJoin, from, map, switchMap } from 'rxjs';
 export class OrderService {
   private firestore = inject(Firestore);
 
-  createOrder(userId: string, order: any) {
+  createOrder(userId: string, order: Order): Observable<Order> {
     const orderId = doc(collection(this.firestore, 'orders')).id;
 
-    const fullOrder = {
+    const fullOrder: Order = {
       ...order,
       id: orderId,
       userId,
@@ -39,40 +40,42 @@ export class OrderService {
     );
   }
 
-  getUserOrders(userId: string): Observable<any[]> {
+  getUserOrders(userId: string): Observable<Order[]> {
     const ordersRef = collection(this.firestore, `users/${userId}/orders`);
     const q = query(ordersRef, orderBy('createdAt', 'desc'));
 
-    return collectionData(q, { idField: 'id' }) as Observable<any[]>;
+    return collectionData(q, { idField: 'id' }) as Observable<Order[]>;
   }
 
-  getOrderById(userId: string, orderId: string): Observable<any | null> {
+  getOrderById(userId: string, orderId: string): Observable<Order | null> {
     const orderRef = doc(this.firestore, `users/${userId}/orders/${orderId}`);
 
     return from(getDoc(orderRef)).pipe(
       map((snap) => {
         if (!snap.exists()) return null;
 
-        const data = snap.data();
-
         return {
           id: snap.id,
-          ...data,
-        };
+          ...snap.data(),
+        } as Order;
       }),
     );
   }
 
-  getAllOrders(): Observable<any[]> {
+  getAllOrders(): Observable<Order[]> {
     const ordersRef = collection(this.firestore, 'orders');
     const q = query(ordersRef, orderBy('createdAt', 'desc'));
 
     return collectionData(q, { idField: 'id' }) as Observable<any[]>;
   }
 
-  updateOrderStatus(userId: string, userOrderId: string, globalOrderId: string, status: string) {
+  updateOrderStatus(
+    userId: string,
+    userOrderId: string,
+    globalOrderId: string,
+    status: Order['status'],
+  ) {
     const userOrderRef = doc(this.firestore, `users/${userId}/orders/${userOrderId}`);
-
     const globalOrderRef = doc(this.firestore, `orders/${globalOrderId}`);
 
     return forkJoin([
