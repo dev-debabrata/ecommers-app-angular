@@ -22,12 +22,12 @@
 
       <h3>Products</h3>
 
-      @for (item of order.items; track item.id) {
-        <div class="order-product" (click)="viewProductDetails(item.id)">
-          <img [src]="item.image || item.images?.[0] || item.thumbnail" />
+      @for (item of order.items; track item.productId) {
+        <div class="order-product" (click)="viewProductDetails(item.productId)">
+          <img [src]="item.image" />
 
           <div>
-            <h4>{{ item.title || item.name }}</h4>
+            <h4>{{ item.title }}</h4>
             <p>Qty: {{ item.quantity }}</p>
 
             <div class="price-box">

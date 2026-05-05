@@ -19,7 +19,6 @@ export class AddressBook {
   private snackBar = inject(SnackbarService);
 
   user = input<User | null>();
-
   showAddressPopup = signal(false);
   editAddressIndex = signal<number | null>(null);
 
@@ -97,7 +96,7 @@ export class AddressBook {
       email: addr.email.trim(),
       phone: addr.phone.trim(),
       address: addr.address.trim(),
-      landmark: addr.landmark?.trim(),
+      landmark: addr.landmark?.trim() || '',
       city: addr.city.trim(),
       state: addr.state.trim(),
       pinCode: addr.pinCode.trim(),
@@ -109,16 +108,8 @@ export class AddressBook {
       addresses.unshift(cleanAddress);
     }
 
-    // if (this.editAddressIndex() !== null) {
-    //   addresses[this.editAddressIndex()!] = cleanAddress;
-    // } else {
-    //   addresses.push(cleanAddress);
-    // }
-
     this.userService.updateUserAddress(currentUser.uid, { addresses }).subscribe({
       next: () => {
-        currentUser.addresses = addresses;
-
         this.snackBar.success(
           this.editAddressIndex() !== null
             ? 'Address updated successfully'
@@ -146,7 +137,6 @@ export class AddressBook {
 
     this.userService.deleteUserAddress(currentUser.uid, addresses).subscribe({
       next: () => {
-        currentUser.addresses = addresses;
         this.snackBar.success('Address deleted successfully');
       },
       error: () => {

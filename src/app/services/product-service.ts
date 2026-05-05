@@ -23,7 +23,8 @@ export class ProductService {
 
   private productsRef = collection(this.firestore, 'products');
 
-  getDiscountPrice(product: Product): number {
+  // getDiscountPrice(product: Product): number {
+  getDiscountPrice(product: { price: number; discount?: number }): number {
     if (!product.discount) return product.price;
 
     return product.price - (product.price * product.discount) / 100;

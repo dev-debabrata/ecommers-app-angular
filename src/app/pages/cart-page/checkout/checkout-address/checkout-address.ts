@@ -1,10 +1,20 @@
-import { Component, inject, input, output, signal, effect, computed } from '@angular/core';
-import { AddressUser, User } from '../../../../models/user';
-import { MatIconModule } from '@angular/material/icon';
+import {
+  Component,
+  inject,
+  input,
+  output,
+  signal,
+  effect,
+  computed,
+  DestroyRef,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
+
+import { AddressUser, User } from '../../../../models/user';
 import { UserService } from '../../../../services/user-service';
 import { SnackbarService } from '../../../../services/snackbar-service';
-import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-checkout-address',
@@ -16,6 +26,7 @@ import { FormsModule } from '@angular/forms';
 export class CheckoutAddress {
   private userService = inject(UserService);
   private snackbar = inject(SnackbarService);
+  private destroyRef = inject(DestroyRef);
 
   user = input<User | null>();
   addressSelected = output<AddressUser>();
@@ -41,8 +52,11 @@ export class CheckoutAddress {
       const u = this.user();
       if (!u?.uid) return;
 
-      this.userService.getUserById(u.uid).subscribe((user) => {
+      const userSub = this.userService.getUserById(u.uid).subscribe((user) => {
         this.userData.set(user);
+      });
+      this.destroyRef.onDestroy(() => {
+        userSub.unsubscribe();
       });
     });
 
@@ -161,7 +175,7 @@ export class CheckoutAddress {
 
       addresses[index] = {
         ...addresses[index],
-        ...base, // update fields
+        ...base,
       };
     } else {
       const addr: any = {
