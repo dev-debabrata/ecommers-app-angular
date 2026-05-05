@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
@@ -6,6 +6,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { AuthService } from '../../services/auth-service';
 import { User } from '../../models/user';
+import { Category } from '../../models/products';
 
 interface MenuItem {
   name: string;
@@ -24,7 +25,7 @@ interface MenuSection {
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
 })
-export class Navbar {
+export class Navbar implements OnInit {
   private router = inject(Router);
   private authService = inject(AuthService);
   private snackBar = inject(MatSnackBar);
@@ -36,32 +37,69 @@ export class Navbar {
   isMenuOpen = false;
   isDropdownOpen = false;
 
-  selectedCategory = '';
+  selectedCategory: Category | null = null;
+
+  // selectedCategory = '';
 
   dropdownLeft = 0;
   dropdownTop = 0;
 
-  categories: string[] = [
-    'Fashion',
-    'Electronics',
-    'Bags',
-    'Footwear',
-    'Groceries',
-    'Beauty',
-    'Wellness',
-    'Jewellery',
+  categories: Category[] = [
+    {
+      name: 'Electronics',
+      subcategories: ['Mobiles', 'Laptops', 'Headphones', 'Smart Watches'],
+    },
+    {
+      name: 'Fashion',
+      subcategories: ["Men's Fashion", "Women's Fashion"],
+    },
+    {
+      name: 'Bags',
+      subcategories: ['Backpacks', 'Travel Bags'],
+    },
+    {
+      name: 'Footwear',
+      subcategories: ['Sneakers', 'Sandals'],
+    },
+    {
+      name: 'Groceries',
+      subcategories: ['Rice', 'Oil', 'Snacks'],
+    },
+    {
+      name: 'Beauty',
+      subcategories: ['Makeup', 'Skincare'],
+    },
+    {
+      name: 'Wellness',
+      subcategories: ['Supplements', 'Yoga'],
+    },
+    {
+      name: 'Jewellery',
+      subcategories: ['Gold', 'Silver', 'Rings'],
+    },
   ];
 
-  categoryProducts: any = {
-    Fashion: ['Shirts', 'Jeans', 'Shoes'],
-    Electronics: ['Mobiles', 'Laptops', 'Headphones'],
-    Bags: ['Backpacks', 'Travel Bags'],
-    Footwear: ['Sneakers', 'Sandals'],
-    Groceries: ['Rice', 'Oil', 'Snacks'],
-    Beauty: ['Makeup', 'Skincare'],
-    Wellness: ['Supplements', 'Yoga'],
-    Jewellery: ['Gold', 'Silver', 'Rings'],
-  };
+  // categories: string[] = [
+  //   'Fashion',
+  //   'Electronics',
+  //   'Bags',
+  //   'Footwear',
+  //   'Groceries',
+  //   'Beauty',
+  //   'Wellness',
+  //   'Jewellery',
+  // ];
+
+  // categoryProducts: any = {
+  //   Fashion: ['Shirts', 'Jeans', 'Shoes'],
+  //   Electronics: ['Mobiles', 'Laptops', 'Headphones'],
+  //   Bags: ['Backpacks', 'Travel Bags'],
+  //   Footwear: ['Sneakers', 'Sandals'],
+  //   Groceries: ['Rice', 'Oil', 'Snacks'],
+  //   Beauty: ['Makeup', 'Skincare'],
+  //   Wellness: ['Supplements', 'Yoga'],
+  //   Jewellery: ['Gold', 'Silver', 'Rings'],
+  // };
 
   get authReady() {
     return this.authService.isAuthReady();
@@ -119,7 +157,7 @@ export class Navbar {
     this.isSidebarOpen = false;
   }
 
-  openDropdown(category: string, event: MouseEvent) {
+  openDropdown(category: Category, event: MouseEvent) {
     this.selectedCategory = category;
     this.isDropdownOpen = true;
 
@@ -130,12 +168,30 @@ export class Navbar {
     this.dropdownTop = rect.bottom;
   }
 
-  // closeDropdown() {
-  //   this.isDropdownOpen = false;
-  // }
+  closeDropdown() {
+    this.isDropdownOpen = false;
+  }
 
-  getProductList() {
-    this.router.navigate(['/products']);
+  goToSubCategory(sub: string) {
+    this.router.navigate(['/products'], {
+      queryParams: {
+        main: this.selectedCategory!.name.toLowerCase().trim(),
+        category: sub.toLowerCase().trim(),
+      },
+    });
+
+    this.closeDropdown();
+  }
+
+  goToMainCategory(cat: string) {
+    this.router.navigate(['/products'], {
+      queryParams: {
+        main: cat.toLowerCase().trim(),
+        category: 'all',
+      },
+    });
+
+    this.closeDropdown();
   }
 
   menu: MenuSection[] = [

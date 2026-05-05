@@ -1,11 +1,13 @@
 export interface Product {
   id: string;
   title: string;
+  searchName?: string;
   price: number;
   stock: number;
   brand: string;
   color: string;
   category: string;
+  subCategory: string;
   image: string;
 
   description: string;
@@ -13,6 +15,11 @@ export interface Product {
   discountPrice?: number;
   rating?: number;
   createdAt?: number;
+}
+
+export interface Category {
+  name: string;
+  subcategories: string[];
 }
 
 export type ProductField =
@@ -23,6 +30,7 @@ export type ProductField =
   | 'brand'
   | 'color'
   | 'category'
+  | 'subCategory'
   | 'image'
   | 'description'
   | 'rating';

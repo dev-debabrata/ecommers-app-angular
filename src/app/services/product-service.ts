@@ -6,7 +6,6 @@ import {
   addDoc,
   collectionData,
   doc,
-  getDoc,
   deleteDoc,
   updateDoc,
   docData,
@@ -73,7 +72,12 @@ export class ProductService {
           .filter((p) => {
             if (cat === 'all') return true;
 
-            return p.category?.toLowerCase().trim() === cat;
+            const matchesMain = p.category?.toLowerCase().trim() === cat;
+            const matchesSub = p.subCategory?.toLowerCase().trim() === cat;
+
+            return matchesMain || matchesSub;
+
+            // return p.category?.toLowerCase().trim() === cat;
           })
           .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
       }),

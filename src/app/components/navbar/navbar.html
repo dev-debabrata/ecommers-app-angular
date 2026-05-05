@@ -56,7 +56,36 @@
     </ul>
   </div>
 
-  <div class="nav-wrapper" (mouseleave)="isDropdownOpen = false">
+  <div class="nav-wrapper" (mouseleave)="closeDropdown()">
+    <ul class="nav-item">
+      @for (cat of categories; track cat.name) {
+        <li
+          class="nav-link"
+          (mouseenter)="openDropdown(cat, $event)"
+          (click)="goToMainCategory(cat.name)"
+        >
+          {{ cat.name }}
+        </li>
+      }
+    </ul>
+
+    <!-- DROPDOWN -->
+    @if (isDropdownOpen && selectedCategory) {
+      <div class="dropdown" [ngStyle]="{ 'left.px': dropdownLeft, 'top.px': dropdownTop }">
+        <h4>{{ selectedCategory.name }}</h4>
+
+        <ul>
+          @for (sub of selectedCategory.subcategories; track sub) {
+            <li (click)="goToSubCategory(sub)">
+              {{ sub }}
+            </li>
+          }
+        </ul>
+      </div>
+    }
+  </div>
+
+  <!-- <div class="nav-wrapper" (mouseleave)="isDropdownOpen = false">
     <ul class="nav-item">
       @for (item of categories; track item) {
         <li class="nav-link" (mouseenter)="openDropdown(item, $event)">
@@ -65,19 +94,19 @@
       }
     </ul>
 
-    <!-- Floating Dropdown -->
+  
     @if (isDropdownOpen) {
       <div class="dropdown" [ngStyle]="{ 'left.px': dropdownLeft, 'top.px': dropdownTop }">
         <h4>{{ selectedCategory }}</h4>
 
         <ul>
-          @for (product of categoryProducts[selectedCategory]; track product) {
+          @for (product of categoryProducts[selectedCategory]; track $index) {
             <li (click)="getProductList()">{{ product }}</li>
           }
         </ul>
       </div>
     }
-  </div>
+  </div> -->
 
   <div class="delivery">🚀 Free International Delivery</div>
 </nav>

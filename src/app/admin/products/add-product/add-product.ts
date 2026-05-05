@@ -38,6 +38,7 @@ export class AddProduct implements OnInit {
     brand: '',
     color: '',
     category: '',
+    subCategory: '',
     image: '',
     description: '',
     rating: 0,
@@ -51,6 +52,7 @@ export class AddProduct implements OnInit {
     brand: false,
     color: false,
     category: false,
+    subCategory: false,
     image: false,
     description: false,
     rating: false,
@@ -140,6 +142,7 @@ export class AddProduct implements OnInit {
       !!p.brand &&
       !!p.color &&
       !!p.category &&
+      !!p.subCategory &&
       !!p.image &&
       !!p.description &&
       (p.rating ?? 0) >= 0 &&
@@ -191,6 +194,7 @@ export class AddProduct implements OnInit {
       brand: p.brand!,
       color: p.color!,
       category: p.category!,
+      subCategory: p.subCategory!,
       image: p.image!,
       description: p.description!,
       rating: p.rating,

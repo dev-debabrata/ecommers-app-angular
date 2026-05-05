@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router';
 import { ProductService } from '../../services/product-service';
-import { filter } from 'rxjs';
+import { filter, switchMap, of, Subscription, startWith } from 'rxjs';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -11,33 +11,96 @@ import { CommonModule } from '@angular/common';
   templateUrl: './breadcrumb.html',
   styleUrl: './breadcrumb.css',
 })
-export class Breadcrumb {
+export class Breadcrumb implements OnDestroy {
   breadcrumbs: {
     label: string;
     url: string;
     queryParams?: Record<string, string>;
   }[] = [];
 
+  private sub: Subscription;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private productService: ProductService,
   ) {
-    this.buildBreadcrumbs();
-    this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe(() => this.buildBreadcrumbs());
+    this.sub = this.router.events
+      .pipe(
+        filter((e) => e instanceof NavigationEnd),
+        startWith(null),
+        switchMap(() => {
+          const base = this.buildBase();
+
+          if (!base.productId) {
+            return of({ base, post: null });
+          }
+
+          return this.productService
+            .getProductById(base.productId)
+            .pipe(switchMap((post) => of({ base, post })));
+        }),
+      )
+      .subscribe(({ base, post }) => {
+        this.breadcrumbs = [...base.staticCrumbs];
+
+        if (post) {
+          const mainCat = post.category?.toLowerCase().trim();
+          if (mainCat) {
+            this.breadcrumbs.push({
+              label: this.toLabel(mainCat),
+              url: '/products',
+              queryParams: { main: mainCat, category: 'all' },
+            });
+          }
+
+          const subCat = post.subCategory?.toLowerCase().trim();
+          if (subCat) {
+            this.breadcrumbs.push({
+              label: this.toLabel(subCat),
+              url: '/products',
+              queryParams: { main: mainCat, category: subCat },
+            });
+          }
+
+          const shortTitle = post.title.length > 25 ? post.title.slice(0, 25) + '...' : post.title;
+
+          this.breadcrumbs.push({
+            label: shortTitle,
+            url: `/products/${base.productId}`,
+          });
+        } else {
+          const { main, sub } = base;
+
+          if (main && main !== 'all') {
+            this.breadcrumbs.push({
+              label: this.toLabel(main),
+              url: '/products',
+              queryParams: { main },
+            });
+          }
+
+          if (sub && sub !== 'all') {
+            this.breadcrumbs.push({
+              label: this.toLabel(sub),
+              url: '/products',
+              queryParams: { main: main ?? undefined, category: sub },
+            });
+          }
+        }
+      });
   }
 
-  private buildBreadcrumbs() {
-    const currentUrl = this.router.url;
-
-    if (currentUrl === '/') {
-      this.breadcrumbs = [];
-      return;
+  private buildBase() {
+    if (this.router.url === '/' || this.router.url === '') {
+      return { staticCrumbs: [], productId: null, main: null, sub: null };
     }
 
-    this.breadcrumbs = [{ label: 'Home', url: '/' }];
+    const staticCrumbs: {
+      label: string;
+      url: string;
+      queryParams?: Record<string, string>;
+    }[] = [{ label: 'Home', url: '/' }];
 
     let currentRoute = this.route.root;
     let url = '';
@@ -53,70 +116,151 @@ export class Breadcrumb {
       if (
         staticLabel &&
         staticLabel !== 'Home' &&
-        !this.breadcrumbs.some((b) => b.label === staticLabel)
+        !staticCrumbs.some((b) => b.label === staticLabel)
       ) {
-        this.breadcrumbs.push({ label: staticLabel, url });
+        staticCrumbs.push({ label: staticLabel, url });
       }
     }
 
     let deepest = this.route.snapshot;
     while (deepest.firstChild) deepest = deepest.firstChild;
 
-    const productId = deepest.params['id'];
-    const isProductPage = !!productId;
+    const productId = deepest.params['id'] ?? null;
+    const queryParams = deepest.queryParams;
+    const main = queryParams['main']?.toLowerCase().trim() ?? null;
+    const sub = queryParams['category']?.toLowerCase().trim() ?? null;
 
-    const queryParams = this.route.snapshot.queryParams;
-
-    if (!isProductPage && queryParams['category']) {
-      const category = queryParams['category'].toLowerCase().trim();
-      const label = this.toLabel(category);
-
-      this.breadcrumbs.push({
-        label,
-        url: '/products',
-        queryParams: { category },
-      });
-    }
-
-    if (isProductPage) {
-      const productUrl = `/products/${productId}`;
-
-      this.productService.getProductById(productId).subscribe((post) => {
-        if (!post) return;
-
-        const category = post.category?.toLowerCase().trim();
-
-        if (category) {
-          const label = this.toLabel(category);
-
-          this.breadcrumbs = this.breadcrumbs.filter(
-            (b) => b.label.toLowerCase() !== label.toLowerCase(),
-          );
-
-          this.breadcrumbs.splice(2, 0, {
-            label,
-            url: '/products',
-            queryParams: { category },
-          });
-        }
-
-        const shortTitle = post.title.length > 25 ? post.title.slice(0, 25) + '...' : post.title;
-
-        this.breadcrumbs = this.breadcrumbs.filter((b) => b.label !== shortTitle);
-
-        this.breadcrumbs.push({
-          label: shortTitle,
-          url: productUrl,
-        });
-      });
-    }
+    return { staticCrumbs, productId, main, sub };
   }
 
-  private toLabel(category: string): string {
-    if (category === 'all') return 'All';
-    return category.charAt(0).toUpperCase() + category.slice(1);
+  private toLabel(s: string): string {
+    return s === 'all' ? 'All' : s.charAt(0).toUpperCase() + s.slice(1);
+  }
+
+  ngOnDestroy() {
+    this.sub.unsubscribe();
   }
 }
+
+// import { Component } from '@angular/core';
+// import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router';
+// import { ProductService } from '../../services/product-service';
+// import { filter } from 'rxjs';
+// import { CommonModule } from '@angular/common';
+
+// @Component({
+//   selector: 'app-breadcrumb',
+//   standalone: true,
+//   imports: [CommonModule, RouterLink],
+//   templateUrl: './breadcrumb.html',
+//   styleUrl: './breadcrumb.css',
+// })
+// export class Breadcrumb {
+//   breadcrumbs: {
+//     label: string;
+//     url: string;
+//     queryParams?: Record<string, string>;
+//   }[] = [];
+
+//   constructor(
+//     private router: Router,
+//     private route: ActivatedRoute,
+//     private productService: ProductService,
+//   ) {
+//     this.buildBreadcrumbs();
+//     this.router.events
+//       .pipe(filter((event) => event instanceof NavigationEnd))
+//       .subscribe(() => this.buildBreadcrumbs());
+//   }
+
+//   private buildBreadcrumbs() {
+//     const currentUrl = this.router.url;
+
+//     if (currentUrl === '/') {
+//       this.breadcrumbs = [];
+//       return;
+//     }
+
+//     this.breadcrumbs = [{ label: 'Home', url: '/' }];
+
+//     let currentRoute = this.route.root;
+//     let url = '';
+
+//     while (currentRoute.firstChild) {
+//       currentRoute = currentRoute.firstChild;
+//       const routeURL = currentRoute.snapshot.url.map((s) => s.path).join('/');
+//       if (!routeURL) continue;
+
+//       url += `/${routeURL}`;
+//       const staticLabel = currentRoute.snapshot.data['breadcrumb'];
+
+//       if (
+//         staticLabel &&
+//         staticLabel !== 'Home' &&
+//         !this.breadcrumbs.some((b) => b.label === staticLabel)
+//       ) {
+//         this.breadcrumbs.push({ label: staticLabel, url });
+//       }
+//     }
+
+//     let deepest = this.route.snapshot;
+//     while (deepest.firstChild) deepest = deepest.firstChild;
+
+//     const productId = deepest.params['id'];
+//     const isProductPage = !!productId;
+
+//     const queryParams = this.route.snapshot.queryParams;
+
+//     if (!isProductPage && queryParams['category']) {
+//       const category = queryParams['category'].toLowerCase().trim();
+//       const label = this.toLabel(category);
+
+//       this.breadcrumbs.push({
+//         label,
+//         url: '/products',
+//         queryParams: { category },
+//       });
+//     }
+
+//     if (isProductPage) {
+//       const productUrl = `/products/${productId}`;
+
+//       this.productService.getProductById(productId).subscribe((post) => {
+//         if (!post) return;
+
+//         const category = post.category?.toLowerCase().trim();
+
+//         if (category) {
+//           const label = this.toLabel(category);
+
+//           this.breadcrumbs = this.breadcrumbs.filter(
+//             (b) => b.label.toLowerCase() !== label.toLowerCase(),
+//           );
+
+//           this.breadcrumbs.splice(2, 0, {
+//             label,
+//             url: '/products',
+//             queryParams: { category },
+//           });
+//         }
+
+//         const shortTitle = post.title.length > 25 ? post.title.slice(0, 25) + '...' : post.title;
+
+//         this.breadcrumbs = this.breadcrumbs.filter((b) => b.label !== shortTitle);
+
+//         this.breadcrumbs.push({
+//           label: shortTitle,
+//           url: productUrl,
+//         });
+//       });
+//     }
+//   }
+
+//   private toLabel(category: string): string {
+//     if (category === 'all') return 'All';
+//     return category.charAt(0).toUpperCase() + category.slice(1);
+//   }
+// }
 
 // import { Component } from '@angular/core';
 // import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router';
