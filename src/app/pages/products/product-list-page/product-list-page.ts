@@ -160,179 +160,183 @@ export class ProductListPage implements OnInit {
   getRating() {
     return Rating;
   }
-
-  // private authService = inject(AuthService);
-  // private router = inject(Router);
-  // private route = inject(ActivatedRoute);
-  // private productService = inject(ProductService);
-  // private wishlistService = inject(WishlistService);
-  // private destroyRef = inject(DestroyRef);
-  // private loaderService = inject(LoaderService);
-  // private snackBar = inject(SnackbarService);
-
-  // @Input() showCategories = true;
-  // @Input() showWishlistIcon = true;
-
-  // products: Product[] = [];
-  // errorMsg = false;
-  // minDiscount = 0;
-
-  // searchTerm = '';
-  // selectedCategory = 'All';
-  // categories: string[] = [];
-
-  // ngOnInit(): void {
-  //   this.loaderService.show();
-
-  //   const paramSub = this.route.queryParams.subscribe((params) => {
-  //     const category = params['category'];
-  //     const discount = params['discount'];
-
-  //     this.selectedCategory = (category || 'all').toLowerCase().trim();
-  //     this.minDiscount = discount ? Number(discount) : 0;
-  //   });
-
-  //   this.destroyRef.onDestroy(() => {
-  //     paramSub.unsubscribe();
-  //   });
-
-  //   const productSub = this.productService.getProducts().subscribe({
-  //     next: (res: Product[]) => {
-  //       const sorted = [...res].sort((a: any, b: any) => (b.createdAt || 0) - (a.createdAt || 0));
-
-  //       this.products = sorted;
-
-  //       if (this.showCategories) {
-  //         const cats = this.products.map((p) => p.category?.toLowerCase().trim()).filter(Boolean);
-
-  //         const uniqueCats = Array.from(new Set(cats));
-
-  //         this.categories = ['all', ...uniqueCats];
-  //         // const cats = this.products.map((p) => p.category);
-  //         // const uniqueCats = Array.from(new Set(cats));
-  //         // this.categories = ['All', ...uniqueCats];
-  //       }
-
-  //       console.log(res);
-  //       this.loaderService.hide();
-  //     },
-
-  //     error: (err) => {
-  //       this.loaderService.hide();
-  //       this.errorMsg = true;
-  //       console.log(err);
-  //     },
-  //   });
-
-  //   this.destroyRef.onDestroy(() => {
-  //     productSub.unsubscribe();
-  //   });
-  // }
-
-  // // ngOnInit(): void {
-  // //   this.loaderService.show();
-
-  // //   const productSub = this.productService.getProducts().subscribe({
-  // //     next: (res: Product[]) => {
-  // //       const sorted = [...res].sort((a: any, b: any) => (b.createdAt || 0) - (a.createdAt || 0));
-
-  // //       this.products = sorted;
-
-  // //       if (this.showCategories) {
-  // //         const cats = this.products.map((p) => p.category);
-  // //         const uniqueCats = Array.from(new Set(cats));
-  // //         this.categories = ['All', ...uniqueCats];
-  // //       }
-  // //       this.loaderService.hide();
-  // //       console.log(res);
-  // //     },
-
-  // //     error: () => {
-  // //       this.loaderService.hide();
-  // //       this.errorMsg = true;
-  // //     },
-  // //   });
-
-  // //   this.destroyRef.onDestroy(() => {
-  // //     productSub.unsubscribe();
-  // //   });
-  // // }
-
-  // getDiscountPrice(item: Product): number {
-  //   return this.productService.getDiscountPrice(item);
-  // }
-
-  // getFilteredProducts(): Product[] {
-  //   const search = this.searchTerm.toLowerCase();
-
-  //   return this.products.filter((product) => {
-  //     const matchesSearch = product.title.toLowerCase().includes(search);
-
-  //     const matchesCategory =
-  //       this.selectedCategory === 'all' ||
-  //       product.category?.toLowerCase() === this.selectedCategory;
-
-  //     const matchesDiscount = (product.discount || 0) >= this.minDiscount;
-
-  //     return matchesSearch && matchesCategory && matchesDiscount;
-  //   });
-  // }
-
-  // // getFilteredProducts(): Product[] {
-  // //   const search = this.searchTerm.toLowerCase();
-
-  // //   return this.products.filter((product) => {
-  // //     const matchesSearch = product.title.toLowerCase().includes(search);
-
-  // //     const matchesCategory =
-  // //       this.selectedCategory === 'All' || product.category === this.selectedCategory;
-
-  // //     return matchesSearch && matchesCategory;
-  // //   });
-  // // }
-
-  // isWishlisted(productId: string): boolean {
-  //   return this.authService.isLoggedIn() && this.wishlistService.isInWishlist(productId);
-  // }
-
-  // addToWishlist(product: Product) {
-  //   if (!this.authService.isLoggedIn()) {
-  //     this.router.navigate(['/login']);
-  //     return;
-  //   }
-
-  //   if (this.wishlistService.isInWishlist(product.id!)) {
-  //     this.wishlistService.removeFromWishlist(product.id!);
-  //     this.snackBar.error('Removed from wishlist');
-  //   } else {
-  //     this.wishlistService.addToWishlist(product);
-  //     this.snackBar.success('Added to wishlist');
-  //   }
-  // }
-
-  // viewDetails(id: string) {
-  //   this.router.navigate(['/products', id]);
-  // }
-
-  // onCategoryChange() {
-  //   this.router.navigate([], {
-  //     relativeTo: this.route,
-  //     queryParams: {
-  //       category: this.selectedCategory,
-  //       discount: this.minDiscount || null,
-  //     },
-  //     queryParamsHandling: 'merge',
-  //   });
-  // }
-
-  // // onCategoryChange() {
-  // //   this.getFilteredProducts();
-  // // }
-
-  // getRating() {
-  //   return Rating;
-  // }
 }
+/////////////////////////////////////////////////////////////////////////////
+// other version
+
+// private authService = inject(AuthService);
+// private router = inject(Router);
+// private route = inject(ActivatedRoute);
+// private productService = inject(ProductService);
+// private wishlistService = inject(WishlistService);
+// private destroyRef = inject(DestroyRef);
+// private loaderService = inject(LoaderService);
+// private snackBar = inject(SnackbarService);
+
+// @Input() showCategories = true;
+// @Input() showWishlistIcon = true;
+
+// products: Product[] = [];
+// errorMsg = false;
+// minDiscount = 0;
+
+// searchTerm = '';
+// selectedCategory = 'All';
+// categories: string[] = [];
+
+// ngOnInit(): void {
+//   this.loaderService.show();
+
+//   const paramSub = this.route.queryParams.subscribe((params) => {
+//     const category = params['category'];
+//     const discount = params['discount'];
+
+//     this.selectedCategory = (category || 'all').toLowerCase().trim();
+//     this.minDiscount = discount ? Number(discount) : 0;
+//   });
+
+//   this.destroyRef.onDestroy(() => {
+//     paramSub.unsubscribe();
+//   });
+
+//   const productSub = this.productService.getProducts().subscribe({
+//     next: (res: Product[]) => {
+//       const sorted = [...res].sort((a: any, b: any) => (b.createdAt || 0) - (a.createdAt || 0));
+
+//       this.products = sorted;
+
+//       if (this.showCategories) {
+//         const cats = this.products.map((p) => p.category?.toLowerCase().trim()).filter(Boolean);
+
+//         const uniqueCats = Array.from(new Set(cats));
+
+//         this.categories = ['all', ...uniqueCats];
+//         // const cats = this.products.map((p) => p.category);
+//         // const uniqueCats = Array.from(new Set(cats));
+//         // this.categories = ['All', ...uniqueCats];
+//       }
+
+//       console.log(res);
+//       this.loaderService.hide();
+//     },
+
+//     error: (err) => {
+//       this.loaderService.hide();
+//       this.errorMsg = true;
+//       console.log(err);
+//     },
+//   });
+
+//   this.destroyRef.onDestroy(() => {
+//     productSub.unsubscribe();
+//   });
+// }
+
+// // ngOnInit(): void {
+// //   this.loaderService.show();
+
+// //   const productSub = this.productService.getProducts().subscribe({
+// //     next: (res: Product[]) => {
+// //       const sorted = [...res].sort((a: any, b: any) => (b.createdAt || 0) - (a.createdAt || 0));
+
+// //       this.products = sorted;
+
+// //       if (this.showCategories) {
+// //         const cats = this.products.map((p) => p.category);
+// //         const uniqueCats = Array.from(new Set(cats));
+// //         this.categories = ['All', ...uniqueCats];
+// //       }
+// //       this.loaderService.hide();
+// //       console.log(res);
+// //     },
+
+// //     error: () => {
+// //       this.loaderService.hide();
+// //       this.errorMsg = true;
+// //     },
+// //   });
+
+// //   this.destroyRef.onDestroy(() => {
+// //     productSub.unsubscribe();
+// //   });
+// // }
+
+// getDiscountPrice(item: Product): number {
+//   return this.productService.getDiscountPrice(item);
+// }
+
+// getFilteredProducts(): Product[] {
+//   const search = this.searchTerm.toLowerCase();
+
+//   return this.products.filter((product) => {
+//     const matchesSearch = product.title.toLowerCase().includes(search);
+
+//     const matchesCategory =
+//       this.selectedCategory === 'all' ||
+//       product.category?.toLowerCase() === this.selectedCategory;
+
+//     const matchesDiscount = (product.discount || 0) >= this.minDiscount;
+
+//     return matchesSearch && matchesCategory && matchesDiscount;
+//   });
+// }
+
+// // getFilteredProducts(): Product[] {
+// //   const search = this.searchTerm.toLowerCase();
+
+// //   return this.products.filter((product) => {
+// //     const matchesSearch = product.title.toLowerCase().includes(search);
+
+// //     const matchesCategory =
+// //       this.selectedCategory === 'All' || product.category === this.selectedCategory;
+
+// //     return matchesSearch && matchesCategory;
+// //   });
+// // }
+
+// isWishlisted(productId: string): boolean {
+//   return this.authService.isLoggedIn() && this.wishlistService.isInWishlist(productId);
+// }
+
+// addToWishlist(product: Product) {
+//   if (!this.authService.isLoggedIn()) {
+//     this.router.navigate(['/login']);
+//     return;
+//   }
+
+//   if (this.wishlistService.isInWishlist(product.id!)) {
+//     this.wishlistService.removeFromWishlist(product.id!);
+//     this.snackBar.error('Removed from wishlist');
+//   } else {
+//     this.wishlistService.addToWishlist(product);
+//     this.snackBar.success('Added to wishlist');
+//   }
+// }
+
+// viewDetails(id: string) {
+//   this.router.navigate(['/products', id]);
+// }
+
+// onCategoryChange() {
+//   this.router.navigate([], {
+//     relativeTo: this.route,
+//     queryParams: {
+//       category: this.selectedCategory,
+//       discount: this.minDiscount || null,
+//     },
+//     queryParamsHandling: 'merge',
+//   });
+// }
+
+// // onCategoryChange() {
+// //   this.getFilteredProducts();
+// // }
+
+// getRating() {
+//   return Rating;
+// }
+
+//////////////////////////////////////////////////////////////////////////////
 
 // import { Component, DestroyRef, inject, Input } from '@angular/core';
 // import { CommonModule } from '@angular/common';

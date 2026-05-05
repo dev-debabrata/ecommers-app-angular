@@ -10,6 +10,7 @@ import {
   updateDoc,
 } from '@angular/fire/firestore';
 import { from, Observable } from 'rxjs';
+import { AddressUser, User } from '../models/user';
 
 @Injectable({
   providedIn: 'root',
@@ -17,14 +18,14 @@ import { from, Observable } from 'rxjs';
 export class UserService {
   private firestore = inject(Firestore);
 
-  getUsers(): Observable<any[]> {
+  getUsers(): Observable<User[]> {
     const usersRef = collection(this.firestore, 'users');
-    return collectionData(usersRef, { idField: 'id' }) as Observable<any[]>;
+    return collectionData(usersRef, { idField: 'id' }) as Observable<User[]>;
   }
 
-  getUserById(uid: string): Observable<any> {
+  getUserById(uid: string): Observable<User> {
     const userRef = doc(this.firestore, `users/${uid}`);
-    return docData(userRef, { idField: 'uid' });
+    return docData(userRef, { idField: 'uid' }) as Observable<User>;
   }
 
   deleteUser(id: string): Observable<void> {
@@ -32,12 +33,12 @@ export class UserService {
     return from(deleteDoc(userDoc));
   }
 
-  updateUserAddress(uid: string, data: any): Observable<void> {
+  updateUserAddress(uid: string, data: Partial<User>): Observable<void> {
     const userRef = doc(this.firestore, `users/${uid}`);
     return from(updateDoc(userRef, data));
   }
 
-  deleteUserAddress(uid: string, addresses: any[]): Observable<void> {
+  deleteUserAddress(uid: string, addresses: AddressUser[]): Observable<void> {
     const userRef = doc(this.firestore, `users/${uid}`);
     return from(updateDoc(userRef, { addresses }));
   }
