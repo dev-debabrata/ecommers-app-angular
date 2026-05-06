@@ -1,12 +1,12 @@
 import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
-import { ProductService } from '../../../services/product-service';
+import { ProductService } from '../../../services/product.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Product, ProductField } from '../../../models/products';
+import { Product, ProductField } from '../../../models/product.model';
 import { FormsModule } from '@angular/forms';
 
-import { LoaderService } from '../../../services/loader-service';
-import { SnackbarService } from '../../../services/snackbar-service';
+import { LoaderService } from '../../../services/loader.service';
+import { SnackbarService } from '../../../services/snackbar.service';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({

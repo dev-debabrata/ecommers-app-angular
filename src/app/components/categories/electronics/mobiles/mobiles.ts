@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 
-import { ProductService } from '../../../../services/product-service';
-import { Product } from '../../../../models/products';
+import { ProductService } from '../../../../services/product.service';
+import { Product } from '../../../../models/product.model';
 
 @Component({
   selector: 'app-mobiles',

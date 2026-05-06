@@ -3,8 +3,8 @@ import { Router } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
-import { AdminAuthService } from '../../../services/admin-auth-service';
-import { SnackbarService } from '../../../services/snackbar-service';
+import { AdminAuthService } from '../../../services/auth.admin.service';
+import { SnackbarService } from '../../../services/snackbar.service';
 
 @Component({
   selector: 'app-admin-login',

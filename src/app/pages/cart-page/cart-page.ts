@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { CartService } from '../../services/cart-service';
-import { CartItem } from '../../models/cart-item';
+import { CartService } from '../../services/cart.service';
+import { CartItem } from '../../models/cart.model';
 
 @Component({
   selector: 'app-cart-page',

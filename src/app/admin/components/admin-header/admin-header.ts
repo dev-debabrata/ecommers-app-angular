@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { AdminAuthService } from '../../../services/admin-auth-service';
+import { AdminAuthService } from '../../../services/auth.admin.service';
 import { doc, Firestore, getDoc } from '@angular/fire/firestore';
 
 @Component({

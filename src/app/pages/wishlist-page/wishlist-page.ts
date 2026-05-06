@@ -2,12 +2,12 @@ import { Component, computed, DestroyRef, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
-import { WishlistService } from '../../services/wishlist-service';
-import { CartService } from '../../services/cart-service';
+import { WishlistService } from '../../services/wishlist.service';
+import { CartService } from '../../services/cart.service';
 import { Rating } from '../../utils/rating.util';
-import { Product } from '../../models/products';
-import { SnackbarService } from '../../services/snackbar-service';
-import { ProductService } from '../../services/product-service';
+import { Product } from '../../models/product.model';
+import { SnackbarService } from '../../services/snackbar.service';
+import { ProductService } from '../../services/product.service';
 
 @Component({
   selector: 'app-wishlist-page',

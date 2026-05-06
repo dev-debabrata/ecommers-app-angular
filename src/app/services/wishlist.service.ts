@@ -10,7 +10,7 @@ import {
 import { Auth, authState } from '@angular/fire/auth';
 import { from, Observable, of } from 'rxjs';
 
-import { Product } from '../models/products';
+import { Product } from '../models/product.model';
 
 @Injectable({
   providedIn: 'root',

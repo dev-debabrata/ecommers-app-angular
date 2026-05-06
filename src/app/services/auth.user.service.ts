@@ -13,7 +13,7 @@ import { Firestore, doc, docData, getDoc, serverTimestamp, setDoc } from '@angul
 
 import { from, Observable, of, switchMap } from 'rxjs';
 
-import { User } from '../models/user';
+import { User } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root',

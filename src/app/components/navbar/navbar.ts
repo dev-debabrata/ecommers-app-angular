@@ -4,9 +4,9 @@ import { Router, RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
-import { AuthService } from '../../services/auth-service';
-import { User } from '../../models/user';
-import { Category } from '../../models/products';
+import { AuthService } from '../../services/auth.user.service';
+import { User } from '../../models/user.model';
+import { Category } from '../../models/product.model';
 
 interface MenuItem {
   name: string;

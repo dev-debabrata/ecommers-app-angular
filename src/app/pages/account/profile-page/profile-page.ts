@@ -2,12 +2,12 @@ import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
-import { AuthService } from '../../../services/auth-service';
-import { OrderService } from '../../../services/order-service';
+import { AuthService } from '../../../services/auth.user.service';
+import { OrderService } from '../../../services/order.service';
 import { ProfileDetails } from '../profile-details/profile-details';
 import { AddressBook } from '../address-book/address-book';
 import { OrderHistory } from '../order-history/order-history';
-import { User } from '../../../models/user';
+import { User } from '../../../models/user.model';
 
 @Component({
   selector: 'app-profile-page',

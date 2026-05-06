@@ -2,10 +2,10 @@ import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
-import { OrderService } from '../../../services/order-service';
-import { LoaderService } from '../../../services/loader-service';
-import { Product } from '../../../models/products';
-import { ProductService } from '../../../services/product-service';
+import { OrderService } from '../../../services/order.service';
+import { LoaderService } from '../../../services/loader.service';
+import { Product } from '../../../models/product.model';
+import { ProductService } from '../../../services/product.service';
 
 @Component({
   selector: 'app-order-details',

@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
-import { Product } from '../../../models/products';
-import { ProductService } from '../../../services/product-service';
-import { Order, OrderItem } from '../../../models/order-item';
+import { Product } from '../../../models/product.model';
+import { ProductService } from '../../../services/product.service';
+import { Order, OrderItem } from '../../../models/order.model';
 
 @Component({
   selector: 'app-order-history',

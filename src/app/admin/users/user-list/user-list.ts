@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { MatIcon } from '@angular/material/icon';
 import { PageEvent, MatPaginatorModule } from '@angular/material/paginator';
-import { UserService } from '../../../services/user-service';
-import { LoaderService } from '../../../services/loader-service';
+import { UserService } from '../../../services/user.service';
+import { LoaderService } from '../../../services/loader.service';
 
 @Component({
   selector: 'app-user-list',

@@ -13,7 +13,7 @@ import {
 
 import { from, map, Observable } from 'rxjs';
 
-import { Product } from '../models/products';
+import { Product } from '../models/product.model';
 
 @Injectable({
   providedIn: 'root',

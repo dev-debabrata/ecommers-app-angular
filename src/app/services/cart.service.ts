@@ -11,8 +11,8 @@ import {
 
 import { Auth, authState } from '@angular/fire/auth';
 
-import { Product } from '../models/products';
-import { CartItem } from '../models/cart-item';
+import { Product } from '../models/product.model';
+import { CartItem } from '../models/cart.model';
 import { from } from 'rxjs';
 
 @Injectable({

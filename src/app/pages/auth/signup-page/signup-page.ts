@@ -15,9 +15,9 @@ import { Router, RouterLink } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { from, map, of } from 'rxjs';
 
-import { AuthService } from '../../../services/auth-service';
-import { User } from '../../../models/user';
-import { SnackbarService } from '../../../services/snackbar-service';
+import { AuthService } from '../../../services/auth.user.service';
+import { User } from '../../../models/user.model';
+import { SnackbarService } from '../../../services/snackbar.service';
 
 @Component({
   selector: 'app-signup-page',

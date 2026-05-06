@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from '../../../../services/auth-service';
-import { OrderService } from '../../../../services/order-service';
-import { Order } from '../../../../models/order-item';
+import { AuthService } from '../../../../services/auth.user.service';
+import { OrderService } from '../../../../services/order.service';
+import { Order } from '../../../../models/order.model';
 
 @Component({
   selector: 'app-order-success-page',

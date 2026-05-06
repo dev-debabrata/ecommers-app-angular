@@ -3,17 +3,17 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { CartService } from '../../../../services/cart-service';
-import { AuthService } from '../../../../services/auth-service';
+import { CartService } from '../../../../services/cart.service';
+import { AuthService } from '../../../../services/auth.user.service';
 import { TruncatePipe } from '../../../../pipes/truncate-pipe';
-import { OrderService } from '../../../../services/order-service';
-import { LoaderService } from '../../../../services/loader-service';
-import { SnackbarService } from '../../../../services/snackbar-service';
-import { CartItem } from '../../../../models/cart-item';
+import { OrderService } from '../../../../services/order.service';
+import { LoaderService } from '../../../../services/loader.service';
+import { SnackbarService } from '../../../../services/snackbar.service';
+import { CartItem } from '../../../../models/cart.model';
 import { CheckoutAddress } from '../checkout-address/checkout-address';
-import { Order, OrderAddress } from '../../../../models/order-item';
+import { Order, OrderAddress } from '../../../../models/order.model';
 
-import { User } from '../../../../models/user';
+import { User } from '../../../../models/user.model';
 
 @Component({
   selector: 'app-checkout-page',

@@ -4,16 +4,16 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatIcon } from '@angular/material/icon';
 
-import { ProductService } from '../../../services/product-service';
-import { Product } from '../../../models/products';
+import { ProductService } from '../../../services/product.service';
+import { Product } from '../../../models/product.model';
 import { Rating } from '../../../utils/rating.util';
 import { Error } from '../../../components/error/error';
 import { TruncatePipe } from '../../../pipes/truncate-pipe';
 import { Highlight } from '../../../directives/highlight';
-import { WishlistService } from '../../../services/wishlist-service';
-import { AuthService } from '../../../services/auth-service';
-import { LoaderService } from '../../../services/loader-service';
-import { SnackbarService } from '../../../services/snackbar-service';
+import { WishlistService } from '../../../services/wishlist.service';
+import { AuthService } from '../../../services/auth.user.service';
+import { LoaderService } from '../../../services/loader.service';
+import { SnackbarService } from '../../../services/snackbar.service';
 
 @Component({
   selector: 'app-product-list-page',

@@ -3,15 +3,15 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatIcon } from '@angular/material/icon';
 
-import { AuthService } from '../../../services/auth-service';
-import { ProductService } from '../../../services/product-service';
-import { Product } from '../../../models/products';
+import { AuthService } from '../../../services/auth.user.service';
+import { ProductService } from '../../../services/product.service';
+import { Product } from '../../../models/product.model';
 import { Rating } from '../../../utils/rating.util';
 import { Error } from '../../../components/error/error';
-import { CartService } from '../../../services/cart-service';
-import { WishlistService } from '../../../services/wishlist-service';
-import { LoaderService } from '../../../services/loader-service';
-import { SnackbarService } from '../../../services/snackbar-service';
+import { CartService } from '../../../services/cart.service';
+import { WishlistService } from '../../../services/wishlist.service';
+import { LoaderService } from '../../../services/loader.service';
+import { SnackbarService } from '../../../services/snackbar.service';
 
 @Component({
   selector: 'app-product-detail-page',

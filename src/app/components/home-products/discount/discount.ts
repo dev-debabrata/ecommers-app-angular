@@ -1,7 +1,7 @@
 import { Component, computed, DestroyRef, inject, Input, signal } from '@angular/core';
-import { ProductService } from '../../../services/product-service';
+import { ProductService } from '../../../services/product.service';
 import { Router } from '@angular/router';
-import { Product } from '../../../models/products';
+import { Product } from '../../../models/product.model';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 

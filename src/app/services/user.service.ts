@@ -10,7 +10,7 @@ import {
   updateDoc,
 } from '@angular/fire/firestore';
 import { from, Observable } from 'rxjs';
-import { AddressUser, User } from '../models/user';
+import { AddressUser, User } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root',

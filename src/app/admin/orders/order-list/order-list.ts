@@ -4,9 +4,9 @@ import { RouterLink } from '@angular/router';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatIcon } from '@angular/material/icon';
 
-import { OrderService } from '../../../services/order-service';
-import { LoaderService } from '../../../services/loader-service';
-import { Order } from '../../../models/order-item';
+import { OrderService } from '../../../services/order.service';
+import { LoaderService } from '../../../services/loader.service';
+import { Order } from '../../../models/order.model';
 
 @Component({
   selector: 'app-order-list',

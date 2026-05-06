@@ -1,13 +1,13 @@
 import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
-import { ProductService } from '../../../services/product-service';
-import { Product } from '../../../models/products';
+import { ProductService } from '../../../services/product.service';
+import { Product } from '../../../models/product.model';
 import { TruncatePipe } from '../../../pipes/truncate-pipe';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { CommonModule } from '@angular/common';
-import { LoaderService } from '../../../services/loader-service';
-import { SnackbarService } from '../../../services/snackbar-service';
+import { LoaderService } from '../../../services/loader.service';
+import { SnackbarService } from '../../../services/snackbar.service';
 
 @Component({
   selector: 'app-product-list',

@@ -3,9 +3,9 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 
-import { SnackbarService } from '../../../services/snackbar-service';
-import { UserService } from '../../../services/user-service';
-import { User, AddressUser } from '../../../models/user';
+import { SnackbarService } from '../../../services/snackbar.service';
+import { UserService } from '../../../services/user.service';
+import { User, AddressUser } from '../../../models/user.model';
 
 @Component({
   selector: 'app-address-book',

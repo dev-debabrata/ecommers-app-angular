@@ -7,7 +7,7 @@ import {
   Router,
   RouterOutlet,
 } from '@angular/router';
-import { LoaderService } from './services/loader-service';
+import { LoaderService } from './services/loader.service';
 import { Loader } from './components/loader/loader';
 
 @Component({

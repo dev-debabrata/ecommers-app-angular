@@ -1,6 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router';
-import { ProductService } from '../../services/product-service';
+import { ProductService } from '../../services/product.service';
 import { filter, switchMap, of, Subscription, startWith } from 'rxjs';
 import { CommonModule } from '@angular/common';
 

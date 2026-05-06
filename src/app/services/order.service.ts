@@ -12,7 +12,7 @@ import {
   setDoc,
 } from '@angular/fire/firestore';
 import { Observable, forkJoin, from, map, switchMap } from 'rxjs';
-import { Order } from '../models/order-item';
+import { Order } from '../models/order.model';
 
 @Injectable({
   providedIn: 'root',
