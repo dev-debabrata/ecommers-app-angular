@@ -107,6 +107,7 @@ export class CheckoutPage implements OnInit {
         image: item.image,
         price: item.price,
         quantity: item.quantity,
+        discount: item.discount || 0,
       })),
       subTotal: this.subTotal(),
       gst: this.gst(),

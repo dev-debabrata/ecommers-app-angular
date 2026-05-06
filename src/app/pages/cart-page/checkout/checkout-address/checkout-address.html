@@ -6,30 +6,17 @@
         [class.selected]="selectedAddress()?.id === addr.id"
         (click)="selectAddress(addr)"
       >
-        <input type="radio" name="selectedAddress" [value]="addr.id" />
-        <!-- @for (addr of visibleAddresses(); track addr.id ?? addr.pinCode + addr.address) {
-      <label class="address-card" [class.selected]="isSelected(addr)">
         <input
           type="radio"
           name="selectedAddress"
-          [value]="addr.id ?? addr.pinCode"
-          [checked]="isSelected(addr)"
-          (change)="selectAddress(addr)"
-        /> -->
-        <!-- @for (addr of visibleAddresses(); track addr.id) {
-      <label class="address-card">
-        <input
-          type="radio"
-          name="selectedAddress"
-          [checked]="isSelected(addr)"
-          (change)="selectAddress(addr)"
-        /> -->
+          [value]="addr.id"
+          [checked]="selectedAddress()?.id === addr.id"
+        />
 
         <div class="address-details">
           <h4>{{ addr.fullName }}</h4>
           <p>{{ addr.address }}, {{ addr.city }}, {{ addr.state }} - {{ addr.pinCode }}</p>
           <p>Landmark: {{ addr.landmark }}</p>
-          <!-- <p>{{ addr.state }} - {{ addr.pinCode }}</p> -->
           <small>Phone number: {{ addr.phone }}</small>
         </div>
 
@@ -42,14 +29,13 @@
             Edit address
           </button>
         </div>
-
-        <!-- <div>
-          <button type="button" (click)="editAddress(addr)" class="edit-btn">Edit address</button>
-          <button type="button" (click)="editAddress($index)" class="edit-btn">Edit address</button>
-        </div> -->
       </label>
     }
   </div>
+
+  @if (!selectedAddress()) {
+    <p class="select-worning">Please select a delivery address to continue.</p>
+  }
 } @else {
   <p>No saved address</p>
 }

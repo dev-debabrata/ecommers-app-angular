@@ -233,3 +233,10 @@ button {
 .add-new:hover {
   background: #eee;
 }
+
+.select-worning {
+  color: red;
+  font-size: 13px;
+  margin-top: 6px;
+  margin-bottom: 0;
+}

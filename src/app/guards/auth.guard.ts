@@ -4,11 +4,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { map, take } from 'rxjs/operators';
 
 import { AuthService } from '../services/auth.user.service';
+import { SnackbarService } from '../services/snackbar.service';
 
 export const authGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
   const authService = inject(AuthService);
-  const snackBar = inject(MatSnackBar);
+  const snackBar = inject(SnackbarService);
 
   return authService.firebaseUser$.pipe(
     take(1),
@@ -19,12 +20,7 @@ export const authGuard: CanActivateFn = (route, state) => {
       const isAuthPage = url.startsWith('/login') || url.startsWith('/signup');
 
       if (isLoggedIn && isAuthPage) {
-        snackBar.open('You are already logged in', 'Close', {
-          duration: 3000,
-          horizontalPosition: 'center',
-          verticalPosition: 'top',
-          panelClass: ['snackbar-error'],
-        });
+        snackBar.error('You are already logged in');
 
         return router.createUrlTree(['/']);
       }
@@ -34,12 +30,7 @@ export const authGuard: CanActivateFn = (route, state) => {
       }
 
       if (!isLoggedIn) {
-        snackBar.open('Please login first', 'Close', {
-          duration: 3000,
-          horizontalPosition: 'center',
-          verticalPosition: 'top',
-          panelClass: ['snackbar-error'],
-        });
+        snackBar.error('Please login first');
 
         localStorage.setItem('redirectUrl', state.url);
 

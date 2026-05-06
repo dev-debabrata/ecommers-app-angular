@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Product } from '../../../models/product.model';
 import { ProductService } from '../../../services/product.service';
 import { Order, OrderItem } from '../../../models/order.model';
+import { OrderService } from '../../../services/order.service';
 
 @Component({
   selector: 'app-order-history',
@@ -14,23 +15,13 @@ import { Order, OrderItem } from '../../../models/order.model';
 })
 export class OrderHistory {
   private router = inject(Router);
-  private productService = inject(ProductService);
+  private orderService = inject(OrderService);
 
   orders = input<Order[]>([]);
 
   getDiscountPrice(item: OrderItem): number {
-    return this.productService.getDiscountPrice(item);
+    return this.orderService.getDiscountPrice(item);
   }
-
-  // getDiscountPrice(item: OrderItem): number {
-  //   if (!item.discount || item.discount === 0) return item.price;
-  //   return item.price - (item.price * item.discount) / 100;
-  // }
-
-  // getDiscountPrice(item: Product): number {
-  //   return this.productService.getDiscountPrice(item);
-  // }
-
   viewProductDetails(productId: string) {
     this.router.navigate(['/products', productId]);
   }

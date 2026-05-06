@@ -12,13 +12,18 @@ import {
   setDoc,
 } from '@angular/fire/firestore';
 import { Observable, forkJoin, from, map, switchMap } from 'rxjs';
-import { Order } from '../models/order.model';
+import { Order, OrderItem } from '../models/order.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class OrderService {
   private firestore = inject(Firestore);
+
+  getDiscountPrice(item: OrderItem): number {
+    const discount = item.discount ?? 0;
+    return item.price - (item.price * discount) / 100;
+  }
 
   createOrder(userId: string, order: Order): Observable<Order> {
     const orderId = doc(collection(this.firestore, 'orders')).id;
