@@ -27,7 +27,6 @@ export class AddProduct implements OnInit {
 
   editId: string | null = null;
   isEdit = false;
-
   extraFields = signal<{ label: string; value: string }[]>([]);
 
   product = signal<Partial<Product>>({
@@ -150,31 +149,6 @@ export class AddProduct implements OnInit {
     );
   });
 
-  // isInvalid(field: ProductField): boolean {
-  //   const product = this.product();
-  //   const touched = this.touched();
-
-  //   return !product[field] && touched[field];
-  // }
-
-  // isFormValid = computed(() => {
-  //   const p = this.product();
-
-  //   return (
-  //     p.title &&
-  //     p.price > 0 &&
-  //     (p.discount ?? 0) >= 0 &&
-  //     p.stock >= 0 &&
-  //     p.brand &&
-  //     p.color &&
-  //     p.category &&
-  //     p.image &&
-  //     p.description &&
-  //     (p.rating ?? 0) >= 0 &&
-  //     (p.rating ?? 0) <= 5
-  //   );
-  // });
-
   onSubmit() {
     if (!this.isFormValid()) {
       this.snackbar.error('Please fill all required fields');
@@ -240,6 +214,34 @@ export class AddProduct implements OnInit {
     this.location.back();
   }
 }
+
+///////////////////////////////////////////////////////////////////
+
+// isInvalid(field: ProductField): boolean {
+//   const product = this.product();
+//   const touched = this.touched();
+
+//   return !product[field] && touched[field];
+// }
+
+// isFormValid = computed(() => {
+//   const p = this.product();
+
+//   return (
+//     p.title &&
+//     p.price > 0 &&
+//     (p.discount ?? 0) >= 0 &&
+//     p.stock >= 0 &&
+//     p.brand &&
+//     p.color &&
+//     p.category &&
+//     p.image &&
+//     p.description &&
+//     (p.rating ?? 0) >= 0 &&
+//     (p.rating ?? 0) <= 5
+//   );
+// });
+////////////////////////////////////////////////////////////////////
 
 // onSubmit() {
 //   if (!this.isFormValid()) {

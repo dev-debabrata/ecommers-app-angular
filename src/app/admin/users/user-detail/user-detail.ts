@@ -1,8 +1,11 @@
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+
 import { UserService } from '../../../services/user.service';
 import { OrderService } from '../../../services/order.service';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { Order } from '../../../models/order.model';
+import { User } from '../../../models/user.model';
 
 @Component({
   selector: 'app-user-detail',
@@ -16,11 +19,9 @@ export class UserDetail implements OnInit {
   private route = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
 
-  user = signal<any>(null);
-  orders = signal<any[]>([]);
-
+  user = signal<User | null>(null);
+  orders = signal<Order[]>([]);
   errorMsg = false;
-
   activeSection: string = 'profile';
 
   ngOnInit() {

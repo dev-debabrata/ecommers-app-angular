@@ -1,4 +1,4 @@
-import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
@@ -15,16 +15,14 @@ import { Order } from '../../../models/order.model';
   templateUrl: './order-list.html',
   styleUrl: './order-list.css',
 })
-export class OrderList {
+export class OrderList implements OnInit {
   private orderService = inject(OrderService);
   private loaderService = inject(LoaderService);
   private destroyRef = inject(DestroyRef);
 
   sortDirection = signal<'asc' | 'desc'>('desc');
   // sortDirection = signal<'asc' | 'desc'>('asc');
-
   orders = signal<Order[]>([]);
-
   pageIndex = signal(0);
   pageSize = signal(10);
 

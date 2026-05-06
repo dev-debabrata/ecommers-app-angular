@@ -1,8 +1,6 @@
-import { Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, inject, OnInit } from '@angular/core';
 
 import { AdminAuthService } from '../../../services/auth.admin.service';
-import { doc, Firestore, getDoc } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-admin-header',
@@ -11,25 +9,10 @@ import { doc, Firestore, getDoc } from '@angular/fire/firestore';
   templateUrl: './admin-header.html',
   styleUrl: './admin-header.css',
 })
-export class AdminHeader {
+export class AdminHeader implements OnInit {
   private adminAuthService = inject(AdminAuthService);
-  private firestore = inject(Firestore);
 
   adminName = 'Admin';
-
-  // ngOnInit() {
-  //   this.adminAuthService.firebaseUser$.subscribe(async (user) => {
-  //     if (user) {
-  //       const adminRef = doc(this.firestore, 'users/' + user.uid);
-  //       const snap = await getDoc(adminRef);
-
-  //       if (snap.exists()) {
-  //         const data = snap.data();
-  //         this.adminName = `${data['firstName']} ${data['lastName']}`;
-  //       }
-  //     }
-  //   });
-  // }
 
   ngOnInit() {
     this.adminAuthService.firebaseUser$.subscribe((user) => {
@@ -46,3 +29,18 @@ export class AdminHeader {
     this.adminAuthService.logout();
   }
 }
+
+////////////////////////////////////////////
+// ngOnInit() {
+//   this.adminAuthService.firebaseUser$.subscribe(async (user) => {
+//     if (user) {
+//       const adminRef = doc(this.firestore, 'users/' + user.uid);
+//       const snap = await getDoc(adminRef);
+
+//       if (snap.exists()) {
+//         const data = snap.data();
+//         this.adminName = `${data['firstName']} ${data['lastName']}`;
+//       }
+//     }
+//   });
+// }

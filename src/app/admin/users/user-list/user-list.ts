@@ -1,8 +1,9 @@
-import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { MatIcon } from '@angular/material/icon';
 import { PageEvent, MatPaginatorModule } from '@angular/material/paginator';
+
 import { UserService } from '../../../services/user.service';
 import { LoaderService } from '../../../services/loader.service';
 
@@ -13,16 +14,14 @@ import { LoaderService } from '../../../services/loader.service';
   templateUrl: './user-list.html',
   styleUrl: './user-list.css',
 })
-export class UserList {
+export class UserList implements OnInit {
   private userService = inject(UserService);
   private loaderService = inject(LoaderService);
   private destroyRef = inject(DestroyRef);
 
   users = signal<any[]>([]);
-
   sortDirection = signal<'asc' | 'desc'>('desc');
   // sortDirection = signal<'asc' | 'desc'>('asc');
-
   pageSize = signal(10);
   pageIndex = signal(0);
 

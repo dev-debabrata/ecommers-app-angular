@@ -31,10 +31,11 @@
 
               <p>
                 <b>Phone:</b>
-                {{ user()?.phoneNumber?.length ? user()?.phoneNumber[0] : 'N/A' }}
+                {{ user()?.phoneNumber?.[0] || 'N/A' }}
               </p>
-
-              <p><b>Joined:</b> {{ user()?.createdAt?.toDate() | date }}</p>
+              <!-- <p><b>Joined:</b> {{ user()?.createdAt | date }}</p> -->
+              <p><b>Joined:</b> {{ user()?.createdAt?.toDate?.() | date }}</p>
+              <!-- <p><b>Joined:</b> {{ user()?.createdAt?.toDate() | date }}</p> -->
             </div>
           }
 
@@ -106,7 +107,7 @@
 
         @if (user()?.addresses?.length) {
           <div>
-            @for (addr of user().addresses; track $index) {
+            @for (addr of user()?.addresses ?? []; track $index) {
               <div class="card">
                 <p>
                   <b>{{ addr.fullName }}</b> - {{ addr.phone }}

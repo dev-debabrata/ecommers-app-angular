@@ -26,10 +26,8 @@ export class ProductList implements OnInit {
   searchTerm = signal('');
   sortDirection = signal<'asc' | 'desc'>('desc');
   // sortDirection = signal<'asc' | 'desc'>('asc');
-
   pageSize = signal(5);
   pageIndex = signal(0);
-
   totalItems = computed(() => this.filteredProducts().length);
 
   ngOnInit() {
@@ -51,40 +49,6 @@ export class ProductList implements OnInit {
       sub.unsubscribe();
     });
   }
-
-  // ngOnInit() {
-  //   const sub = this.productService.getProducts().subscribe({
-  //     next: (res) => {
-  //       if (!res) {
-  //         this.products.set([]);
-  //         return;
-  //       }
-
-  //       const sorted = [...res].sort((a: any, b: any) => (a.createdAt || 0) - (b.createdAt || 0));
-
-  //       this.products.set(sorted);
-  //     },
-
-  //     error: (err) => {
-  //       console.error('Product load error:', err);
-  //       this.products.set([]);
-  //     },
-  //   });
-
-  //   this.destroyRef.onDestroy(() => {
-  //     sub.unsubscribe();
-  //   });
-  // }
-
-  // ngOnInit() {
-  //   const sub = this.productService.getProducts().subscribe((res) => {
-  //     this.products.set(res);
-  //   });
-
-  //   this.destroyRef.onDestroy(() => {
-  //     sub.unsubscribe();
-  //   });
-  // }
 
   filteredProducts = computed(() => {
     const term = this.searchTerm().toLowerCase();
@@ -146,18 +110,53 @@ export class ProductList implements OnInit {
       },
     });
   }
-
-  // deleteProduct(id: string) {
-  //   if (!confirm('Are you sure you want to delete this product?')) return;
-
-  //   this.productService.deleteProduct(id).subscribe(() => {
-  //     this.products.update((products) => products.filter((p) => p.id !== id));
-
-  //     this.snackBar.success('Product deleted successfully');
-  //   });
-  // }
 }
 
+//////////////////////////////////////////
+// deleteProduct(id: string) {
+//   if (!confirm('Are you sure you want to delete this product?')) return;
+
+//   this.productService.deleteProduct(id).subscribe(() => {
+//     this.products.update((products) => products.filter((p) => p.id !== id));
+
+//     this.snackBar.success('Product deleted successfully');
+//   });
+// }
+//////////////////////////////////////
+
+// ngOnInit() {
+//   const sub = this.productService.getProducts().subscribe({
+//     next: (res) => {
+//       if (!res) {
+//         this.products.set([]);
+//         return;
+//       }
+
+//       const sorted = [...res].sort((a: any, b: any) => (a.createdAt || 0) - (b.createdAt || 0));
+
+//       this.products.set(sorted);
+//     },
+
+//     error: (err) => {
+//       console.error('Product load error:', err);
+//       this.products.set([]);
+//     },
+//   });
+
+//   this.destroyRef.onDestroy(() => {
+//     sub.unsubscribe();
+//   });
+// }
+
+// ngOnInit() {
+//   const sub = this.productService.getProducts().subscribe((res) => {
+//     this.products.set(res);
+//   });
+
+//   this.destroyRef.onDestroy(() => {
+//     sub.unsubscribe();
+//   });
+// }
 //////////////////////////////////////////
 // deleteProduct(id: string) {
 //   this.productService.deleteProduct(id);
