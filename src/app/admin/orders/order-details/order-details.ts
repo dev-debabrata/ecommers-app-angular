@@ -4,8 +4,7 @@ import { CommonModule } from '@angular/common';
 
 import { OrderService } from '../../../services/order.service';
 import { LoaderService } from '../../../services/loader.service';
-import { Product } from '../../../models/product.model';
-import { ProductService } from '../../../services/product.service';
+import { Order, OrderItem } from '../../../models/order.model';
 
 @Component({
   selector: 'app-order-details',
@@ -17,11 +16,10 @@ import { ProductService } from '../../../services/product.service';
 export class OrderDetails {
   private route = inject(ActivatedRoute);
   private orderService = inject(OrderService);
-  private productService = inject(ProductService);
   private loader = inject(LoaderService);
   private destroyRef = inject(DestroyRef);
 
-  order = signal<any | null>(null);
+  order = signal<Order | null>(null);
 
   ngOnInit() {
     const orderId = this.route.snapshot.paramMap.get('id');
@@ -43,8 +41,8 @@ export class OrderDetails {
     this.destroyRef.onDestroy(() => sub.unsubscribe());
   }
 
-  getDiscountPrice(item: Product): number {
-    return this.productService.getDiscountPrice(item);
+  getDiscountPrice(item: OrderItem): number {
+    return this.orderService.getDiscountPrice(item);
   }
 
   // ngOnInit() {

@@ -14,6 +14,7 @@ import { WishlistService } from '../../../services/wishlist.service';
 import { AuthService } from '../../../services/auth.user.service';
 import { LoaderService } from '../../../services/loader.service';
 import { SnackbarService } from '../../../services/snackbar.service';
+import { CATEGORIES } from '../../../data/category.data';
 
 @Component({
   selector: 'app-product-list-page',
@@ -37,12 +38,9 @@ export class ProductListPage implements OnInit {
 
   products: Product[] = [];
   errorMsg = false;
-
   searchTerm = '';
-
   selectedMainCategory = 'all';
   selectedCategory = 'all';
-
   minDiscount = 0;
 
   ngOnInit(): void {
@@ -84,7 +82,33 @@ export class ProductListPage implements OnInit {
 
     const subCats = filtered.map((p) => p.subCategory?.toLowerCase().trim()).filter(Boolean);
 
-    return ['all', ...Array.from(new Set(subCats))];
+    const unique = Array.from(new Set(subCats)) as string[];
+
+    return ['all', ...unique.sort((a, b) => a.localeCompare(b))];
+  }
+
+  // getCategories(): string[] {
+  //   const filtered =
+  //     this.selectedMainCategory === 'all'
+  //       ? this.products
+  //       : this.products.filter(
+  //           (p) => p.category?.toLowerCase().trim() === this.selectedMainCategory,
+  //         );
+
+  //   const subCats = filtered.map((p) => p.subCategory?.toLowerCase().trim()).filter(Boolean);
+
+  //   return ['all', ...Array.from(new Set(subCats))];
+  // }
+
+  getSubCategoryLabel(slug: string): string {
+    if (slug === 'all') return 'All';
+
+    for (const cat of CATEGORIES) {
+      const found = cat.subcategories.find((sub) => sub.slug === slug);
+      if (found) return found.label;
+    }
+
+    return slug.charAt(0).toUpperCase() + slug.slice(1);
   }
 
   getFilteredProducts(): Product[] {

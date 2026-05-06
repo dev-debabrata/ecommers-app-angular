@@ -8,9 +8,7 @@ import {
   authState,
   User as FirebaseUser,
 } from '@angular/fire/auth';
-
 import { Firestore, doc, docData, getDoc, serverTimestamp, setDoc } from '@angular/fire/firestore';
-
 import { from, Observable, of, switchMap } from 'rxjs';
 
 import { User } from '../models/user.model';
@@ -23,11 +21,12 @@ export class AuthService {
   private firestore = inject(Firestore);
 
   firebaseUser$: Observable<FirebaseUser | null> = authState(this.auth);
-
+  currentUser = signal<FirebaseUser | null>(null);
   isAuthReady = signal(false);
 
   constructor() {
-    this.firebaseUser$.subscribe(() => {
+    this.firebaseUser$.subscribe((user) => {
+      this.currentUser.set(user);
       this.isAuthReady.set(true);
     });
   }
@@ -81,27 +80,49 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return this.isAuthReady() && !!this.auth.currentUser && navigator.onLine;
+    return this.isAuthReady() && !!this.currentUser() && navigator.onLine;
   }
 
   getFullUser(): Observable<User | null> {
-    const user = this.auth.currentUser;
+    return this.firebaseUser$.pipe(
+      switchMap((fbUser) => {
+        if (!fbUser) return of(null);
 
-    if (!user) {
-      return of(null);
-    }
+        const userRef = doc(this.firestore, 'users/' + fbUser.uid);
+        return docData(userRef, { idField: 'uid' }) as Observable<User | null>;
 
-    const userRef = doc(this.firestore, 'users/' + user.uid);
-
-    return docData(userRef, { idField: 'uid' }) as Observable<User | null>;
-
-    // return from(
-    //   getDoc(userRef).then((snap) => {
-    //     return snap.exists() ? (snap.data() as User) : null;
-    //   }),
-    // );
+        //  return from(
+        //     getDoc(userRef).then((snap) => {
+        //       return snap.exists() ? (snap.data() as User) : null;
+        //  }),
+      }),
+    );
   }
 }
+
+// isLoggedIn(): boolean {
+//   return this.isAuthReady() && !!this.auth.currentUser && navigator.onLine;
+// }
+
+// getFullUser(): Observable<User | null> {
+//   const user = this.auth.currentUser;
+
+//   if (!user) {
+//     return of(null);
+//   }
+
+//   const userRef = doc(this.firestore, 'users/' + user.uid);
+
+//   return docData(userRef, { idField: 'uid' }) as Observable<User | null>;
+
+//   //  return from(
+//   //     getDoc(userRef).then((snap) => {
+//   //       return snap.exists() ? (snap.data() as User) : null;
+//   //     }),
+//   //   );
+// }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // getFullUser(): Observable<User | null> {
 //   return this.firebaseUser$.pipe(

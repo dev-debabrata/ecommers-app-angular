@@ -1,4 +1,4 @@
-.search-input {
+/* .search-input {
   padding: 2rem 0 2rem 0;
   display: flex;
 }
@@ -17,6 +17,11 @@
 .search-input input:focus {
   border: 1px solid rgb(232, 89, 12);
   box-shadow: 0 4px 12px rgba(232, 89, 12, 0.25);
+} */
+
+.products {
+  background: #fff;
+  margin: 15px 0;
 }
 
 .product-list {
@@ -24,8 +29,7 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: 2rem;
-  padding: 3rem 0 3rem 0;
-  background: #f8f9fa;
+  padding: 2rem 0;
 }
 
 .card {
@@ -79,8 +83,6 @@
 }
 
 h3 {
-  font-size: 18px;
-  font-weight: 500;
   margin: 2px 0;
 }
 
@@ -189,12 +191,13 @@ button:hover {
   align-items: center;
   gap: 10px;
 
-  margin: 15px 0;
-  padding: 10px 12px;
+  /* margin-top: 15px; */
+  padding: 2rem;
+  padding-bottom: 0;
 
-  background: #fff;
-  border: 1px solid #eee;
-  border-radius: 10px;
+  /* background: #fff; */
+  /* border: 1px solid #eee;
+  border-radius: 10px; */
 }
 
 .filter-label {
@@ -224,18 +227,8 @@ button:hover {
 
 .filters select:focus {
   outline: none;
-  border-color: #ff9900;
-  box-shadow: 0 0 0 2px rgba(255, 153, 0, 0.2);
-}
-
-.dropdown-icon {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 20px;
-  color: #666;
-  pointer-events: none;
+  border-color: #111827;
+  box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.1);
 }
 
 /* .category {
@@ -245,7 +238,86 @@ button:hover {
   margin: 5px 0;
 }
 
+
 .category-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px 0;
+}
+
+
+.category-item {
+  padding: 8px 16px;
+  border-radius: 999px;
+
+  font-size: 13px;
+  font-weight: 500;
+
+  background: #f1f3f5;
+  color: #495057;
+
+  border: 1px solid transparent;
+  cursor: pointer;
+
+  transition: all 0.25s ease;
+}
+
+
+.category-item:hover {
+  background: #e9ecef;
+  transform: translateY(-1px);
+}
+
+
+.category-item.active {
+  background: #111827;
+  color: #fff;
+  border-color: #111827;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+
+  margin: 15px 0;
+  padding: 10px;
+
+  background: #ffffff;
+  border: 1px solid #eee;
+  border-radius: 10px;
+}
+
+
+.filters select {
+  padding: 8px 12px;
+  font-size: 14px;
+
+  border-radius: 8px;
+  border: 1px solid #ddd;
+
+  background: #fff;
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.filters select:hover {
+  border-color: #999;
+}
+
+.filters select:focus {
+  outline: none;
+  border-color: #111827;
+  box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.1);
+} */
+
+/* .category-list {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;

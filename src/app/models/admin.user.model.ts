@@ -3,10 +3,3 @@ export interface Admin {
   email: string;
   role: 'admin';
 }
-
-// export interface Admin {
-//   id: number;
-//   email: string;
-//   password: string;
-//   role: string;
-// }

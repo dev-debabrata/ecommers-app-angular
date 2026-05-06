@@ -34,7 +34,6 @@ export class ProductDetailPage implements OnInit {
   @Input() showWishlistIcon = true;
 
   product: Product | null = null;
-  // isLoading = true;
   errorMsg = false;
   stars: string[] = [];
   showAllReviews = false;

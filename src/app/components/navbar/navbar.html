@@ -77,7 +77,7 @@
         <ul>
           @for (sub of selectedCategory.subcategories; track sub) {
             <li (click)="goToSubCategory(sub)">
-              {{ sub }}
+              {{ sub.label }}
             </li>
           }
         </ul>

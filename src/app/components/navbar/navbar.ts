@@ -6,7 +6,10 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { AuthService } from '../../services/auth.user.service';
 import { User } from '../../models/user.model';
-import { Category } from '../../models/product.model';
+import { CATEGORIES } from '../../data/category.data';
+import { Category } from '../../models/category.model';
+import { MENU } from '../../data/menu.data';
+import { SnackbarService } from '../../services/snackbar.service';
 
 interface MenuItem {
   name: string;
@@ -28,78 +31,19 @@ interface MenuSection {
 export class Navbar implements OnInit {
   private router = inject(Router);
   private authService = inject(AuthService);
-  private snackBar = inject(MatSnackBar);
+  private snackBar = inject(SnackbarService);
   private destroyRef = inject(DestroyRef);
 
   user = signal<User | null>(null);
+  selectedCategory: Category | null = null;
+  categories = CATEGORIES;
+  menu = MENU;
 
   isSidebarOpen = false;
   isMenuOpen = false;
   isDropdownOpen = false;
-
-  selectedCategory: Category | null = null;
-
-  // selectedCategory = '';
-
   dropdownLeft = 0;
   dropdownTop = 0;
-
-  categories: Category[] = [
-    {
-      name: 'Electronics',
-      subcategories: ['Mobiles', 'Laptops', 'Headphones', 'Smart Watches'],
-    },
-    {
-      name: 'Fashion',
-      subcategories: ["Men's Fashion", "Women's Fashion"],
-    },
-    {
-      name: 'Bags',
-      subcategories: ['Backpacks', 'Travel Bags'],
-    },
-    {
-      name: 'Footwear',
-      subcategories: ['Sneakers', 'Sandals'],
-    },
-    {
-      name: 'Groceries',
-      subcategories: ['Rice', 'Oil', 'Snacks'],
-    },
-    {
-      name: 'Beauty',
-      subcategories: ['Makeup', 'Skincare'],
-    },
-    {
-      name: 'Wellness',
-      subcategories: ['Supplements', 'Yoga'],
-    },
-    {
-      name: 'Jewellery',
-      subcategories: ['Gold', 'Silver', 'Rings'],
-    },
-  ];
-
-  // categories: string[] = [
-  //   'Fashion',
-  //   'Electronics',
-  //   'Bags',
-  //   'Footwear',
-  //   'Groceries',
-  //   'Beauty',
-  //   'Wellness',
-  //   'Jewellery',
-  // ];
-
-  // categoryProducts: any = {
-  //   Fashion: ['Shirts', 'Jeans', 'Shoes'],
-  //   Electronics: ['Mobiles', 'Laptops', 'Headphones'],
-  //   Bags: ['Backpacks', 'Travel Bags'],
-  //   Footwear: ['Sneakers', 'Sandals'],
-  //   Groceries: ['Rice', 'Oil', 'Snacks'],
-  //   Beauty: ['Makeup', 'Skincare'],
-  //   Wellness: ['Supplements', 'Yoga'],
-  //   Jewellery: ['Gold', 'Silver', 'Rings'],
-  // };
 
   get authReady() {
     return this.authService.isAuthReady();
@@ -130,13 +74,7 @@ export class Navbar implements OnInit {
     this.authService.logout();
     this.isMenuOpen = false;
 
-    this.snackBar.open('Logged out successfully', 'Close', {
-      duration: 3000,
-      horizontalPosition: 'center',
-      verticalPosition: 'top',
-      panelClass: ['snackbar-success'],
-    });
-
+    this.snackBar.success('Logged out successfully');
     this.router.navigate(['/']);
   }
 
@@ -172,16 +110,16 @@ export class Navbar implements OnInit {
     this.isDropdownOpen = false;
   }
 
-  goToSubCategory(sub: string) {
-    this.router.navigate(['/products'], {
-      queryParams: {
-        main: this.selectedCategory!.name.toLowerCase().trim(),
-        category: sub.toLowerCase().trim(),
-      },
-    });
+  // goToSubCategory(sub: string) {
+  //   this.router.navigate(['/products'], {
+  //     queryParams: {
+  //       main: this.selectedCategory!.name.toLowerCase().trim(),
+  //       category: sub.toLowerCase().trim(),
+  //     },
+  //   });
 
-    this.closeDropdown();
-  }
+  //   this.closeDropdown();
+  // }
 
   goToMainCategory(cat: string) {
     this.router.navigate(['/products'], {
@@ -194,30 +132,14 @@ export class Navbar implements OnInit {
     this.closeDropdown();
   }
 
-  menu: MenuSection[] = [
-    {
-      title: 'Trending',
-      items: [{ name: 'Best Sellers' }, { name: 'New Releases' }, { name: 'Movers and Shakers' }],
-    },
-    {
-      title: 'Digital Content And Devices',
-      items: [
-        { name: 'Echo & Alexa', hasArrow: true },
-        { name: 'Fire TV', hasArrow: true },
-        { name: 'Kindle E-Readers & eBooks', hasArrow: true },
-        { name: 'Audible Audiobooks', hasArrow: true },
-        { name: 'Amazon Prime Video', hasArrow: true },
-        { name: 'Amazon Prime Music', hasArrow: true },
-      ],
-    },
-    {
-      title: 'Shop By Category',
-      items: [
-        { name: 'Mobiles, Computers', hasArrow: true },
-        { name: 'TV, Appliances, Electronics', hasArrow: true },
-        { name: "Men's Fashion", hasArrow: true },
-        { name: "Women's Fashion", hasArrow: true },
-      ],
-    },
-  ];
+  goToSubCategory(sub: { label: string; slug: string }) {
+    this.router.navigate(['/products'], {
+      queryParams: {
+        main: this.selectedCategory!.name.toLowerCase().trim(),
+        category: sub.slug,
+      },
+    });
+
+    this.closeDropdown();
+  }
 }
