@@ -3,7 +3,7 @@ import { Routes } from '@angular/router';
 import { AdminLayout } from '../layouts/admin-layout/admin-layout';
 import { Dashboard } from './dashboard/dashboard';
 import { AdminLogin } from './auth/admin-login/admin-login';
-import { adminAuthGuard } from '../guards/admin-auth-guard';
+import { adminAuthGuard } from '../guards/admin-auth.guard';
 import { ProductList } from './products/product-list/product-list';
 
 import { UserList } from './users/user-list/user-list';

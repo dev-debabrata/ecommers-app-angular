@@ -4,7 +4,7 @@ import { HomePage } from './pages/home-page/home-page';
 import { LoginPage } from './pages/auth/login-page/login-page';
 import { SignupPage } from './pages/auth/signup-page/signup-page';
 import { ProductListPage } from './pages/products/product-list-page/product-list-page';
-import { authGuard } from './guards/auth-guard';
+import { authGuard } from './guards/auth.guard';
 import { NotFound } from './components/not-found/not-found';
 import { CartPage } from './pages/cart-page/cart-page';
 import { AboutPage } from './pages/about-page/about-page';

@@ -8,7 +8,7 @@ import { ProductService } from '../../../services/product.service';
 import { Product } from '../../../models/product.model';
 import { Rating } from '../../../utils/rating.util';
 import { Error } from '../../../components/error/error';
-import { TruncatePipe } from '../../../pipes/truncate-pipe';
+import { TruncatePipe } from '../../../pipes/truncate.pipe';
 import { Highlight } from '../../../directives/highlight';
 import { WishlistService } from '../../../services/wishlist.service';
 import { AuthService } from '../../../services/auth.user.service';

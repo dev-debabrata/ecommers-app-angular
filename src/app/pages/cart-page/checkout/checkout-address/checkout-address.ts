@@ -59,15 +59,9 @@ export class CheckoutAddress {
         userSub.unsubscribe();
       });
     });
-
-    effect(() => {
-      const user = this.userData();
-
-      if (user?.addresses?.length && !this.selectedAddress()) {
-        this.selectAddress(user.addresses[0]);
-      }
-    });
   }
+
+  ngAfterViewInit() {}
 
   editAddress(addr: AddressUser) {
     this.newAddress.set({ ...addr });
@@ -82,40 +76,10 @@ export class CheckoutAddress {
     this.showAddressPopup.set(true);
   }
 
-  // editAddress(index: number) {
-  //   const user = this.userData();
-  //   if (!user?.addresses) return;
-
-  //   const addr = user.addresses[index];
-
-  //   this.newAddress.set({ ...addr });
-  //   this.editingIndex.set(index);
-  //   this.showAddressPopup.set(true);
-  // }
-
   selectAddress(addr: AddressUser) {
     this.selectedAddress.set(addr);
     this.addressSelected.emit(addr);
   }
-
-  isSelected(addr: AddressUser): boolean {
-    const selected = this.selectedAddress();
-
-    if (!selected) return false;
-
-    return selected.id === addr.id;
-  }
-
-  // isSelected(addr: AddressUser): boolean {
-  //   const selected = this.selectedAddress();
-  //   if (!selected) return false;
-
-  //   if (addr.id && selected.id) {
-  //     return addr.id === selected.id;
-  //   }
-
-  //   return addr.address === selected.address && addr.pinCode === selected.pinCode;
-  // }
 
   visibleAddresses = computed(() => {
     const addresses = this.userData()?.addresses || [];
@@ -191,22 +155,38 @@ export class CheckoutAddress {
 
     this.userService.updateUserAddress(u.uid, { addresses }).subscribe({
       next: () => {
-        this.userData.set({
-          ...u,
-          addresses,
-        });
+        this.userData.set({ ...u, addresses });
 
-        if (this.editingIndex() !== null) {
-          this.selectAddress(addresses[this.editingIndex()!]);
+        const idx = this.editingIndex();
+
+        if (idx !== null) {
+          this.selectAddress(addresses[idx]);
         } else {
           this.selectAddress(addresses[0]);
         }
 
-        this.snackbar.success(this.editingIndex() !== null ? 'Address updated' : 'Address added');
+        this.snackbar.success(idx !== null ? 'Address updated' : 'Address added');
 
         this.editingIndex.set(null);
         this.showAddressPopup.set(false);
       },
+      // next: () => {
+      //   this.userData.set({
+      //     ...u,
+      //     addresses,
+      //   });
+
+      //   if (this.editingIndex() !== null) {
+      //     this.selectAddress(addresses[this.editingIndex()!]);
+      //   } else {
+      //     this.selectAddress(addresses[0]);
+      //   }
+
+      //   this.snackbar.success(this.editingIndex() !== null ? 'Address updated' : 'Address added');
+
+      //   this.editingIndex.set(null);
+      //   this.showAddressPopup.set(false);
+      // },
       error: () => this.snackbar.error('Failed to save address'),
     });
   }

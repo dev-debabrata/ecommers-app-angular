@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 
 import { CartService } from '../../../../services/cart.service';
 import { AuthService } from '../../../../services/auth.user.service';
-import { TruncatePipe } from '../../../../pipes/truncate-pipe';
+import { TruncatePipe } from '../../../../pipes/truncate.pipe';
 import { OrderService } from '../../../../services/order.service';
 import { LoaderService } from '../../../../services/loader.service';
 import { SnackbarService } from '../../../../services/snackbar.service';
