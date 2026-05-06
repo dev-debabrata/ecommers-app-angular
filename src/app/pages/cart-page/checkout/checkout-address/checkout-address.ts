@@ -69,65 +69,65 @@ export class CheckoutAddress {
     });
   }
 
-  editAddress(index: number) {
-    const user = this.userData();
-    if (!user?.addresses) return;
-
-    const addr = user.addresses[index];
-
+  editAddress(addr: AddressUser) {
     this.newAddress.set({ ...addr });
-    this.editingIndex.set(index);
+
+    const user = this.userData();
+    const realIndex =
+      user?.addresses?.findIndex((a) =>
+        a.id ? a.id === addr.id : a.address === addr.address && a.pinCode === addr.pinCode,
+      ) ?? -1;
+
+    this.editingIndex.set(realIndex !== -1 ? realIndex : null);
     this.showAddressPopup.set(true);
   }
+
+  // editAddress(index: number) {
+  //   const user = this.userData();
+  //   if (!user?.addresses) return;
+
+  //   const addr = user.addresses[index];
+
+  //   this.newAddress.set({ ...addr });
+  //   this.editingIndex.set(index);
+  //   this.showAddressPopup.set(true);
+  // }
 
   selectAddress(addr: AddressUser) {
     this.selectedAddress.set(addr);
     this.addressSelected.emit(addr);
-    this.showAll.set(false);
   }
 
   isSelected(addr: AddressUser): boolean {
     const selected = this.selectedAddress();
+
     if (!selected) return false;
 
-    if (addr.id && selected.id) {
-      return addr.id === selected.id;
-    }
-
-    return addr.address === selected.address && addr.pinCode === selected.pinCode;
+    return selected.id === addr.id;
   }
+
+  // isSelected(addr: AddressUser): boolean {
+  //   const selected = this.selectedAddress();
+  //   if (!selected) return false;
+
+  //   if (addr.id && selected.id) {
+  //     return addr.id === selected.id;
+  //   }
+
+  //   return addr.address === selected.address && addr.pinCode === selected.pinCode;
+  // }
 
   visibleAddresses = computed(() => {
     const addresses = this.userData()?.addresses || [];
-    const selected = this.selectedAddress();
 
     if (this.showAll()) return addresses;
 
-    if (!selected) return addresses.slice(0, 2);
-
-    const rest = addresses.filter((a) => !this.isSelected(a));
-
-    return [selected, ...rest].slice(0, 2);
+    return addresses.slice(0, 2);
   });
 
   toggleShowAll() {
     this.showAll.update((v) => !v);
-
-    if (!this.showAll()) {
-      const addresses = this.userData()?.addresses || [];
-      const current = this.selectedAddress();
-      if (!current) return;
-
-      const fresh = addresses.find((a) => this.isSelected(a));
-      if (fresh) {
-        this.selectedAddress.set(fresh);
-      }
-    }
   }
-
-  // toggleShowAll() {
-  //   this.showAll.update((v) => !v);
-  // }
 
   openPopup() {
     const u = this.userData();
