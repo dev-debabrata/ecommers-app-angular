@@ -11,7 +11,7 @@ import {
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
-import { AuthService } from '../../../services/auth.user.service';
+import { AuthService } from '../../../services/auth-user.service';
 import { SnackbarService } from '../../../services/snackbar.service';
 
 @Component({

@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 
-import { AdminAuthService } from '../../../services/auth.admin.service';
+import { AdminAuthService } from '../../../services/auth-admin.service';
 
 @Component({
   selector: 'app-admin-header',

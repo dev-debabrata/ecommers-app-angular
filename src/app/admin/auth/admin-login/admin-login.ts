@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
-import { AdminAuthService } from '../../../services/auth.admin.service';
+import { AdminAuthService } from '../../../services/auth-admin.service';
 import { SnackbarService } from '../../../services/snackbar.service';
 
 @Component({

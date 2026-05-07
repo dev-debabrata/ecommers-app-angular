@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from '../../../../services/auth.user.service';
+import { AuthService } from '../../../../services/auth-user.service';
 import { OrderService } from '../../../../services/order.service';
 import { Order } from '../../../../models/order.model';
 

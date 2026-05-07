@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatIcon } from '@angular/material/icon';
 
-import { AuthService } from '../../../services/auth.user.service';
+import { AuthService } from '../../../services/auth-user.service';
 import { ProductService } from '../../../services/product.service';
 import { Product } from '../../../models/product.model';
 import { Rating } from '../../../utils/rating.util';

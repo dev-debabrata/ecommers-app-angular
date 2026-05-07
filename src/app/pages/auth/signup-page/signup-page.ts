@@ -15,7 +15,7 @@ import { Router, RouterLink } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { from, map, of } from 'rxjs';
 
-import { AuthService } from '../../../services/auth.user.service';
+import { AuthService } from '../../../services/auth-user.service';
 import { User } from '../../../models/user.model';
 import { SnackbarService } from '../../../services/snackbar.service';
 

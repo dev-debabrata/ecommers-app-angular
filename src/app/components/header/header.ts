@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { Navbar } from '../navbar/navbar';
-import { AuthService } from '../../services/auth.user.service';
+import { AuthService } from '../../services/auth-user.service';
 import { Breadcrumb } from '../breadcrumb/breadcrumb';
 import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../services/product.service';

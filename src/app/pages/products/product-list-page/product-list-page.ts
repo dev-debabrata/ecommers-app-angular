@@ -11,7 +11,7 @@ import { Error } from '../../../components/error/error';
 import { TruncatePipe } from '../../../pipes/truncate.pipe';
 import { Highlight } from '../../../directives/highlight';
 import { WishlistService } from '../../../services/wishlist.service';
-import { AuthService } from '../../../services/auth.user.service';
+import { AuthService } from '../../../services/auth-user.service';
 import { LoaderService } from '../../../services/loader.service';
 import { SnackbarService } from '../../../services/snackbar.service';
 import { CATEGORIES } from '../../../data/category.data';
