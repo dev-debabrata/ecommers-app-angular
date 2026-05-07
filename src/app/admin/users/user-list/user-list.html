@@ -22,7 +22,7 @@
     </thead>
 
     <tbody>
-      @for (user of paginatedUsers(); track user.id; let i = $index) {
+      @for (user of paginatedUsers(); track user.uid; let i = $index) {
         <tr>
           <td>
             {{
@@ -44,8 +44,8 @@
           </td>
 
           <td class="actions">
-            <button [routerLink]="['/admin/users', user.id]">View</button>
-            <button (click)="deleteUser(user.id)">Delete</button>
+            <button [routerLink]="['/admin/users', user.uid!]">View</button>
+            <button (click)="deleteUser(user.uid!)">Delete</button>
           </td>
         </tr>
       }
@@ -60,7 +60,7 @@
 
   <mat-paginator
     [length]="totalItems()"
-    [pageSize]="pageSize"
+    [pageSize]="pageSize()"
     [pageSizeOptions]="[5, 10, 20]"
     (page)="onPageChange($event)"
   >

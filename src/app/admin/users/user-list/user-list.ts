@@ -6,6 +6,7 @@ import { PageEvent, MatPaginatorModule } from '@angular/material/paginator';
 
 import { UserService } from '../../../services/user.service';
 import { LoaderService } from '../../../services/loader.service';
+import { User } from '../../../models/user.model';
 
 @Component({
   selector: 'app-user-list',
@@ -19,7 +20,7 @@ export class UserList implements OnInit {
   private loaderService = inject(LoaderService);
   private destroyRef = inject(DestroyRef);
 
-  users = signal<any[]>([]);
+  users = signal<User[]>([]);
   sortDirection = signal<'asc' | 'desc'>('desc');
   // sortDirection = signal<'asc' | 'desc'>('asc');
   pageSize = signal(10);
@@ -83,7 +84,7 @@ export class UserList implements OnInit {
     if (!confirm('Delete this user?')) return;
 
     this.userService.deleteUser(id).subscribe(() => {
-      this.users.update((users) => users.filter((u) => u.id !== id));
+      this.users.update((users) => users.filter((u) => u.uid !== id));
     });
   }
 }
