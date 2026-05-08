@@ -35,7 +35,6 @@ export class Header {
   private wishlistService = inject(WishlistService);
   private el = inject(ElementRef);
   private snackBar = inject(MatSnackBar);
-
   private destroyRef = inject(DestroyRef);
   private onOnline = () => {
     this.isOnline = true;
@@ -46,18 +45,18 @@ export class Header {
 
   @Input() hideBreadcrumb = false;
 
+  suggestions: Product[] = [];
+  allProducts: Product[] = [];
+  openDropdownIndex: number | null = null;
+
   isOnline = navigator.onLine;
+  searchTerm = '';
+  activeIndex = 0;
+  showMenu = false;
+  showDropdown = false;
 
   itemCount = this.cartService.itemCount;
   wishlistCount = this.wishlistService.itemCount;
-
-  searchTerm = '';
-  suggestions: Product[] = [];
-  activeIndex = 0;
-  showDropdown = false;
-  allProducts: Product[] = [];
-  showMenu = false;
-  openDropdownIndex: number | null = null;
 
   @HostListener('document:click', ['$event'])
   handleOutsideClick(event: Event) {

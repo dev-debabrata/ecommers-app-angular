@@ -2,7 +2,7 @@ import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { AuthService } from '../../services/auth-user.service';
 import { User } from '../../models/user.model';
@@ -10,16 +10,6 @@ import { CATEGORIES } from '../../data/category.data';
 import { Category } from '../../models/category.model';
 import { MENU } from '../../data/menu.data';
 import { SnackbarService } from '../../services/snackbar.service';
-
-interface MenuItem {
-  name: string;
-  hasArrow?: boolean;
-}
-
-interface MenuSection {
-  title: string;
-  items: MenuItem[];
-}
 
 @Component({
   selector: 'app-navbar',
@@ -36,14 +26,15 @@ export class Navbar implements OnInit {
 
   user = signal<User | null>(null);
   selectedCategory: Category | null = null;
-  categories = CATEGORIES;
-  menu = MENU;
 
-  isSidebarOpen = false;
-  isMenuOpen = false;
-  isDropdownOpen = false;
-  dropdownLeft = 0;
+  menu = MENU;
+  categories = CATEGORIES;
+
   dropdownTop = 0;
+  dropdownLeft = 0;
+  isMenuOpen = false;
+  isSidebarOpen = false;
+  isDropdownOpen = false;
 
   get authReady() {
     return this.authService.isAuthReady();
@@ -73,7 +64,6 @@ export class Navbar implements OnInit {
   logout() {
     this.authService.logout();
     this.isMenuOpen = false;
-
     this.snackBar.success('Logged out successfully');
     this.router.navigate(['/']);
   }

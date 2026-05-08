@@ -1,4 +1,4 @@
-import { Component, computed, DestroyRef, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
@@ -22,7 +22,6 @@ export class WishlistPage {
   private productService = inject(ProductService);
   private wishlistService = inject(WishlistService);
   private snackBar = inject(SnackbarService);
-  private destroyRef = inject(DestroyRef);
 
   wishlistItems = this.wishlistService.getWishlistSignal;
   wishlistCount = computed(() => this.wishlistItems().length);

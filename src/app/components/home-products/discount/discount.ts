@@ -1,9 +1,10 @@
 import { Component, computed, DestroyRef, inject, Input, signal } from '@angular/core';
-import { ProductService } from '../../../services/product.service';
-import { Router } from '@angular/router';
-import { Product } from '../../../models/product.model';
-import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
+
+import { Product } from '../../../models/product.model';
+import { ProductService } from '../../../services/product.service';
 
 @Component({
   selector: 'app-discount',
@@ -18,11 +19,10 @@ export class Discount {
   private destroyRef = inject(DestroyRef);
 
   @Input() totalLimit = 24;
-  pageSize = 8;
 
   products = signal<Product[]>([]);
-
   currentIndex = signal(0);
+  pageSize = 8;
 
   fullProducts = computed(() => {
     return this.products().slice(0, this.totalLimit);

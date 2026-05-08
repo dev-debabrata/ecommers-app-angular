@@ -37,11 +37,11 @@ export class ProductListPage implements OnInit {
   @Input() showWishlistIcon = true;
 
   products: Product[] = [];
-  errorMsg = false;
   searchTerm = '';
+  minDiscount = 0;
+  errorMsg = false;
   selectedMainCategory = 'all';
   selectedCategory = 'all';
-  minDiscount = 0;
 
   ngOnInit(): void {
     this.loaderService.show();

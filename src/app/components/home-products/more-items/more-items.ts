@@ -19,10 +19,10 @@ export class MoreItems {
   private destroyRef = inject(DestroyRef);
 
   @Input() totalLimit = 24;
-  pageSize = 8;
 
   products = signal<Product[]>([]);
   currentIndex = signal(0);
+  pageSize = 8;
 
   fullProducts = computed(() => {
     return this.products().slice(0, this.totalLimit);

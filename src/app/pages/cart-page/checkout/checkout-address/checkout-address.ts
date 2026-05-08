@@ -30,11 +30,13 @@ export class CheckoutAddress {
 
   user = input<User | null>();
   addressSelected = output<AddressUser>();
-  showAll = signal(false);
+
   userData = signal<User | null>(null);
   editingIndex = signal<number | null>(null);
-  showAddressPopup = signal(false);
   selectedAddress = signal<AddressUser | null>(null);
+
+  showAll = signal(false);
+  showAddressPopup = signal(false);
 
   newAddress = signal<AddressUser>({
     fullName: '',

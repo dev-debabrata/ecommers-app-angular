@@ -1,8 +1,9 @@
 import { Component, OnDestroy } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router';
-import { ProductService } from '../../services/product.service';
-import { filter, switchMap, of, Subscription, startWith } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router';
+import { filter, switchMap, of, Subscription, startWith } from 'rxjs';
+
+import { ProductService } from '../../services/product.service';
 
 @Component({
   selector: 'app-breadcrumb',

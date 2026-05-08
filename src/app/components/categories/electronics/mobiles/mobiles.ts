@@ -18,11 +18,11 @@ export class Mobiles implements OnInit {
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
 
-  products = signal<Product[]>([]);
-  currentIndex = signal(0);
-
   @Input() category: string = 'mobiles';
   @Input() totalLimit = 24;
+
+  products = signal<Product[]>([]);
+  currentIndex = signal(0);
   pageSize = 8;
 
   fullProducts = computed(() => {

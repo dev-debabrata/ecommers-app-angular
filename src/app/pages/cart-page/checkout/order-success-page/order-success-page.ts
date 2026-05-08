@@ -1,6 +1,7 @@
-import { CommonModule } from '@angular/common';
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
+
 import { AuthService } from '../../../../services/auth-user.service';
 import { OrderService } from '../../../../services/order.service';
 import { Order } from '../../../../models/order.model';
@@ -20,7 +21,6 @@ export class OrderSuccessPage implements OnInit {
   private destroyRef = inject(DestroyRef);
 
   order: Order | null = null;
-
   errorMsg = false;
 
   ngOnInit() {

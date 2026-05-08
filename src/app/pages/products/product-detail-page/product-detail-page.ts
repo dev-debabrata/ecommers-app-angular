@@ -34,9 +34,8 @@ export class ProductDetailPage implements OnInit {
   @Input() showWishlistIcon = true;
 
   product: Product | null = null;
-  errorMsg = false;
   stars: string[] = [];
-  showAllReviews = false;
+  errorMsg = false;
   isPopupOpen = false;
 
   ngOnInit(): void {

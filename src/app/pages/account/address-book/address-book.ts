@@ -19,8 +19,8 @@ export class AddressBook {
   private snackBar = inject(SnackbarService);
 
   user = input<User | null>();
-  showAddressPopup = signal(false);
   editAddressIndex = signal<number | null>(null);
+  showAddressPopup = signal(false);
 
   newAddress = signal<AddressUser>({
     fullName: '',

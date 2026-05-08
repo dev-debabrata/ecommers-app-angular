@@ -12,7 +12,6 @@ import { SnackbarService } from '../../../../services/snackbar.service';
 import { CartItem } from '../../../../models/cart.model';
 import { CheckoutAddress } from '../checkout-address/checkout-address';
 import { Order, OrderAddress } from '../../../../models/order.model';
-
 import { User } from '../../../../models/user.model';
 
 @Component({
