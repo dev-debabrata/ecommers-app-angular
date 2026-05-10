@@ -36,10 +36,8 @@ export class WishlistPage {
 
   addToCart(product: Product, event: Event) {
     event.stopPropagation();
-
     this.cartService.addToCart(product);
     this.wishlistService.removeFromWishlist(product.id!);
-
     this.snackBar.success('Moved to cart');
   }
 
